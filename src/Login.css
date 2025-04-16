@@ -6,17 +6,32 @@ body {
     align-items: center;
     min-height: 100vh;
     font-family: 'Jost', sans-serif;
-    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    background: linear-gradient(90deg, #fff7ad, #ffa9f9);
+    background-size: 400% 400%;
+    animation: gradientShift 10s ease infinite; /* Hiệu ứng chuyển màu nền */
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
   
   .main {
     width: 350px;
     height: 500px;
-    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/...") no-repeat center/cover;
+    background: #fff;  /* Màu nền trắng thay vì hình ảnh */
     border-radius: 10px;
     box-shadow: 5px 20px 50px #000;
     overflow: hidden;
   }
+  
   
   #chk {
     display: none;
@@ -29,7 +44,7 @@ body {
   }
   
   label {
-    color: #fff;
+    color: #a94343;
     font-size: 2.3em;
     justify-content: center;
     display: flex;
@@ -59,7 +74,7 @@ body {
     justify-content: center;
     display: block;
     color: #fff;
-    background: #573b8a;
+    background: #a94343;
     font-size: 1em;
     font-weight: bold;
     margin-top: 30px;
