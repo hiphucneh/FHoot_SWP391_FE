@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Button, Countdown } from "antd";
+import { Button, Statistic } from "antd";
+
+const { Countdown } = Statistic;
 
 const QuestionScreen = () => {
   const question = "What is the capital of France?";
@@ -48,8 +50,8 @@ const QuestionScreen = () => {
                 ? option === correctAnswer
                   ? "#4caf50" // xanh cho đúng
                   : option === selectedAnswer
-                  ? "#f44336" // đỏ cho sai
-                  : ""
+                    ? "#f44336" // đỏ cho sai
+                    : ""
                 : "",
             }}
             disabled={isAnswered}
