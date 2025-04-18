@@ -10,6 +10,7 @@ const CreateQuestion = () => {
 
 
     }
+
     const textInput = {
 
         fontSize: "18px",
@@ -46,6 +47,31 @@ const CreateQuestion = () => {
 
 
     }
+    const getAnswers = (index) => {
+        console.log("getAnswers", answers[index]);
+        return answers[index]
+
+    }
+    const handleDuplicateAnswer = (index) => {
+        console.log("Duplicate Answer clicked", index);
+
+        console.log("getAnswer", getAnswers(index));
+        const newAnswers = getAnswers(index);
+        setAnswers([...answers, newAnswers]);
+
+    }
+    const handleDeleteAnswer = (index) => {
+        console.log("Delete Answer clicked", index);
+        const newAnswers = answers.filter((_, i) => i !== index);
+        setAnswers(newAnswers);
+
+    }
+    const handleChangeAnswer = (index, value) => {
+        console.log("Change Answer ", index, value);
+        getAnswers(index).content = value;
+        setAnswers([...answers]);
+    }
+
     const buttonStyle = {
 
         width: "auto",
@@ -93,10 +119,16 @@ const CreateQuestion = () => {
                             placement="topRight"
                             content={
                                 <div style={{ display: "flex", flexDirection: "column", width: "auto", gap: "5px" }}>
-                                    <Button size="small" style={{ ...buttonStyle, backgroundColor: "#f44336" }}>
+                                    <Button
+                                        size="small"
+                                        onClick={() => handleDeleteAnswer(index)}
+                                        style={{ ...buttonStyle, backgroundColor: "#f44336" }}>
                                         Delete
                                     </Button>
-                                    <Button size="small" style={{ ...buttonStyle, backgroundColor: "blue" }}>
+                                    <Button
+                                        size="small"
+                                        onClick={() => { handleDuplicateAnswer(index); }}
+                                        style={{ ...buttonStyle, backgroundColor: "blue" }}>
                                         Duplicate
                                     </Button>
                                 </div>
@@ -119,6 +151,8 @@ const CreateQuestion = () => {
                                         backgroundColor: "#f9f9f9",
                                         fontSize: "16px",
                                     }}
+                                    onChange={(e) => { handleChangeAnswer(index, e.target.value); }}
+
                                 />
                                 <Checkbox style={{ margin: '10px', fontSize: '10px', }}></Checkbox>
 
@@ -129,7 +163,16 @@ const CreateQuestion = () => {
 
 
                 </div>
-                <button type="button" onClick={handleAddAnswer} style={{ marginTop: "20px", padding: "10px 20px", borderRadius: "5px", backgroundColor: "#4CAF50", color: "white", border: "none", cursor: "pointer" }}>Add Answer</button>
+                <button type="button" onClick={handleAddAnswer}
+                    style={{
+                        marginTop: "20px",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        backgroundColor: "#4CAF50",
+                        color: "white",
+                        border: "none",
+                        cursor: "pointer"
+                    }}>Add Answer</button>
             </form >        </div >
 
     );
