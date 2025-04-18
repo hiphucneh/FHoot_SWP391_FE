@@ -1,62 +1,54 @@
-import React from "react";
-import "./Header.css"; // Import CSS cho header
-import { RiAccountCircleFill } from "react-icons/ri";
+import { useState } from "react";
+import Login from "./Login";
 
 function Header() {
+  const [showMenu, setShowMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
   return (
-    <header class="header" id="header">
-      <nav class="nav container_head">
-        <a href="#" class="nav__logo">
-          Logo
-        </a>
+    <>
+      <header className="header" id="header">
+        <nav className="nav container">
+          <a href="#" className="nav__logo">
+            Logo
+          </a>
 
-        <div class="nav__menu" id="nav-menu">
-          <ul class="nav__list">
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                Home
-              </a>
-            </li>
+          <div
+            className={`nav__menu ${showMenu ? "show-menu" : ""}`}
+            id="nav-menu"
+          >
+            <ul className="nav__list">
+              <li className="nav__item">
+                <a href="#" className="nav__link">
+                  Join a game
+                </a>
+              </li>
+            </ul>
 
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                About Us
-              </a>
-            </li>
+            <div
+              className="nav__close"
+              id="nav-close"
+              onClick={() => setShowMenu(false)}
+            >
+              <i className="ri-close-line"></i>
+            </div>
+          </div>
 
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                Services
+          <div className="nav__actions">
+  
+              <a href="#" className="link" id="sign-up" onClick={() => setShowLogin(true)}>
+                <i className="fa-regular fa-envelope"></i> Create a Kahoot!
               </a>
-            </li>
 
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                Featured
-              </a>
-            </li>
+          </div>
+        </nav>
+      </header>
 
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                Contact Me
-              </a>
-            </li>
 
-            <li class="nav__item">
-              <a href="#" class="nav__link">
-                Log In
-              </a>
-            </li>
-
-            <li>
-              <a href="#" className="link" id="sign-up">
-                <i className="fa-regular fa-envelope"></i> Sign Up
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+      {/* Login Overlay */}
+      <Login show={showLogin} onClose={() => setShowLogin(false)} />
+    </>
   );
 }
 
