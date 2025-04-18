@@ -3,12 +3,14 @@ import { Input, Upload, Checkbox, Button, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 
 const CreateQuestion = () => {
-    const [answers, setAnswers] = useState([{ content: "", isAnswer: false }]);
+    const [answers, setAnswers] = useState([{ id: '0', content: "", isAnswer: false }]);
     const handleAddAnswer = () => {
-        console.log("Add Answer clicked");
-        setAnswers([...answers, { content: "", isAnswer: false }]);
-
-
+        const newAnswer = {
+            id: Date.now(),  // Dùng timestamp làm id unique
+            content: "",
+            isAnswer: false
+        };
+        setAnswers([...answers, newAnswer]);
     }
 
     const textInput = {
@@ -47,30 +49,33 @@ const CreateQuestion = () => {
 
 
     }
-    const getAnswers = (index) => {
-        console.log("getAnswers", answers[index]);
-        return answers[index]
 
-    }
-    const handleDuplicateAnswer = (index) => {
-        console.log("Duplicate Answer clicked", index);
+    const handleDuplicateAnswer = (id) => {
+        const answerToDuplicate = answers.find((answer) => answer.id === id);
+        if (!answerToDuplicate) {
+            console.error("Invalid answer id:", id);
+            return;
+        }
+        const newAnswer = { ...answerToDuplicate, id: Date.now() }; // Tạo id mới bằng Date.now
+        setAnswers([...answers, newAnswer]);
+    };
 
-        console.log("getAnswer", getAnswers(index));
-        const newAnswers = getAnswers(index);
-        setAnswers([...answers, newAnswers]);
-
-    }
-    const handleDeleteAnswer = (index) => {
-        console.log("Delete Answer clicked", index);
-        const newAnswers = answers.filter((_, i) => i !== index);
+    const handleDeleteAnswer = (id) => {
+        const newAnswers = answers.filter((answer) => answer.id !== id);
         setAnswers(newAnswers);
+    };
 
-    }
-    const handleChangeAnswer = (index, value) => {
-        console.log("Change Answer ", index, value);
-        getAnswers(index).content = value;
-        setAnswers([...answers]);
-    }
+    const handleChangeAnswer = (id, value) => {
+
+
+        const updatedAnswers = answers.map(answer =>
+            answer.id === id ? { ...answer, content: value } : answer
+        );
+
+        setAnswers(updatedAnswers);
+
+        console.log("LOG:", updatedAnswers.find(a => a.id === id));
+    };
 
     const buttonStyle = {
 
@@ -112,35 +117,34 @@ const CreateQuestion = () => {
                 <h3 style={headerStyle}>Answer </h3>
 
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center", width: "600px" }}>
-                    {answers.map((answers, index) => (
+                    {answers.map((answer) => (
                         <Popover
-                            key={index}
+                            key={answer.id}
                             trigger="hover"
                             placement="topRight"
                             content={
                                 <div style={{ display: "flex", flexDirection: "column", width: "auto", gap: "5px" }}>
                                     <Button
                                         size="small"
-                                        onClick={() => handleDeleteAnswer(index)}
+                                        onClick={() => handleDeleteAnswer(answer.id)}
                                         style={{ ...buttonStyle, backgroundColor: "#f44336" }}>
                                         Delete
                                     </Button>
                                     <Button
                                         size="small"
-                                        onClick={() => { handleDuplicateAnswer(index); }}
+                                        onClick={() => handleDuplicateAnswer(answer.id)}
                                         style={{ ...buttonStyle, backgroundColor: "blue" }}>
                                         Duplicate
                                     </Button>
                                 </div>
                             }
-
                         >
-                            <div key={index} style={{ ...answersStyle }}>
-
+                            <div style={{ ...answersStyle }}>
                                 <input
                                     type="text"
                                     placeholder={`Answer`}
                                     required
+                                    value={answer.content}
                                     style={{
                                         width: "70%",
                                         height: "18%",
@@ -151,12 +155,13 @@ const CreateQuestion = () => {
                                         backgroundColor: "#f9f9f9",
                                         fontSize: "16px",
                                     }}
-                                    onChange={(e) => { handleChangeAnswer(index, e.target.value); }}
-
+                                    onChange={(e) => handleChangeAnswer(answer.id, e.target.value)}
                                 />
-                                <Checkbox style={{ margin: '10px', fontSize: '10px', }}></Checkbox>
-
-
+                                <Checkbox
+                                    checked={answer.isAnswer}
+                                    onChange={(e) => handleToggleCheckbox(answer.id, e.target.checked)}
+                                    style={{ margin: '10px', fontSize: '10px' }}
+                                />
                             </div>
                         </Popover>
                     ))}
