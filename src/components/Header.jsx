@@ -3,7 +3,6 @@ import Login from "./Login";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
   return (
