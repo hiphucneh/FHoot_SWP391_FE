@@ -1,12 +1,20 @@
-import React, { state, useState } from "react";
+import React, { state, useState, useEffect } from "react";
 import { Input, Upload, Checkbox, Button, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
+import { info } from "autoprefixer";
 
 const CreateQuestion = () => {
     const [answers, setAnswers] = useState([{ id: '0', content: "", isAnswer: false }]);
-    const [question, setQuestion] = useState("");
+    const [question, setQuestion] = useState({
+        id: Date.now(),
+        content: "",
+        file: null,
+        answers: [],
+    });
+
     const [savedQuestions, setSavedQuestions] = useState([]);
     const handleAddAnswer = () => {
+        console.log("LOG:", answers);
         const newAnswer = {
             id: Date.now(),
             content: '',
@@ -35,7 +43,7 @@ const CreateQuestion = () => {
         color: "black",
     };
     const textBoxStyle = {
-        width: "100%",  // full width của div cha
+        width: "100%",
         height: "50%",
     }
     const answersStyle = {
@@ -68,7 +76,11 @@ const CreateQuestion = () => {
         const newAnswer = { ...answerToDuplicate, id: Date.now() }; // Tạo id mới bằng Date.now
         setAnswers([...answers, newAnswer]);
     };
+    const handleSaveQuestion = () => {
 
+        console.log("Question:", question);
+        setSavedQuestions([...savedQuestions, answers]);
+    }
     const handleDeleteAnswer = (id) => {
         const newAnswers = answers.filter((answer) => answer.id !== id);
         setAnswers(newAnswers);
@@ -85,6 +97,15 @@ const CreateQuestion = () => {
 
         console.log("LOG:", updatedAnswers.find(a => a.id === id));
     };
+    const handleChangeFile = (file) => {
+        setQuestion({ ...question, file: file });
+        console.log("LOG:", question.file);
+
+    }
+    const handleChangeQuestion = (id, value) => {
+        setQuestion({ ...question, content: value });
+        console.log("LOG:", question);
+    }
 
     const buttonStyle = {
 
@@ -128,9 +149,11 @@ const CreateQuestion = () => {
                         <h1 style={{ color: "black", marginBottom: "50px" }}>Create Question</h1>
                         <h3 style={headerStyle}>Question </h3>
 
-                        <input type="text" placeholder="Question" required style={{ ...textInput, height: "200px", borderRadius: "20px" }} />
+                        <input type="text" onChange={(e) => handleChangeQuestion(question.id, e.target.value)} placeholder="Question" required style={{ ...textInput, height: "200px", borderRadius: "20px" }} />
                         <h3 style={headerStyle}>Upload File </h3>
                         <Upload
+                            accept=".pdf, .doc, .png, .jpg, .jpeg"
+                            onChange={(info) => handleChangeFile(info.file)}
                             maxCount={1}
                             beforeUpload={() => false}  //
                             style={{ width: "100%" }}
@@ -224,12 +247,15 @@ const CreateQuestion = () => {
                                 border: "none",
                                 cursor: "pointer"
                             }}
+                            onClick={
+                                handleSaveQuestion
+                            }
                         >
                             Save Question
                         </button>
                     </form >        </div >
             </div>
-        </div>
+        </div >
 
     );
 
