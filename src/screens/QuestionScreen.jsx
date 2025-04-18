@@ -35,7 +35,7 @@ const QuestionScreen = () => {
       >
         {options.map((option, index) => (
           <Button
-            key={index}
+            key={answer.id}
             onClick={() => handleAnswer(option)}
             type={
               isAnswered
