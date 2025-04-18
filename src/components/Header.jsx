@@ -1,28 +1,54 @@
-import React from 'react';
-import './Header.css'; // Import CSS cho header
+import { useState } from "react";
+import Login from "./Login";
 
 function Header() {
+  const [showMenu, setShowMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
   return (
-    <header>
-      <nav>
-        <ul>
-          <li>
-            <a href="#" className="logo">
-              <i className="fa-brands fa-pied-piper-alt"></i> {/* Logo */}
-            </a>
-          </li>
-          <li><a href="#" className="link">Home</a></li>
-          <li><a href="#" className="link">About</a></li>
-          <li><a href="#" className="link">Skills</a></li>
-          <li><a href="#" className="link">Projects</a></li>
-          <li>
-            <a href="#" className="link" id="hire-me">
-              <i className="fa-regular fa-envelope"></i> Hire me
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <>
+      <header className="header" id="header">
+        <nav className="nav container">
+          <a href="#" className="nav__logo">
+            Logo
+          </a>
+
+          <div
+            className={`nav__menu ${showMenu ? "show-menu" : ""}`}
+            id="nav-menu"
+          >
+            <ul className="nav__list">
+              <li className="nav__item">
+                <a href="#" className="nav__link">
+                  Join a game
+                </a>
+              </li>
+            </ul>
+
+            <div
+              className="nav__close"
+              id="nav-close"
+              onClick={() => setShowMenu(false)}
+            >
+              <i className="ri-close-line"></i>
+            </div>
+          </div>
+
+          <div className="nav__actions">
+  
+              <a href="#" className="link" id="sign-up" onClick={() => setShowLogin(true)}>
+                <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+              </a>
+
+          </div>
+        </nav>
+      </header>
+
+
+      {/* Login Overlay */}
+      <Login show={showLogin} onClose={() => setShowLogin(false)} />
+    </>
   );
 }
 
