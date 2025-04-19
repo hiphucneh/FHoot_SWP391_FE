@@ -1,5 +1,5 @@
 import React from "react";
-import Login from "./Login";
+import Login from "./components/Login";
 
 import Header from "./components/Header"; // Import Header component
 import WaitRoomScreen from "./screens/WaitRoomScreen";
