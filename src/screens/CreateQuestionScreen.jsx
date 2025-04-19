@@ -78,8 +78,13 @@ const CreateQuestion = () => {
     };
     const handleSaveQuestion = () => {
 
-        console.log("Question:", question);
-        setSavedQuestions([...savedQuestions, answers]);
+        const newQuestion = {
+            ...question,
+            answers: answers,
+
+        };
+        console.log("LOG:", newQuestion);
+        setSavedQuestions([...savedQuestions, newQuestion]);
     }
     const handleDeleteAnswer = (id) => {
         const newAnswers = answers.filter((answer) => answer.id !== id);
@@ -87,6 +92,7 @@ const CreateQuestion = () => {
     };
 
     const handleChangeAnswer = (id, value) => {
+
 
 
         const updatedAnswers = answers.map(answer =>
@@ -106,7 +112,15 @@ const CreateQuestion = () => {
         setQuestion({ ...question, content: value });
         console.log("LOG:", question);
     }
-
+    const handleSelectQuestion = (q) => {
+        setQuestion({
+            id: q.id,
+            content: q.content,
+            file: q.file,
+            answers: q.answers,
+        });
+        setAnswers(q.answers);
+    };
     const buttonStyle = {
 
         width: "auto",
@@ -127,20 +141,23 @@ const CreateQuestion = () => {
                     margin: "20px"
                 }}>
                     <h2 style={{ color: "black" }}>Saved Questions</h2>
-                    {/* Danh sách câu hỏi sẽ hiện ở đây */}
+
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                        {/* Mỗi câu hỏi sẽ là 1 ô div */}
-                        <div style={{
-                            backgroundColor: "#ffffff",
-                            padding: "10px",
-                            borderRadius: "10px",
-                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                            cursor: "pointer"
-                        }}>
-                            Question 1
-                        </div>
-
-
+                        {savedQuestions.map((q, index) => (
+                            <div key={q.id}
+                                onClick={() => handleSelectQuestion(q)}
+                                style={{
+                                    backgroundColor: "#ffffff",
+                                    padding: "10px",
+                                    borderRadius: "10px",
+                                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                    cursor: "pointer",
+                                    color: "black",
+                                }}
+                            >
+                                {`Question ${index + 1}: ${q.content}`}
+                            </div>
+                        ))}
                     </div>
                 </div>
                 < div style={{ margin: "100px", padding: "50px", borderRadius: "30px", backgroundColor: "#f0f2f5" }}>
@@ -149,7 +166,12 @@ const CreateQuestion = () => {
                         <h1 style={{ color: "black", marginBottom: "50px" }}>Create Question</h1>
                         <h3 style={headerStyle}>Question </h3>
 
-                        <input type="text" onChange={(e) => handleChangeQuestion(question.id, e.target.value)} placeholder="Question" required style={{ ...textInput, height: "200px", borderRadius: "20px" }} />
+                        <input
+                            type="text" onChange={(e) => handleChangeQuestion(question.id, e.target.value)}
+                            placeholder="Question"
+                            required style={{ ...textInput, height: "200px", borderRadius: "20px" }}
+                            value={question.content}
+                        />
                         <h3 style={headerStyle}>Upload File </h3>
                         <Upload
                             accept=".pdf, .doc, .png, .jpg, .jpeg"
