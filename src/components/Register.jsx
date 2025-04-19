@@ -1,12 +1,14 @@
 function Register({ show, onClose, onSwitchToLogin }) {
   return (
-    <div className={`login ${show ? 'show-login' : ''}`} id="register">
+    <div className={`login ${show ? "show-login" : ""}`} id="register">
       <form className="login__form">
         <h2 className="login__title">Sign Up</h2>
 
         <div className="login__group">
           <div>
-            <label htmlFor="name" className="login__label">Name</label>
+            <label htmlFor="name" className="login__label">
+              Name
+            </label>
             <input
               type="text"
               placeholder="Enter your name"
@@ -16,7 +18,9 @@ function Register({ show, onClose, onSwitchToLogin }) {
           </div>
 
           <div>
-            <label htmlFor="email" className="login__label">Email</label>
+            <label htmlFor="email" className="login__label">
+              Email
+            </label>
             <input
               type="email"
               placeholder="Write your email"
@@ -26,7 +30,9 @@ function Register({ show, onClose, onSwitchToLogin }) {
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">Password</label>
+            <label htmlFor="password" className="login__label">
+              Password
+            </label>
             <input
               type="password"
               placeholder="Create a password"
@@ -42,28 +48,29 @@ function Register({ show, onClose, onSwitchToLogin }) {
             <a
               href="#"
               onClick={(e) => {
-                e.preventDefault()
-                onSwitchToLogin()
+                e.preventDefault();
+                onSwitchToLogin();
               }}
             >
               Log in
             </a>
           </p>
-          <button type="submit" className="login__button">Sign Up</button>
+          <button type="submit" className="login__button">
+            Sign Up
+          </button>
         </div>
 
-              {/* Google Sign-Up Button */}
-              <div className="login__google">
-  <button className="login__google-button">
-    <img
-      src="https://www.svgrepo.com/show/475656/google-color.svg"
-      alt="Google logo"
-      className="google-icon"
-    />
-    Continue with Google
-  </button>
-</div>
-
+        {/* Google Sign-Up Button */}
+        <div className="login__google">
+          <button className="login__google-button">
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google logo"
+              className="google-icon"
+            />
+            Continue with Google
+          </button>
+        </div>
       </form>
 
       <i
@@ -72,7 +79,7 @@ function Register({ show, onClose, onSwitchToLogin }) {
         onClick={onClose}
       ></i>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
