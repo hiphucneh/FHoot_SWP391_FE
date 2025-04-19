@@ -1,4 +1,20 @@
+import { useEffect, useState } from "react";
+
 function WinQuestionScreen() {
+  const [countdown, setCountdown] = useState(10);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    if (countdown === 0) {
+      clearInterval(timer);
+      window.location.href = "/";
+    }
+
+    return () => clearInterval(timer);
+  }, [countdown]);
     return (
         <>
             <style>
@@ -300,6 +316,18 @@ function WinQuestionScreen() {
   top: 0;
 }
 
+.countdown-bar {
+  position: fixed;
+  top: 0;
+  height: 1rem;
+  background-color: #FFD600;
+  z-index: 999;
+  transition: width 1s linear;
+right: 0;
+  left: auto;
+  transform-origin: right;
+}
+
 @keyframes floatUp {
   0% {
     transform: translateY(0) scale(1) rotate(45deg);
@@ -425,6 +453,10 @@ function WinQuestionScreen() {
             <div className="text-box">
                 <p> 🎉 Congratulate! You've chosen the right answer ! 🎉</p>
             </div>
+            <div
+        className="countdown-bar"
+        style={{ width: `${(countdown / 10) * 100}%` }}
+      ></div>
         </>
     );
 }

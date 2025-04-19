@@ -18,7 +18,7 @@
   /*.5rem = 8px | 1rem = 16px ...*/
   --body-font: "Syne", sans-serif;
   --h2-font-size: 1.25rem;
-  --normal-font-size: .938rem;
+  --normal-font-size: 0.938rem;
 
   /*========== Font weight ==========*/
   --font-regular: 400;
@@ -111,13 +111,13 @@ img {
   width: 100%;
   height: 100%;
   z-index: var(--z-modal);
-  background-color: hsla(230, 75%, 15%, .1);
+  background-color: hsla(230, 75%, 15%, 0.1);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px); /* For safari */
   padding: 8rem 1.5rem 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity .4s;
+  transition: opacity 0.4s;
 }
 
 .search__close,
@@ -137,7 +137,7 @@ img {
   left: 0;
   width: 100%;
   background-color: var(--body-color);
-  box-shadow: 0 2px 16px hsla(230, 75%, 32%, .15);
+  box-shadow: 0 2px 16px hsla(230, 75%, 32%, 0.15);
   z-index: var(--z-fixed);
 }
 
@@ -151,7 +151,7 @@ img {
 .nav__logo {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
-  transition: color .4s;
+  transition: color 0.4s;
 }
 
 .nav__actions {
@@ -160,14 +160,14 @@ img {
   column-gap: 1rem;
 }
 
-.nav__search, 
-.nav__login, 
-.nav__toggle, 
+.nav__search,
+.nav__login,
+.nav__toggle,
 .nav__close {
   font-size: 1.25rem;
   color: var(--title-color);
   cursor: pointer;
-  transition: color .4s;
+  transition: color 0.4s;
 }
 
 :is(.nav__logo, .nav__search, .nav__login, .nav__toggle, .nav__link):hover {
@@ -181,10 +181,10 @@ img {
     top: -100%;
     left: 0;
     background-color: var(--body-color);
-    box-shadow: 0 8px 16px hsla(230, 75%, 32%, .15);
+    box-shadow: 0 8px 16px hsla(230, 75%, 32%, 0.15);
     width: 100%;
     padding-block: 4.5rem 4rem;
-    transition: top .4s;
+    transition: top 0.4s;
   }
 }
 
@@ -198,7 +198,7 @@ img {
 .nav__link {
   color: var(--title-color);
   font-weight: var(--font-semi-bold);
-  transition: color .4s;
+  transition: color 0.4s;
 }
 
 .nav__close {
@@ -213,66 +213,27 @@ img {
 }
 
 #sign-up {
-    background-color: #ebc0c0;
-    display: flex;
-    align-items: center;
-    color: black;
-    border-radius: 5px;
-    padding: 0.5rem 0.5rem;
-    transition: all 0.6s ease;
-  }
-  
-  #sign-up:hover {
-    background-color: transparent;
-    color: #e87a7a;
-    padding: 0.5rem;
-  }
-  
-  #sign-up i {
-    margin-right: 0.5rem;
-  }
-
-/*=============== SEARCH ===============*/
-.search__form {
+  background-color: #ebc0c0;
   display: flex;
   align-items: center;
-  column-gap: .5rem;
-  background-color: var(--container-color);
-  box-shadow: 0 8px 32px hsla(230, 75%, 15%, .2);
-  padding-inline: 1rem;
-  border-radius: .5rem;
-  transform: translateY(-1rem);
-  transition: transform .4s;
+  color: black;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  transition: all 0.6s ease;
 }
 
-.search__icon {
-  font-size: 1.25rem;
-  color: var(--title-color);
+#sign-up:hover {
+  background-color: transparent;
+  color: #e87a7a;
+  padding: 0.5rem;
 }
 
-.search__input {
-  width: 100%;
-  padding-block: 1rem;
-  background-color: var(--container-color);
-  color: var(--text-color);
-}
-
-.search__input::placeholder {
-  color: var(--text-color);
-}
-
-/* Show search */
-.show-search {
-  opacity: 1;
-  pointer-events: initial;
-}
-
-.show-search .search__form {
-  transform: translateY(0);
+#sign-up i {
+  margin-right: 0.5rem;
 }
 
 /*=============== LOGIN ===============*/
-.login__form, 
+.login__form,
 .login__group {
   display: grid;
 }
@@ -280,12 +241,12 @@ img {
 .login__form {
   background-color: var(--container-color);
   padding: 2rem 1.5rem 2.5rem;
-  box-shadow: 0 8px 32px hsla(230, 75%, 15%, .2);
+  box-shadow: 0 8px 32px hsla(230, 75%, 15%, 0.2);
   border-radius: 1rem;
   row-gap: 1.25rem;
   text-align: center;
   transform: translateY(-1rem);
-  transition: transform .4s;
+  transition: transform 0.4s;
 }
 
 .login__title {
@@ -302,7 +263,7 @@ img {
   text-align: initial;
   color: var(--title-color);
   font-weight: var(--font-medium);
-  margin-bottom: .25rem;
+  margin-bottom: 0.25rem;
 }
 
 .login__input {
@@ -310,7 +271,7 @@ img {
   background-color: var(--container-color);
   border: 2px solid var(--border-color);
   padding: 1rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   color: var(--text-color);
 }
 
@@ -319,7 +280,7 @@ img {
 }
 
 .login__signup {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .login__signup a {
@@ -339,13 +300,13 @@ img {
   color: #fff;
   font-weight: var(--font-semi-bold);
   padding: 1rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: box-shadow .4s;
+  transition: box-shadow 0.4s;
 }
 
 .login__button:hover {
-  box-shadow: 0 4px 24px hsla(230, 75%, 40%, .4);
+  box-shadow: 0 4px 24px hsla(311, 75%, 46%, 0.4);
 }
 
 /* Show login */
@@ -356,6 +317,42 @@ img {
 
 .show-login .login__form {
   transform: translateY(0);
+}
+
+/*=============== GOOGLE BUTTON STYLING ===============*/
+/* Make sure Google button is within the popup, below login/signup form */
+.login__google {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.login__google-button {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.login__google-button i {
+  margin-right: 10px;
+}
+
+.login__google-button:hover {
+  background-color: #f0f0f0;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
 /*=============== BREAKPOINTS ===============*/
@@ -393,7 +390,7 @@ img {
     height: calc(var(--header-height) + 2rem);
     column-gap: 3rem;
   }
-  .nav__close, 
+  .nav__close,
   .nav__toggle {
     display: none;
   }
