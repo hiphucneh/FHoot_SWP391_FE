@@ -1,7 +1,7 @@
 import React, { state, useState, useEffect } from "react";
 import { Input, notification, Upload, Checkbox, Button, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
-import { info } from "autoprefixer";
+import '../components/CreateQuestion.css';
 
 const CreateQuestion = () => {
     const [answers, setAnswers] = useState([{ id: '0', content: "", isAnswer: false }]);
@@ -30,37 +30,8 @@ const CreateQuestion = () => {
         setAnswers(updatedAnswers);
     };
 
-    const textInput = {
 
-        fontSize: "18px",
-        width: "600px",
 
-        padding: "10px",
-        borderRadius: "10px",
-        border: "1px solid #ccc",
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        color: "black",
-    };
-    const textBoxStyle = {
-        width: "100%",
-        height: "50%",
-    }
-    const answersStyle = {
-        display: "flex",
-        textAlign: "left",
-        fontSize: "18px",
-
-        margin: "10px",
-
-        borderRadius: "10px",
-        border: "1px solid #ccc",
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        color: "black",
-        height: "53px",
-        width: "calc(45% - 20px)"
-    }
     const headerStyle = {
         textAlign: "left", color: "black", width: "600px", margin: "30px",
 
@@ -165,15 +136,7 @@ const CreateQuestion = () => {
         setSavedQuestions(newSavedQuestions);
         console.log("LOG:", newSavedQuestions);
     }
-    const buttonStyle = {
 
-        width: "auto",
-        color: "white",
-        padding: "10px 20px",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-    };
     return (
         <div >
             <div style={{ display: "flex" }}>
@@ -197,6 +160,16 @@ const CreateQuestion = () => {
                                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                                     cursor: "pointer",
                                     color: "black",
+                                    transition: "all 0.3s ease",
+                                }} onMouseEnter={(e) => {
+                                    //-----------------CSS/AI----------------//
+                                    e.target.style.backgroundColor = "#e6f7ff";
+                                    e.target.style.boxShadow = "0 4px 8px rgba(0, 123, 255, 0.2)";
+                                }}
+                                onMouseLeave={(e) => {
+
+                                    e.target.style.backgroundColor = "#ffffff";
+                                    e.target.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
                                 }}
                             >
                                 {`Question ${index + 1}: ${q.content}`}<br />
@@ -219,7 +192,8 @@ const CreateQuestion = () => {
                         <input
                             type="text" onChange={(e) => handleChangeQuestion(question.id, e.target.value)}
                             placeholder="Question"
-                            required style={{ ...textInput, height: "200px", borderRadius: "20px" }}
+                            required
+                            className="text-input"
                             value={question.content}
                         />
                         <h3 style={headerStyle}>Upload File </h3>
@@ -232,14 +206,8 @@ const CreateQuestion = () => {
                         >
                             <Button
                                 icon={<UploadOutlined />}
-                                style={{
-                                    ...textInput,
-                                    height: "70px",
+                                className="text-input"
 
-                                    alignItems: "center",
-                                    justifyContent: "top",
-
-                                }}
                             >
                                 Click to Upload
                             </Button>
@@ -257,34 +225,27 @@ const CreateQuestion = () => {
                                             <Button
                                                 size="small"
                                                 onClick={() => handleDeleteAnswer(answer.id)}
-                                                style={{ ...buttonStyle, backgroundColor: "#f44336" }}>
+                                                className="delete-button"
+                                                style={{ backgroundColor: "red", color: "white" }}>
                                                 Delete
                                             </Button>
                                             <Button
                                                 size="small"
                                                 onClick={() => handleDuplicateAnswer(answer.id)}
-                                                style={{ ...buttonStyle, backgroundColor: "blue" }}>
+                                                className="delete-button"
+                                                style={{ backgroundColor: "Blue", color: "white" }}>
                                                 Duplicate
                                             </Button>
                                         </div>
                                     }
                                 >
-                                    <div style={{ ...answersStyle }}>
+                                    <div className="answer-container">
                                         <input
                                             type="text"
                                             placeholder={`  Answer`}
                                             required
                                             value={answer.content}
-                                            style={{
-                                                width: "70%",
-                                                height: "65%",
-                                                margin: "9px",
-                                                borderRadius: "8px",
-                                                border: "1px solid #ccc",
-                                                color: "black",
-                                                backgroundColor: "#f9f9f9",
-                                                fontSize: "16px",
-                                            }}
+                                            className="input-basic"
                                             onChange={(e) => handleChangeAnswer(answer.id, e.target.value)}
                                         />
                                         <Checkbox
@@ -314,7 +275,7 @@ const CreateQuestion = () => {
                                 marginTop: "20px",
                                 padding: "10px 20px",
                                 borderRadius: "5px",
-                                backgroundColor: "#1890ff", // màu xanh khác với nút Add Answer
+                                backgroundColor: "#1890ff",
                                 color: "white",
                                 border: "none",
                                 cursor: "pointer"
@@ -326,7 +287,7 @@ const CreateQuestion = () => {
                             Save Question
                         </button>
                     </form >        </div >
-            </div>
+            </div >
         </div >
 
     );
