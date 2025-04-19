@@ -1,33 +1,74 @@
-function Login({ show, onClose }) {
+function Login({ show, onClose, onSwitchToRegister }) {
   return (
-    <div className={`login ${show ? 'show-login' : ''}`} id="login">
+    <div className={`login ${show ? "show-login" : ""}`} id="login">
       <form className="login__form">
         <h2 className="login__title">Log In</h2>
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">Email</label>
-            <input type="email" placeholder="Write your email" id="email" className="login__input" />
+            <label htmlFor="email" className="login__label">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Write your email"
+              id="email"
+              className="login__input"
+            />
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">Password</label>
-            <input type="password" placeholder="Enter your password" id="password" className="login__input" />
+            <label htmlFor="password" className="login__label">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              id="password"
+              className="login__input"
+            />
           </div>
         </div>
 
         <div>
           <p className="login__signup">
-            You do not have an account? <a href="#">Sign up</a>
+            You do not have an account?{" "}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onSwitchToRegister();
+              }}
+            >
+              Sign up
+            </a>
           </p>
-          <a href="#" className="login__forgot">You forgot your password</a>
-          <button type="submit" className="login__button">Log In</button>
+          <a href="#" className="login__forgot">
+            You forgot your password
+          </a>
+          <button type="submit" className="login__button">
+            Log In
+          </button>
+        </div>
+        {/* Google Sign-In Button */}
+        <div className="login__google">
+          <button className="login__google-button">
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google logo"
+              className="google-icon"
+            />
+            Continue with Google
+          </button>
         </div>
       </form>
-
-      <i className="ri-close-line login__close" id="login-close" onClick={onClose}></i>
+      <i
+        className="ri-close-line login__close"
+        id="login-close"
+        onClick={onClose}
+      ></i>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
