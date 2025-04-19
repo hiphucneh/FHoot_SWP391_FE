@@ -62,7 +62,7 @@ const CreateQuestion = () => {
         width: "calc(45% - 20px)"
     }
     const headerStyle = {
-        textAlign: "left", color: "black", width: "600px", margin: "0px",
+        textAlign: "left", color: "black", width: "600px", margin: "30px",
 
 
     }
@@ -175,7 +175,7 @@ const CreateQuestion = () => {
         cursor: "pointer",
     };
     return (
-        <div>
+        <div >
             <div style={{ display: "flex" }}>
                 <div style={{
                     width: "300px",
@@ -272,12 +272,12 @@ const CreateQuestion = () => {
                                     <div style={{ ...answersStyle }}>
                                         <input
                                             type="text"
-                                            placeholder={`Answer`}
+                                            placeholder={`  Answer`}
                                             required
                                             value={answer.content}
                                             style={{
                                                 width: "70%",
-                                                height: "18%",
+                                                height: "65%",
                                                 margin: "9px",
                                                 borderRadius: "8px",
                                                 border: "1px solid #ccc",
