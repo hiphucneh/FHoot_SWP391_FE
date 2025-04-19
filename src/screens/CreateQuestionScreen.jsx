@@ -84,12 +84,24 @@ const CreateQuestion = () => {
 
         const isExist = savedQuestions.some(q => q.id === updatedQuestion.id);
         if (updatedQuestion.content === "") {
-            alert("Please enter a question content.");
+            notification.error({
+                message: 'Lỗi lưu câu hỏi',
+                description: 'Vui lòng nhập nội dung câu hỏi.',
+                placement: 'topRight'
+            });
 
         } else if (updatedQuestion.answers.length < 2) {
-            alert("Please enter at least two answer.");
+            notification.error({
+                message: 'Lỗi lưu câu hỏi',
+                description: 'Vui lòng nhập ít nhất 2 câu trả lời.',
+                placement: 'topRight'
+            });
         } else if (updatedQuestion.answers.some(answer => answer.isAnswer === true) === false) {
-            alert("Please select at least one answer as the correct answer.");
+            notification.error({
+                message: 'Lỗi lưu câu hỏi',
+                description: 'Vui lòng nhập 1 đáp án.',
+                placement: 'topRight'
+            });
         }
         if (isExist) {
 
