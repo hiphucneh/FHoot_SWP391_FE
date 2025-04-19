@@ -1,5 +1,5 @@
 import React, { state, useState, useEffect } from "react";
-import { Input, Upload, Checkbox, Button, Popover } from "antd";
+import { Input, notification, Upload, Checkbox, Button, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import { info } from "autoprefixer";
 
@@ -77,15 +77,30 @@ const CreateQuestion = () => {
         setAnswers([...answers, newAnswer]);
     };
     const handleSaveQuestion = () => {
-
-        const newQuestion = {
+        const updatedQuestion = {
             ...question,
             answers: answers,
-
         };
-        console.log("LOG:", newQuestion);
-        setSavedQuestions([...savedQuestions, newQuestion]);
-    }
+
+        const isExist = savedQuestions.some(q => q.id === updatedQuestion.id);
+        if (updatedQuestion.content === "") {
+            alert("Please enter a question content.");
+
+        } else if (updatedQuestion.answers.length < 2) {
+            alert("Please enter at least two answer.");
+        } else if (updatedQuestion.answers.some(answer => answer.isAnswer === true) === false) {
+            alert("Please select at least one answer as the correct answer.");
+        }
+        if (isExist) {
+
+            setSavedQuestions(savedQuestions.map(q => q.id === updatedQuestion.id ? updatedQuestion : q));
+        } else {
+
+            setSavedQuestions([...savedQuestions, updatedQuestion]);
+        }
+
+        console.log("LOG:", updatedQuestion);
+    };
     const handleDeleteAnswer = (id) => {
         const newAnswers = answers.filter((answer) => answer.id !== id);
         setAnswers(newAnswers);
@@ -121,6 +136,23 @@ const CreateQuestion = () => {
         });
         setAnswers(q.answers);
     };
+    const handleAddQuestion = () => {
+        const newQuestion = {
+            id: Date.now(),
+            content: "",
+            file: null,
+            answers: [],
+        };
+
+        setSavedQuestions([...savedQuestions, newQuestion]);
+        console.log("LOG:", newQuestion);
+        console.log("LOG:", savedQuestions);
+    }
+    const handleDeleteQuestion = (id) => {
+        const newSavedQuestions = savedQuestions.filter((question) => question.id !== id);
+        setSavedQuestions(newSavedQuestions);
+        console.log("LOG:", newSavedQuestions);
+    }
     const buttonStyle = {
 
         width: "auto",
@@ -138,7 +170,7 @@ const CreateQuestion = () => {
                     backgroundColor: "#f7f7f7",
                     padding: "20px",
                     borderRadius: "20px",
-                    margin: "20px"
+                    marginTop: "100px"
                 }}>
                     <h2 style={{ color: "black" }}>Saved Questions</h2>
 
@@ -155,9 +187,15 @@ const CreateQuestion = () => {
                                     color: "black",
                                 }}
                             >
-                                {`Question ${index + 1}: ${q.content}`}
+                                {`Question ${index + 1}: ${q.content}`}<br />
+                                <Button
+                                    size="small"
+                                    style={{ backgroundColor: "red", color: "white", marginLeft: "10px" }}
+                                    onClick={() => handleDeleteQuestion(q.id)}
+                                >Delete</Button>
                             </div>
                         ))}
+                        <button onClick={handleAddQuestion}>+ More Question</button>
                     </div>
                 </div>
                 < div style={{ margin: "100px", padding: "50px", borderRadius: "30px", backgroundColor: "#f0f2f5" }}>
