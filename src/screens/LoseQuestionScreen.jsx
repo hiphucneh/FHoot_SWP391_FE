@@ -1,8 +1,25 @@
+import { useEffect, useState } from "react";
+
 function LoseQuestionScreen() {
-    return (
-      <>
-        <style>
-          {`
+  const [countdown, setCountdown] = useState(10);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    if (countdown === 0) {
+      clearInterval(timer);
+      window.location.href = "/";
+    }
+
+    return () => clearInterval(timer);
+  }, [countdown]);
+
+  return (
+    <>
+      <style>
+        {`
           *, *::after, *::before {
             box-sizing: border-box;
           }
@@ -271,7 +288,20 @@ function LoseQuestionScreen() {
             line-height: 1;
             margin: 0;
           }
-  
+
+          .countdown-bar {
+  position: fixed;
+  top: 0;
+  height: 1rem;
+  background-color: #FFD600;
+  z-index: 999;
+  transition: width 1s linear;
+right: 0;
+  left: auto;
+  transform-origin: right;
+}
+
+          
           @keyframes btnAnim {
             0%, 48% {
               transform: translateX(-10rem) rotate(95deg);
@@ -364,29 +394,34 @@ function LoseQuestionScreen() {
             }
           }
           `}
-        </style>
-  
-        <div className="cow">
-          <div className="head">
-            <div className="face"></div>
-          </div>
-          <div className="leg b l"></div>
-          <div className="leg b r"></div>
-          <div className="leg f l"></div>
-          <div className="leg f r"></div>
-          <div className="tail"></div>
+      </style>
+
+      <div className="cow">
+        <div className="head">
+          <div className="face"></div>
         </div>
-  
-        <div className="well">
-          <a className="home-btn" href="/">Go Home</a>
-        </div>
-  
-        <div className="text-box">
-          <p>Sorry, You chose the wrong answer...</p>
-        </div>
-      </>
-    )
-  }
-  
-  export default LoseQuestionScreen
-  
+        <div className="leg b l"></div>
+        <div className="leg b r"></div>
+        <div className="leg f l"></div>
+        <div className="leg f r"></div>
+        <div className="tail"></div>
+      </div>
+
+      <div className="well">
+        <a className="home-btn" href="/">
+          Next Question
+        </a>
+      </div>
+
+      <div className="text-box">
+        <p>Sorry, You chose the wrong answer...</p>
+      </div>
+      <div
+        className="countdown-bar"
+        style={{ width: `${(countdown / 10) * 100}%` }}
+      ></div>
+    </>
+  );
+}
+
+export default LoseQuestionScreen;
