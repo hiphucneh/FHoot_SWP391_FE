@@ -7,6 +7,7 @@ import QuestionScreen from "./screens/QuestionScreen";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CreateKahoot from "./screens/CreateKahootScreen";
 import CreateQuestion from "./screens/CreateQuestionScreen";
+import LeaderBoardScreen from "./screens/LeaderBoardScreen";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/createQ" element={<CreateQuestion />} />
           <Route path="/" element={<WaitRoomScreen />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/leaderBoard" element={<LeaderBoardScreen />} />
         </Routes>
       </Router>
     </div>

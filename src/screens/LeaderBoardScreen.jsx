@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Table, Avatar, Badge } from "antd";
 const LeaderBoardScreen = () => {
     const testData = [
         { id: 1, name: 'Player 1', score: 1500 },
@@ -11,7 +11,39 @@ const LeaderBoardScreen = () => {
 
     return (
 
-        <div>Hello</div>
+        <div style={{
+
+            textAlign: "center",
+            display: "flex",
+            justifyContent: 'center',
+            flexDirection: "column",
+            alignItems: "center",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)"
+
+        }}>
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "50px",
+            }}>
+                <h2>🏆 Leaderboard 🏆</h2>
+                <Table
+                    dataSource={testData}
+                    rowKey="id"
+                    pagination={false}
+                    bordered
+                    style={{ width: "400px" }}
+                >
+                    <Table.Column title="Name" dataIndex="name" key="name" />
+                    <Table.Column title="Score" dataIndex="score" key="score" />
+                </Table>
+            </div>
+
+        </div>
     );
 };
 
