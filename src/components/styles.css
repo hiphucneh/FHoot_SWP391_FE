@@ -319,6 +319,48 @@ img {
   transform: translateY(0);
 }
 
+.account-type-popup {
+  padding: 2rem;
+  text-align: center;
+}
+
+.account-type-options {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.account-card {
+  background-color: #f0f0f0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  flex: 1;
+  max-width: 200px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.account-card:hover {
+  transform: scale(1.05);
+}
+
+.icon-circle {
+  background-color: #333;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+
 /*=============== GOOGLE BUTTON STYLING ===============*/
 /* Make sure Google button is within the popup, below login/signup form */
 .login__google {

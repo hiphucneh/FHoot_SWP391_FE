@@ -1,4 +1,7 @@
-function Login({ show, onClose, onSwitchToRegister }) {
+import './styles.css';
+import 'remixicon/fonts/remixicon.css';
+
+function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
   return (
     <div className={`login ${show ? "show-login" : ""}`} id="login">
       <form className="login__form">
@@ -6,53 +9,49 @@ function Login({ show, onClose, onSwitchToRegister }) {
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">
-              Email
-            </label>
+            <label htmlFor="email" className="login__label">Email</label>
             <input
               type="email"
-              placeholder="Write your email"
               id="email"
               className="login__input"
+              placeholder="Write your email"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">
-              Password
-            </label>
+            <label htmlFor="password" className="login__label">Password</label>
             <input
               type="password"
-              placeholder="Enter your password"
               id="password"
               className="login__input"
+              placeholder="Enter your password"
             />
           </div>
         </div>
 
         <div>
           <p className="login__signup">
-            You do not have an account?{" "}
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onSwitchToRegister();
-              }}
-            >
+            Don't have an account?{" "}
+            <a href="#" onClick={(e) => {
+              e.preventDefault();
+              onSwitchToRegister();
+            }}>
               Sign up
             </a>
           </p>
-          <a href="#" className="login__forgot">
-            You forgot your password
+          <a href="#" className="login__forgot" onClick={(e) => {
+            e.preventDefault();
+            onSwitchToForgot();
+          }}>
+            Forgot your password?
           </a>
           <button type="submit" className="login__button">
             Log In
           </button>
         </div>
-        {/* Google Sign-In Button */}
+
         <div className="login__google">
-          <button className="login__google-button">
+          <button className="login__google-button" type="button">
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google logo"
@@ -62,9 +61,9 @@ function Login({ show, onClose, onSwitchToRegister }) {
           </button>
         </div>
       </form>
+
       <i
         className="ri-close-line login__close"
-        id="login-close"
         onClick={onClose}
       ></i>
     </div>
