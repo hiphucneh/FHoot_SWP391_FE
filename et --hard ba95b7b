@@ -1,0 +1,67 @@
+[33m07820f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: checkout: moving from Hung to main
+[33m315664e[m[33m ([m[1;31morigin/Hung[m[33m, [m[1;32mHung[m[33m)[m HEAD@{1}: checkout: moving from main to Hung
+[33m07820f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: commit (merge): main
+[33mba95b7b[m HEAD@{3}: checkout: moving from Hung to main
+[33m315664e[m[33m ([m[1;31morigin/Hung[m[33m, [m[1;32mHung[m[33m)[m HEAD@{4}: checkout: moving from main to Hung
+[33mba95b7b[m HEAD@{5}: checkout: moving from Hung to main
+[33m315664e[m[33m ([m[1;31morigin/Hung[m[33m, [m[1;32mHung[m[33m)[m HEAD@{6}: commit: Table,demo LeaderBoard
+[33m1a0d94e[m HEAD@{7}: commit: clean CreateK,create LeaderBoard
+[33m8c90a0b[m HEAD@{8}: commit: decored layout
+[33mbb588a7[m HEAD@{9}: checkout: moving from main to Hung
+[33mba95b7b[m HEAD@{10}: commit: delete
+[33m2c76035[m HEAD@{11}: commit: cant upload
+[33m815a8c6[m HEAD@{12}: checkout: moving from Hung to main
+[33mbb588a7[m HEAD@{13}: commit: Littel change after upcode
+[33me6ee407[m HEAD@{14}: commit (merge): oke
+[33med1cb05[m HEAD@{15}: checkout: moving from main to Hung
+[33m815a8c6[m HEAD@{16}: commit (merge): Resolve merge conflicts and finish merge
+[33ma196cd7[m HEAD@{17}: checkout: moving from Hung to main
+[33med1cb05[m HEAD@{18}: rebase (finish): returning to refs/heads/Hung
+[33med1cb05[m HEAD@{19}: rebase (pick): app.jxs
+[33ma16f368[m HEAD@{20}: rebase (start): checkout refs/remotes/origin/Hung
+[33md546e00[m HEAD@{21}: rebase (abort): returning to refs/heads/Hung
+[33m9cf4ac6[m HEAD@{22}: rebase (continue): Update App.jsx and CreateKahootScreen.jsx
+[33m4a6a16b[m HEAD@{23}: pull origin main --rebase (start): checkout 4a6a16bc73dd5e64421d8727a37b42fdc37ee161
+[33md546e00[m HEAD@{24}: commit: app.jxs
+[33mad59874[m HEAD@{25}: commit: sss
+[33m9140f6b[m HEAD@{26}: rebase (abort): returning to refs/heads/Hung
+[33m9140f6b[m HEAD@{27}: rebase (abort): returning to refs/heads/Hung
+[33ma16f368[m HEAD@{28}: reset: moving to origin/Hung
+[33ma16f368[m HEAD@{29}: checkout: moving from main to Hung
+[33ma196cd7[m HEAD@{30}: rebase (pick): Add question and answer management functionality with basic validation
+[33m515982b[m HEAD@{31}: rebase (pick): Not Handle Error yet,basicly done
+[33m9daac4a[m HEAD@{32}: rebase (pick): Question Lgic
+[33m11eeb0f[m HEAD@{33}: rebase (pick): Update handleSaveQuestion to include answers in question and reset form after saving
+[33m1dd898a[m HEAD@{34}: rebase (pick): Update CreateQuestionScreen.jsx: Add sidebar for saved questions and Save Question button
+[33mac78f62[m HEAD@{35}: rebase (pick): AI Assis, project got bunch of bugs
+[33mca3b307[m HEAD@{36}: rebase (pick): Update CreateQuestionScreen.jsx: Add duplicate and delete answer functionality
+[33m25ff007[m HEAD@{37}: rebase (pick): Update CreateQuestionScreen.jsx: Add upload functionality and answer management
+[33m961e14f[m HEAD@{38}: rebase (pick): Update CreateQuestionScreen.jsx: Add styles and handle Add Answer functionality
+[33m97b496b[m HEAD@{39}: rebase (pick): Update CreateQuestionScreen.jsx: Add input styles and layout for question creation
+[33ma7dbb10[m HEAD@{40}: rebase (pick): Update CreateQuestionScreen.jsx: Add input styles and structure
+[33m046d6c3[m HEAD@{41}: rebase (continue): Update App.jsx, CreateKahootScreen.jsx, and add CreateQuestionScreen.jsx
+[33mf6669f3[m HEAD@{42}: checkout: moving from Hung to main
+[33ma16f368[m HEAD@{43}: commit: Update App.jsx: Add routes for CreateKahoot and CreateQuestion screens
+[33m9140f6b[m HEAD@{44}: checkout: moving from main to Hung
+[33mf6669f3[m HEAD@{45}: commit: Commit các thay đổi trước khi chuyển branch
+[33m6c05f51[m HEAD@{46}: checkout: moving from 353ae679a8cc43fa4080080585d6826b575310c5 to main
+[33m353ae67[m HEAD@{47}: commit: Save changes before checkout main
+[33mc4fbdc6[m HEAD@{48}: commit: Update QuestionScreen with answer selection and timer functionality
+[33m4d59363[m HEAD@{49}: pull origin main --rebase (start): checkout 4d59363a1718d8b377c9f8bb30cc20a634315386
+[33m9140f6b[m HEAD@{50}: commit (merge): Merge branch 'main' of https://github.com/PhucPhuc1111/Kahoot-FE into Hung
+[33ma5015c6[m HEAD@{51}: commit: Add question and answer management functionality with basic validation
+[33mbfca599[m HEAD@{52}: commit: Not Handle Error yet,basicly done
+[33m92dc626[m HEAD@{53}: commit: Question Lgic
+[33maa5426e[m HEAD@{54}: commit: Update handleSaveQuestion to include answers in question and reset form after saving
+[33m0aa7648[m HEAD@{55}: commit: Update CreateQuestionScreen.jsx: Add sidebar for saved questions and Save Question button
+[33mac7c46f[m HEAD@{56}: commit: AI Assis, project got bunch of bugs
+[33m7e8989d[m HEAD@{57}: commit: Update CreateQuestionScreen.jsx: Add duplicate and delete answer functionality
+[33ma07dda2[m HEAD@{58}: commit: Update CreateQuestionScreen.jsx: Add upload functionality and answer management
+[33mdc227e8[m HEAD@{59}: commit: Update CreateQuestionScreen.jsx: Add styles and handle Add Answer functionality
+[33mb0bfae2[m HEAD@{60}: commit: Update CreateQuestionScreen.jsx: Add input styles and layout for question creation
+[33m7bc6009[m HEAD@{61}: commit: Update CreateQuestionScreen.jsx: Add input styles and structure
+[33m8429211[m HEAD@{62}: commit: Update App.jsx, CreateKahootScreen.jsx, and add CreateQuestionScreen.jsx
+[33mc3f49f6[m HEAD@{63}: commit: Update App.jsx and CreateKahootScreen.jsx
+[33m6c05f51[m HEAD@{64}: merge origin/main: Fast-forward
+[33m41dbffc[m HEAD@{65}: checkout: moving from main to Hung
+[33m6c05f51[m HEAD@{66}: clone: from https://github.com/PhucPhuc1111/Kahoot-FE.git
