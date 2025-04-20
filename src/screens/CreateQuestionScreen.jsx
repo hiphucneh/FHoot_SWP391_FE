@@ -153,6 +153,7 @@ const CreateQuestion = () => {
                         {savedQuestions.map((q, index) => (
                             <div key={q.id}
                                 onClick={() => handleSelectQuestion(q)}
+                                className="custom-button"
                                 style={{
                                     backgroundColor: "#ffffff",
                                     padding: "10px",
@@ -161,26 +162,17 @@ const CreateQuestion = () => {
                                     cursor: "pointer",
                                     color: "black",
                                     transition: "all 0.3s ease",
-                                }} onMouseEnter={(e) => {
-                                    //-----------------CSS/AI----------------//
-                                    e.target.style.backgroundColor = "#e6f7ff";
-                                    e.target.style.boxShadow = "0 4px 8px rgba(0, 123, 255, 0.2)";
-                                }}
-                                onMouseLeave={(e) => {
-
-                                    e.target.style.backgroundColor = "#ffffff";
-                                    e.target.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
-                                }}
-                            >
+                                }}>
                                 {`Question ${index + 1}: ${q.content}`}<br />
                                 <Button
+                                    className="custom-button"
                                     size="small"
                                     style={{ backgroundColor: "red", color: "white", marginLeft: "10px" }}
                                     onClick={() => handleDeleteQuestion(q.id)}
                                 >Delete</Button>
                             </div>
                         ))}
-                        <button onClick={handleAddQuestion}>+ More Question</button>
+                        <button className="custom-button" onClick={handleAddQuestion}>+ More Question</button>
                     </div>
                 </div>
                 < div style={{ margin: "100px", padding: "50px", borderRadius: "30px", backgroundColor: "#f0f2f5" }}>
@@ -205,6 +197,7 @@ const CreateQuestion = () => {
                             style={{ width: "100%" }}
                         >
                             <Button
+
                                 icon={<UploadOutlined />}
                                 className="text-input"
 
@@ -225,14 +218,14 @@ const CreateQuestion = () => {
                                             <Button
                                                 size="small"
                                                 onClick={() => handleDeleteAnswer(answer.id)}
-                                                className="delete-button"
+                                                className="custom-button"
                                                 style={{ backgroundColor: "red", color: "white" }}>
                                                 Delete
                                             </Button>
                                             <Button
                                                 size="small"
                                                 onClick={() => handleDuplicateAnswer(answer.id)}
-                                                className="delete-button"
+                                                className="custom-button"
                                                 style={{ backgroundColor: "Blue", color: "white" }}>
                                                 Duplicate
                                             </Button>
@@ -260,6 +253,7 @@ const CreateQuestion = () => {
 
                         </div>
                         <button type="button" onClick={handleAddAnswer}
+                            className="custom-button"
                             style={{
                                 marginTop: "20px",
                                 padding: "10px 20px",
@@ -268,9 +262,11 @@ const CreateQuestion = () => {
                                 color: "white",
                                 border: "none",
                                 cursor: "pointer"
+
                             }}>Add Answer</button>
                         <button
                             type="button"
+                            className="custom-button"
                             style={{
                                 marginTop: "20px",
                                 padding: "10px 20px",
@@ -286,6 +282,7 @@ const CreateQuestion = () => {
                         >
                             Save Question
                         </button>
+
                     </form >        </div >
             </div >
         </div >

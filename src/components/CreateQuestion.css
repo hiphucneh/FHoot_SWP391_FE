@@ -10,6 +10,26 @@
     height: 70px;
 }
 
+.custom-button {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    /* hiệu ứng mượt */
+    cursor: pointer;
+}
+
+.custom-button:hover {
+    background-color: #40a9ff;
+    /* màu sáng hơn khi hover */
+    transform: scale(1.05);
+    /* phóng to nhẹ */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* đổ bóng */
+}
+
 .input-basic {
     width: 70%;
     height: 65%;
