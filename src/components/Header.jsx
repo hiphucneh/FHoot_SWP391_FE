@@ -1,11 +1,14 @@
 import { useState } from "react";
 import Login from "./Login";
-import Register from "./Register"; // Import thêm
+import Register from "./Register";
+import ForgotPass from "./ForgotPass";
+import './styles.css';
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false); // Thêm state mới
+  const [showRegister, setShowRegister] = useState(false);
+  const [showForgotPass, setShowForgotPass] = useState(false); // ✅ thêm state bị thiếu
 
   return (
     <>
@@ -41,7 +44,10 @@ function Header() {
               href="#"
               className="link"
               id="sign-up"
-              onClick={() => setShowLogin(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowLogin(true);
+              }}
             >
               <i className="fa-regular fa-envelope"></i> Create a Kahoot!
             </a>
@@ -57,6 +63,10 @@ function Header() {
           setShowLogin(false);
           setShowRegister(true);
         }}
+        onSwitchToForgot={() => {
+          setShowLogin(false);
+          setShowForgotPass(true);
+        }}
       />
 
       {/* Register Overlay */}
@@ -65,6 +75,16 @@ function Header() {
         onClose={() => setShowRegister(false)}
         onSwitchToLogin={() => {
           setShowRegister(false);
+          setShowLogin(true);
+        }}
+      />
+
+      {/* Forgot Password Overlay */}
+      <ForgotPass
+        show={showForgotPass}
+        onClose={() => setShowForgotPass(false)}
+        onSwitchToLogin={() => {
+          setShowForgotPass(false);
           setShowLogin(true);
         }}
       />
