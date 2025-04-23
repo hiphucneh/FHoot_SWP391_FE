@@ -454,3 +454,31 @@ img {
     margin-inline: auto;
   }
 }
+
+
+.login__resend {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.login__button.resend {
+  background-color: #e0e0e0;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.login__button.resend.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.login__error {
+  color: red;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
