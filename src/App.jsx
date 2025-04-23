@@ -2,8 +2,8 @@ import React from "react";
 import Login from "./components/Login";
 
 import Header from "./components/Header"; // Import Header component
-import WaitRoomScreen from "./screens/WaitRoomScreen";
-import QuestionScreen from "./screens/QuestionScreen";
+import WaitRoomScreen from "./screens/WaitingRoomScreen";
+// import QuestionScreen from "./screens/QuestionScreen";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CreateKahoot from "./screens/CreateKahootScreen";
 import CreateQuestion from "./screens/CreateQuestionScreen";
