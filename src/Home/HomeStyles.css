@@ -1,0 +1,139 @@
+.home-menu-wrapper {
+  max-width: 100ww; /* hoặc 1000px, tuỳ thiết kế bạn muốn */
+  box-sizing: border-box;
+  padding: 2rem;
+}
+
+.home-menu {
+  width: 100ww;
+}
+
+.home-menu {
+    padding: 2rem;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fafafa;
+  }
+  
+  .home-menu__top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .home-menu__join-box {
+    flex: 3;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  
+  .join-input {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #ccc;
+  }
+  
+  .join-button {
+    background: #7e57c2;
+    color: white;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .home-menu__qbit-box {
+    flex: 1;
+    background: #e8d5fb;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Qbit Box Layout */
+.home-menu__qbit-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* Login Button – Simple Yellow Style */
+.login-button {
+  color: rgb(94, 186, 29);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #cdefab;
+  transform: scale(1.05);
+}
+
+/* Sign Up Button – Cartoon Style */
+.sign-up-button {
+  background-color: #e8d5fb; /* Brighter yellow */
+  color: rgb(16, 10, 10);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+
+  .home-menu__features {
+    background: #fff8dc;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-top: 2rem;
+  }
+  
+  .features-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #ff9800;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .feature-card {
+    background-color: #fff3b0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+}
