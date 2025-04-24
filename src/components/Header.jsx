@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import ForgotPass from "./ForgotPass";
@@ -9,6 +10,19 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false); // ✅ thêm state bị thiếu
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token); // Kiểm tra token trong localStorage
+  }, []);
+
+  const handleLogout = () => {
+    window.location.reload();
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+  };
 
   return (
     <>
@@ -40,17 +54,40 @@ function Header() {
           </div>
 
           <div className="nav__actions">
-            <a
-              href="#"
-              className="link"
-              id="sign-up"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowLogin(true);
-              }}
-            >
-              <i className="fa-regular fa-envelope"></i> Create a Kahoot!
-            </a>
+            {!isLoggedIn ? (
+              <a
+                href="#"
+                className="link"
+                id="sign-up"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowLogin(true); // Hiển thị login modal
+                }}
+              >
+                <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+              </a>
+            ) : (
+              <>
+                <a
+                  href="#"
+                  className="link"
+                  id="sign-up"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/createK'); // Chuyển sang /createK nếu đã đăng nhập
+                  }}
+                >
+                  <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+                </a>
+
+                <button
+                  className="logout-button"
+                  onClick={handleLogout} // Logout
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         </nav>
       </header>

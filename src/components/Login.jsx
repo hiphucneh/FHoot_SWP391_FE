@@ -1,11 +1,13 @@
 import './styles.css';
 import 'remixicon/fonts/remixicon.css';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (show) {
@@ -37,8 +39,9 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
       const data = await response.json();
 
       if (response.ok && data.statusCode === 200) {
-        alert('Login successful!');
-        console.log(data);
+        const token = data.data.token; // hoặc data.token nếu token ở ngoài
+  localStorage.setItem('token', token);
+  window.location.href = '/Home';
       } else {
         setErrorMessage('Invalid Email or Password');
       }

@@ -9,14 +9,14 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 5);
+    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
     setOtp(value);
     setMessage("");
   };
 
   const handleVerify = async () => {
-    if (otp.length !== 5) {
-      setMessage("Please enter a 5-digit OTP");
+    if (otp.length !== 6) {
+      setMessage("Please enter a 6-digit OTP");
       return;
     }
 
@@ -83,7 +83,7 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
     <div className="login show-login" id="otp-popup">
       <form className="login__form">
         <h2 className="login__title">Enter OTP</h2>
-        <p className="login__description">We’ve sent a 5-digit code to {email}</p>
+        <p className="login__description">We’ve sent a 6-digit code to {email}</p>
 
         <div className="login__group">
           <div>
@@ -95,7 +95,7 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
               placeholder="_____"
               value={otp}
               onChange={handleChange}
-              maxLength="5"
+              maxLength="6"
             />
           </div>
         </div>

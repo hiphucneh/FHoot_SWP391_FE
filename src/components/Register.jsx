@@ -68,7 +68,7 @@ function Register({ show, onClose, onSwitchToLogin }) {
 
       {accountType !== null && !showOTP && (
         <form className="login__form" onSubmit={handleRegister}>
-          <h2 className="login__title">Sign Up as {accountType}</h2>
+          <h2 className="login__title">Sign Up by Email</h2>
 
           <div className="login__group">
             <div>
