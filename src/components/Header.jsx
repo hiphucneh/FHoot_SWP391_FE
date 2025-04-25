@@ -12,27 +12,16 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [showAccount, setShowAccount] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
 
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        setUser(parsed);
-      } catch {}
-    }
-
     const handleClickOutside = (e) => {
       if (!e.target.closest(".user-dropdown")) {
-        setShowDropdown(false);
+        // Nếu muốn reset dropdown gì đó, nhưng giờ đã bỏ dropdown
       }
     };
     window.addEventListener("click", handleClickOutside);
@@ -43,7 +32,6 @@ function Header() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setIsLoggedIn(false);
-    setUser(null);
     window.location.reload();
   };
 
@@ -97,32 +85,6 @@ function Header() {
             >
               <i className="fa-regular fa-envelope"></i> Create a Kahoot!
             </a>
-
-            {/* User Dropdown */}
-            {isLoggedIn && (
-              <div className="user-dropdown">
-                <img
-                  src={
-                    user?.avatar ||
-                    `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || "guest"}`
-                  }
-                  className="user-icon-img"
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  alt="user avatar"
-                />
-                {showDropdown && (
-                  <div className="dropdown-menu">
-                    <div className="dropdown-item" onClick={() => setShowAccount(true)}>
-                      👤 Account
-                    </div>
-                    <div className="dropdown-item">⚙️ Setting</div>
-                    <div className="dropdown-item logout" onClick={handleLogout}>
-                      🚪 Log Out
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </nav>
       </header>
@@ -159,11 +121,11 @@ function Header() {
         }}
       />
 
-      {/* Account Popup */}
+      {/* Account Popup - bạn có thể giữ nếu sau này cần */}
       <AccountScreen
-        show={showAccount}
-        onClose={() => setShowAccount(false)}
-        setUser={setUser} // ✅ Đồng bộ avatar sau khi cập nhật
+        show={false}
+        onClose={() => {}}
+        setUser={() => {}}
       />
     </>
   );
