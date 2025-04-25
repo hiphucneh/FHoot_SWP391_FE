@@ -1,0 +1,138 @@
+.account-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .account-modal {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    animation: fadeIn 0.25s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .close-btn {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .account-avatar-section {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .account-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+  }
+  
+  .camera-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #eee;
+    border-radius: 50%;
+    padding: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .user-name {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .account-info {
+    font-size: 14px;
+    padding: 0 10px;
+  }
+  
+  .info-item {
+    margin-bottom: 10px;
+  }
+  
+  .update-button {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    animation: fadein 0.3s ease, fadeout 0.3s ease 2.7s;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeout {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(20px); }
+  }
+  
+  /* Extra styling input, textarea, select */
+  .account-info input,
+  .account-info textarea,
+  .account-info select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .account-info label {
+    font-weight: 500;
+    color: #444;
+  }
+  

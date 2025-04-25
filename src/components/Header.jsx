@@ -3,55 +3,73 @@ import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import ForgotPass from "./ForgotPass";
-import './styles.css';
-import logo from '../assets/Kahoot_logo.png'; 
-
+import AccountScreen from "../AccountSetting/AccountScreen.jsx";
+import "./styles.css";
+import logo from "../assets/Kahoot_logo.png";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [showForgotPass, setShowForgotPass] = useState(false); // ✅ thêm state bị thiếu
+  const [showForgotPass, setShowForgotPass] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token); // Kiểm tra token trong localStorage
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+      } catch {}
+    }
+
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".user-dropdown")) {
+        setShowDropdown(false);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
-    window.location.reload();
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
   };
 
   return (
     <>
       <header className="header" id="header">
         <nav className="nav container">
-        <div className="nav__logo" 
-     onClick={() => {
-       navigate('/');
-       window.location.href = "/Home";
-     }}
-     style={{ cursor: 'pointer' }}
->
-  <img src={logo} alt="Kahoot Logo" className="logo-image" />
-</div>
-
+          {/* Logo */}
           <div
-            className={`nav__menu ${showMenu ? "show-menu" : ""}`}
-            id="nav-menu"
+            className="nav__logo"
+            onClick={() => {
+              navigate("/");
+              window.location.href = "/Home";
+            }}
+            style={{ cursor: "pointer" }}
           >
+            <img src={logo} alt="Kahoot Logo" className="logo-image" />
+          </div>
+
+          {/* Mobile menu */}
+          <div className={`nav__menu ${showMenu ? "show-menu" : ""}`} id="nav-menu">
             <ul className="nav__list">
               <li className="nav__item">
-                <a href="#" className="nav__link">
-                  Join a game
-                </a>
+                <a href="#" className="nav__link">Join a game</a>
               </li>
             </ul>
-
             <div
               className="nav__close"
               id="nav-close"
@@ -61,46 +79,55 @@ function Header() {
             </div>
           </div>
 
+          {/* Actions */}
           <div className="nav__actions">
-            {!isLoggedIn ? (
-              <a
-                href="#"
-                className="link"
-                id="sign-up"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowLogin(true); // Hiển thị login modal
-                }}
-              >
-                <i className="fa-regular fa-envelope"></i> Create a Kahoot!
-              </a>
-            ) : (
-              <>
-                <a
-                  href="#"
-                  className="link"
-                  id="sign-up"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/createK'); // Chuyển sang /createK nếu đã đăng nhập
-                  }}
-                >
-                  <i className="fa-regular fa-envelope"></i> Create a Kahoot!
-                </a>
+            {/* Create a Kahoot button */}
+            <a
+              href="#"
+              className="link"
+              id="sign-up"
+              onClick={(e) => {
+                e.preventDefault();
+                if (isLoggedIn) {
+                  navigate("/createK");
+                } else {
+                  setShowLogin(true);
+                }
+              }}
+            >
+              <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+            </a>
 
-                <button
-                  className="logout-button"
-                  onClick={handleLogout} // Logout
-                >
-                  Logout
-                </button>
-              </>
+            {/* User Dropdown */}
+            {isLoggedIn && (
+              <div className="user-dropdown">
+                <img
+                  src={
+                    user?.avatar ||
+                    `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || "guest"}`
+                  }
+                  className="user-icon-img"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  alt="user avatar"
+                />
+                {showDropdown && (
+                  <div className="dropdown-menu">
+                    <div className="dropdown-item" onClick={() => setShowAccount(true)}>
+                      👤 Account
+                    </div>
+                    <div className="dropdown-item">⚙️ Setting</div>
+                    <div className="dropdown-item logout" onClick={handleLogout}>
+                      🚪 Log Out
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </nav>
       </header>
 
-      {/* Login Overlay */}
+      {/* Popups */}
       <Login
         show={showLogin}
         onClose={() => setShowLogin(false)}
@@ -114,7 +141,6 @@ function Header() {
         }}
       />
 
-      {/* Register Overlay */}
       <Register
         show={showRegister}
         onClose={() => setShowRegister(false)}
@@ -124,7 +150,6 @@ function Header() {
         }}
       />
 
-      {/* Forgot Password Overlay */}
       <ForgotPass
         show={showForgotPass}
         onClose={() => setShowForgotPass(false)}
@@ -132,6 +157,13 @@ function Header() {
           setShowForgotPass(false);
           setShowLogin(true);
         }}
+      />
+
+      {/* Account Popup */}
+      <AccountScreen
+        show={showAccount}
+        onClose={() => setShowAccount(false)}
+        setUser={setUser} // ✅ Đồng bộ avatar sau khi cập nhật
       />
     </>
   );
