@@ -1,16 +1,53 @@
 import { useEffect, useState } from "react";
 import './styles.css';
 import 'remixicon/fonts/remixicon.css';
+import OTPpopup from './OTPpopup';
 
 function Register({ show, onClose, onSwitchToLogin }) {
   const [accountType, setAccountType] = useState(null);
+  const [showOTP, setShowOTP] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Khi form bị đóng (show = false), reset lại accountType
   useEffect(() => {
     if (!show) {
       setAccountType(null);
+      setShowOTP(false);
+      setFormData({ name: "", email: "", password: "" });
+      setIsLoading(false);
     }
   }, [show]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const result = await res.json();
+      if (result.statusCode === 200) {
+        setShowOTP(true);
+      } else {
+        alert(result.message || "Registration failed");
+      }
+    } catch (err) {
+      alert("Error: " + err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={`login ${show ? "show-login" : ""}`} id="register">
@@ -19,69 +56,58 @@ function Register({ show, onClose, onSwitchToLogin }) {
           <h2 className="login__title">Choose your account type</h2>
           <div className="account-type-options">
             <div className="account-card teacher" onClick={() => setAccountType("teacher")}>
-              <div className="icon-circle">
-                <i className="ri-book-open-line"></i>
-              </div>
+              <div className="icon-circle"><i className="ri-book-open-line"></i></div>
               <p>Teacher</p>
             </div>
             <div className="account-card student" onClick={() => setAccountType("student")}>
-              <div className="icon-circle">
-                <i className="ri-user-line"></i>
-              </div>
+              <div className="icon-circle"><i className="ri-user-line"></i></div>
               <p>Student</p>
             </div>
           </div>
           <p className="login__signup">
             Already have an account?{" "}
-            <a href="#" onClick={(e) => {
-              e.preventDefault();
-              onSwitchToLogin();
-            }}>
-              Log in
-            </a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}>Log in</a>
           </p>
         </div>
       )}
 
-      {accountType !== null && (
-        <form className="login__form">
-          <h2 className="login__title">Sign Up as {accountType === "teacher" ? "Teacher" : "Student"}</h2>
+      {accountType !== null && !showOTP && (
+        <form className="login__form" onSubmit={handleRegister}>
+          <h2 className="login__title">Sign Up by Email</h2>
 
           <div className="login__group">
             <div>
               <label htmlFor="name" className="login__label">Name</label>
-              <input type="text" placeholder="Enter your name" id="name" className="login__input" />
+              <input type="text" id="name" placeholder="Enter your name" className="login__input" value={formData.name} onChange={handleChange} disabled={isLoading} />
             </div>
             <div>
               <label htmlFor="email" className="login__label">Email</label>
-              <input type="email" placeholder="Write your email" id="email" className="login__input" />
+              <input type="email" id="email" placeholder="Write your email" className="login__input" value={formData.email} onChange={handleChange} disabled={isLoading} />
             </div>
             <div>
               <label htmlFor="password" className="login__label">Password</label>
-              <input type="password" placeholder="Create a password" id="password" className="login__input" />
+              <input type="password" id="password" placeholder="Create a password" className="login__input" value={formData.password} onChange={handleChange} disabled={isLoading} />
             </div>
           </div>
 
           <div>
             <p className="login__signup">
               Already have an account?{" "}
-              <a href="#" onClick={(e) => {
-                e.preventDefault();
-                onSwitchToLogin();
-              }}>
-                Log in
-              </a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}>Log in</a>
             </p>
-            <button type="submit" className="login__button">Sign Up</button>
-          </div>
-
-          <div className="login__google">
-            <button className="login__google-button" type="button">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo" className="google-icon" />
-              Continue with Google
+            <button type="submit" className={`login__button ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
+              {isLoading ? "Signing up..." : "Sign Up"}
             </button>
           </div>
         </form>
+      )}
+
+      {showOTP && (
+        <OTPpopup
+          email={formData.email}
+          onClose={() => setShowOTP(false)}
+          onBack={() => setShowOTP(false)}
+        />
       )}
 
       <i className="ri-close-line login__close" id="register-close" onClick={onClose}></i>

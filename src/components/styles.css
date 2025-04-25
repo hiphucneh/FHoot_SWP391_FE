@@ -1,6 +1,3 @@
-/*=============== GOOGLE FONTS ===============*/
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&display=swap");
-
 /*=============== VARIABLES CSS ===============*/
 :root {
   --header-height: 3.5rem;
@@ -52,7 +49,6 @@ html {
 body,
 input,
 button {
-  font-family: var(--body-font);
   font-size: var(--normal-font-size);
 }
 
@@ -148,11 +144,18 @@ img {
   align-items: center;
 }
 
-.nav__logo {
-  color: var(--title-color);
-  font-weight: var(--font-semi-bold);
-  transition: color 0.4s;
+.logo-image {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  cursor: pointer;
 }
+
+.nav__logo:hover {
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
 
 .nav__actions {
   display: flex;
@@ -206,6 +209,78 @@ img {
   top: 1.15rem;
   right: 1.5rem;
 }
+
+.user-icon-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #8884;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 99;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #f4f4f4;
+}
+
+.logout {
+  color: red;
+}
+
+
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  min-width: 150px;
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-item.logout {
+  color: red;
+  font-weight: bold;
+}
+
+
 
 /* Show menu */
 .show-menu {
@@ -360,6 +435,32 @@ img {
   font-size: 24px;
 }
 
+.login__button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.login__button.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 
 /*=============== GOOGLE BUTTON STYLING ===============*/
 /* Make sure Google button is within the popup, below login/signup form */
@@ -453,4 +554,32 @@ img {
   .container {
     margin-inline: auto;
   }
+}
+
+
+.login__resend {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.login__button.resend {
+  background-color: #e0e0e0;
+  color: #333;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.login__button.resend.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.login__error {
+  color: red;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
 }
