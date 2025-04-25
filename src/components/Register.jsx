@@ -7,12 +7,14 @@ function Register({ show, onClose, onSwitchToLogin }) {
   const [accountType, setAccountType] = useState(null);
   const [showOTP, setShowOTP] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!show) {
       setAccountType(null);
       setShowOTP(false);
       setFormData({ name: "", email: "", password: "" });
+      setIsLoading(false);
     }
   }, [show]);
 
@@ -22,6 +24,7 @@ function Register({ show, onClose, onSwitchToLogin }) {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/register", {
@@ -41,6 +44,8 @@ function Register({ show, onClose, onSwitchToLogin }) {
       }
     } catch (err) {
       alert("Error: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,15 +78,15 @@ function Register({ show, onClose, onSwitchToLogin }) {
           <div className="login__group">
             <div>
               <label htmlFor="name" className="login__label">Name</label>
-              <input type="text" id="name" placeholder="Enter your name" className="login__input" value={formData.name} onChange={handleChange} />
+              <input type="text" id="name" placeholder="Enter your name" className="login__input" value={formData.name} onChange={handleChange} disabled={isLoading} />
             </div>
             <div>
               <label htmlFor="email" className="login__label">Email</label>
-              <input type="email" id="email" placeholder="Write your email" className="login__input" value={formData.email} onChange={handleChange} />
+              <input type="email" id="email" placeholder="Write your email" className="login__input" value={formData.email} onChange={handleChange} disabled={isLoading} />
             </div>
             <div>
               <label htmlFor="password" className="login__label">Password</label>
-              <input type="password" id="password" placeholder="Create a password" className="login__input" value={formData.password} onChange={handleChange} />
+              <input type="password" id="password" placeholder="Create a password" className="login__input" value={formData.password} onChange={handleChange} disabled={isLoading} />
             </div>
           </div>
 
@@ -90,7 +95,9 @@ function Register({ show, onClose, onSwitchToLogin }) {
               Already have an account?{" "}
               <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToLogin(); }}>Log in</a>
             </p>
-            <button type="submit" className="login__button">Sign Up</button>
+            <button type="submit" className={`login__button ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
+              {isLoading ? "Signing up..." : "Sign Up"}
+            </button>
           </div>
         </form>
       )}

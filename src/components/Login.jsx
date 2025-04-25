@@ -1,37 +1,39 @@
-import './styles.css';
-import 'remixicon/fonts/remixicon.css';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import "./styles.css";
+import "remixicon/fonts/remixicon.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (show) {
-      setErrorMessage('');
+      setErrorMessage("");
     }
   }, [show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
+    setIsLoading(true);
 
     try {
       const response = await fetch(
-        'https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login',
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            accept: '*/*',
+            "Content-Type": "application/json",
+            accept: "*/*",
           },
           body: JSON.stringify({
             email,
             password,
-            fcmToken: 'web-client-placeholder',
+            fcmToken: "web-client-placeholder",
           }),
         }
       );
@@ -39,26 +41,35 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
       const data = await response.json();
 
       if (response.ok && data.statusCode === 200) {
-        const token = data.data.token; // hoặc data.token nếu token ở ngoài
-  localStorage.setItem('token', token);
-  window.location.href = '/Home';
+        const token = data.data.token;
+        const user = data.data.user;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redirect sau khi login
+        window.location.href = "/Home";
       } else {
-        setErrorMessage('Invalid Email or Password');
+        setErrorMessage("Invalid Email or Password");
       }
     } catch (err) {
       console.error(err);
-      setErrorMessage('Something went wrong. Please try again.');
+      setErrorMessage("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className={`login ${show ? 'show-login' : ''}`} id="login">
+    <div className={`login ${show ? "show-login" : ""}`} id="login">
       <form className="login__form" onSubmit={handleSubmit}>
         <h2 className="login__title">Log In</h2>
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">Email</label>
+            <label htmlFor="email" className="login__label">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -67,11 +78,14 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">Password</label>
+            <label htmlFor="password" className="login__label">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -80,41 +94,53 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
         </div>
 
         {errorMessage && (
-          <p style={{ color: 'red', marginTop: '10px', marginBottom: '-10px' }}>
+          <p style={{ color: "red", marginTop: "10px", marginBottom: "-10px" }}>
             {errorMessage}
           </p>
         )}
 
-        <div style={{ marginTop: '20px' }}>
-          <button type="submit" className="login__button">
-            Log In
+        <div style={{ marginTop: "20px" }}>
+          <button
+            type="submit"
+            className={`login__button ${isLoading ? "loading" : ""}`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Logging in..." : "Log In"}
           </button>
         </div>
 
         <p className="login__signup">
-          Don't have an account?{' '}
-          <a href="#" onClick={(e) => {
-            e.preventDefault();
-            onSwitchToRegister();
-          }}>
+          Don't have an account?{" "}
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onSwitchToRegister();
+            }}
+          >
             Sign up
           </a>
         </p>
 
-        <a href="#" className="login__forgot" onClick={(e) => {
-          e.preventDefault();
-          onSwitchToForgot();
-        }}>
+        <a
+          href="#"
+          className="login__forgot"
+          onClick={(e) => {
+            e.preventDefault();
+            onSwitchToForgot();
+          }}
+        >
           Forgot your password?
         </a>
 
         <div className="login__google">
-          <button className="login__google-button" type="button">
+          <button className="login__google-button" type="button" disabled={isLoading}>
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google logo"
@@ -125,10 +151,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
         </div>
       </form>
 
-      <i
-        className="ri-close-line login__close"
-        onClick={onClose}
-      ></i>
+      <i className="ri-close-line login__close" onClick={onClose}></i>
     </div>
   );
 }

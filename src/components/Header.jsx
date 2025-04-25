@@ -4,6 +4,8 @@ import Login from "./Login";
 import Register from "./Register";
 import ForgotPass from "./ForgotPass";
 import './styles.css';
+import logo from '../assets/Kahoot_logo.png'; 
+
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
@@ -28,9 +30,15 @@ function Header() {
     <>
       <header className="header" id="header">
         <nav className="nav container">
-          <a href="#" className="nav__logo">
-            Logo
-          </a>
+        <div className="nav__logo" 
+     onClick={() => {
+       navigate('/');
+       window.location.href = "/Home";
+     }}
+     style={{ cursor: 'pointer' }}
+>
+  <img src={logo} alt="Kahoot Logo" className="logo-image" />
+</div>
 
           <div
             className={`nav__menu ${showMenu ? "show-menu" : ""}`}
