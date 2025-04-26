@@ -4,17 +4,18 @@ import "./HomeForUser.css";
 import Banner1 from '../assets/home/banner1.png';
 import Banner2 from '../assets/home/banner2.png';
 import Banner3 from '../assets/home/banner3.png';
-import AdvHost from "../Host/AdvHost.jsx"; // Import Popup Become Host
+import AdvHost from "../Host/AdvHost.jsx";
 
 function HomeForUser() {
   const navigate = useNavigate();
   const [showAdvHost, setShowAdvHost] = useState(false);
 
   const handleLearnMore = () => {
-    window.location.href = "/information"; // Điều hướng và reload trang
+    window.location.href = "/information"; // Điều hướng reload trang
   };
+
   const handlePlayNow = () => {
-    alert("Feature coming soon! 🚀"); // tạm thời thông báo
+    navigate("/enter-pin"); // ✅ CHUYỂN ROUTE vào EnterPinCodeScreen
   };
 
   return (
@@ -39,7 +40,7 @@ function HomeForUser() {
           <div className="banner-content">
             <h3>Play Live Kahoots</h3>
             <p>Join exciting games in real-time and compete with friends or classmates!</p>
-            <button onClick={handlePlayNow}>Play Now</button>
+            <button onClick={handlePlayNow}>Play Now</button> {/* ✅ Sửa tại đây */}
           </div>
         </div>
 
@@ -57,7 +58,6 @@ function HomeForUser() {
 
       {/* Popup Become a Host */}
       <AdvHost show={showAdvHost} onClose={() => setShowAdvHost(false)} />
-
     </div>
   );
 }

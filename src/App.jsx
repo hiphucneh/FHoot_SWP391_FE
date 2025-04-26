@@ -1,30 +1,24 @@
-import React from "react";
-import Login from "./components/Login";
-
-import Header from "./components/Header"; // Import Header component
-import WaitRoomScreen from "./screens/WaitingRoomScreen";
-// import QuestionScreen from "./screens/QuestionScreen";
+import "./components/styles.css";
+import "remixicon/fonts/remixicon.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CreateKahoot from "./screens/CreateKahootScreen";
-import CreateQuestion from "./screens/CreateQuestionScreen";
-import LeaderBoardScreen from "./screens/LeaderBoardScreen";
+
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import RegisterPage from "./components/RegisterPage";
+import RegisterSuccess from "./components/RegisterSuccess";
+import HomeMenu from "./Home/HomeMenu";
+import Information from "./Home/Information";
+import PayHost from "./Host/payHost";
+import UserSetupPage from "./components/UserSetupPage";
+import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
+import HomeAdmin from "./Admin/HomeAdmin"; // 👉 Import thêm HomeAdmin
 
 function App() {
   return (
-    <div className="App">
-
-      <Router>
-        <Header />
-        <Routes>
-          <Route path="/createK" element={<CreateKahoot />} />
-          <Route path="/createQ" element={<CreateQuestion />} />
-          <Route path="/" element={<WaitRoomScreen />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/leaderBoard" element={<LeaderBoardScreen />} />
-        </Routes>
-      </Router>
-    </div>
-  );
+    <>
+      <Header />
+    </>
+  )
 }
 
 export default App;

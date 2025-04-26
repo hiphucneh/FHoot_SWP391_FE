@@ -1,0 +1,86 @@
+/* AdminStyles.module.css */
+
+/* --- Container tổng cho Admin Page --- */
+.adminContainer {
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #e0f7fa;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* --- Nội dung chính giữa --- */
+  .adminContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  /* --- Tiêu đề dashboard --- */
+  .adminHeaderTitle {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* --- Button logout --- */
+  .logoutButton {
+    margin-top: 30px;
+    padding: 10px 25px;
+    background-color: #039be5;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logoutButton:hover {
+    background-color: #0288d1;
+  }
+  
+  /* --- Header cho Admin --- */
+  .adminHeader {
+    background-color: #0277bd;
+    padding: 15px 40px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navLink {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .navLink:hover {
+    text-decoration: underline;
+  }
+  
+  /* --- Footer cho Admin --- */
+  .adminFooter {
+    background-color: #0277bd;
+    padding: 15px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+  }
+  
