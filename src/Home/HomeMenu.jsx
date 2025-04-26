@@ -3,6 +3,7 @@ import Login from '../components/Login';
 import Register from '../components/Register';
 import ForgotPass from '../components/ForgotPass';
 import AccountScreen from '../AccountSetting/AccountScreen';
+import HomeForUser from '../Home/HomeForUser.jsx';
 import './HomeStyles.css';
 import 'remixicon/fonts/remixicon.css';
 
@@ -85,6 +86,7 @@ function HomeMenu() {
 
         {/* Features Section */}
         <div className="home-menu__features">
+        <HomeForUser />
           <h2 className="features-title">Why kids love Kahoot!</h2>
           <div className="features-grid">
             <div className="feature-card">

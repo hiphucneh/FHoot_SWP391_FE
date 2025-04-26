@@ -1,19 +1,15 @@
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (show) {
-      setErrorMessage("");
-    }
+    if (show) setErrorMessage("");
   }, [show]);
 
   const handleSubmit = async (e) => {
@@ -22,13 +18,14 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
     setIsLoading(true);
 
     try {
+      // Gửi login request
       const response = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            accept: "*/*",
+            Accept: "*/*",
           },
           body: JSON.stringify({
             email,
@@ -41,13 +38,26 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
       const data = await response.json();
 
       if (response.ok && data.statusCode === 200) {
-        const token = data.data.token;
-        const user = data.data.user;
+        const token = data.data.accessToken || data.data.token;
+        if (!token) throw new Error("No token returned from API");
 
         localStorage.setItem("token", token);
+
+        // Sau khi login thành công, fetch thông tin user
+        const userRes = await fetch(
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "*/*",
+            },
+          }
+        );
+        const userData = await userRes.json();
+        const user = userData.data || userData;
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Redirect sau khi login
+        // Dùng window.location để reload router Home luôn
         window.location.href = "/Home";
       } else {
         setErrorMessage("Invalid Email or Password");
@@ -67,9 +77,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">
-              Email
-            </label>
+            <label htmlFor="email" className="login__label">Email</label>
             <input
               type="email"
               id="email"
@@ -83,9 +91,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">
-              Password
-            </label>
+            <label htmlFor="password" className="login__label">Password</label>
             <input
               type="password"
               id="password"

@@ -1,7 +1,7 @@
 .home-menu-wrapper {
-  max-width: 100ww; /* hoặc 1000px, tuỳ thiết kế bạn muốn */
-  box-sizing: border-box;
+  margin-top: 80px; /* 👈 tuỳ chiều cao header của bạn, có thể là 60px hoặc 100px */
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 .home-menu {
@@ -11,7 +11,7 @@
 .home-menu {
     padding: 2rem;
     font-family: 'Segoe UI', sans-serif;
-    background: #fafafa;
+    background: hsl(230, 100%, 98%);
   }
   
   .home-menu__top {
@@ -201,3 +201,4 @@
   background-color: #eb4d4d;
   color: #fff;
 }
+

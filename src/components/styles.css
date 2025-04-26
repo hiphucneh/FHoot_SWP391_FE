@@ -583,3 +583,8 @@ img {
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }
+
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* ⬅ Chặn scroll ngang */
+}
