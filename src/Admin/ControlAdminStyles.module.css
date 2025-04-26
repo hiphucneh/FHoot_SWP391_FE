@@ -1,0 +1,420 @@
+/* ==================== USER MANAGEMENT ==================== */
+
+.pageContainer {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #1f2937;
+  }
+  
+  .tableContainer {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: 1rem;
+    overflow-x: auto;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .actionButton {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .actionButton:hover {
+    background-color: #2563eb;
+  }
+
+  .userManagementContainer {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .managementTitle {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 2rem;
+  }
+  
+  .tableWrapper {
+    overflow-x: auto;
+    margin: auto;
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableHeader th {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    padding: 12px;
+    font-size: 1rem;
+    text-align: left;
+  }
+  
+  .tableRow td {
+    padding: 12px;
+    font-size: 0.95rem;
+    color: #374151;
+  }
+  
+  .actionButton {
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .actionButton:hover {
+    background-color: #2563eb;
+  }
+  
+  .separator {
+    height: 1px;
+    background-color: #ccc;
+    margin: 8px 0;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Modal */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  
+  .selectBox {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .confirmButton {
+    background-color: #10b981;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .confirmButton:hover {
+    background-color: #059669;
+  }
+  
+  .cancelButton {
+    background-color: #9ca3af;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .cancelButton:hover {
+    background-color: #6b7280;
+  }
+ 
+  /* Toast */
+.toastContainer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .toastMessage {
+    background-color: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    animation: slideInUp 0.5s ease;
+  }
+  
+  @keyframes slideInUp {
+    from {
+      transform: translateY(40px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+/* ==================== REQUEST MANAGEMENT ==================== */
+
+.pageContainer {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .tableContainer {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: 1rem;
+    overflow-x: auto;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableHeader th {
+    background-color: #d1fae5; /* xanh mint nhẹ */
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #065f46;
+    text-align: center;
+  }
+  
+  .tableRow td {
+    padding: 1rem;
+    text-align: center;
+    color: #374151;
+  }
+  
+  .manageButtonSmall {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    font-size: 14px;
+  }
+  
+  .manageButtonSmall:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .separator {
+    border: none;
+    height: 1px;
+    background-color: #d1d5db;
+    width: 90%;
+    margin: 8px auto;
+  }
+  
+  /* Popup */
+  .popupOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .popupContent {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    animation: zoomIn 0.3s ease;
+  }
+  
+  .popupButtonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .approveButton {
+    background-color: #10b981;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .approveButton:hover {
+    background-color: #059669;
+  }
+  
+  .rejectButton {
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .rejectButton:hover {
+    background-color: #dc2626;
+  }
+  
+  .cancelButton {
+    background-color: #9ca3af;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .cancelButton:hover {
+    background-color: #6b7280;
+  }
+  
+  @keyframes zoomIn {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* ==================== PAYMENT MANAGEMENT ==================== */
+  .paymentHeader {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  
+  .reloadButton {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .reloadButton:hover {
+    background-color: #2563eb;
+  }
+.invoiceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .invoiceCard {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    min-height: 220px;
+  }
+  
+  .invoiceCard:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  }
+  
+  .paidStatus {
+    color: #10b981;
+    font-weight: bold;
+  }
+  
