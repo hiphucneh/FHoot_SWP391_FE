@@ -3,6 +3,7 @@ import { InputNumber, notification, Upload, Checkbox, Button, Popover } from "an
 import { UploadOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2'; // Thay alert bằng SweetAlert2
 import { createQuestion } from '../services/createQuestion.js';
 
 import '../components/CreateQuestion.css';
@@ -243,7 +244,12 @@ const CreateQuestion = () => {
         try {
             const res = await createQuestion(formattedQuestions);
             console.log("✅ API Response:", res);
-            alert("Các câu hỏi đã được lưu!");
+            await Swal.fire({
+                title: 'Success!',
+                text: 'Lưu Quizz thành công !',
+                icon: 'success',
+                confirmButtonColor: 'green',
+            });
         } catch (error) {
             console.error("❌ Error saving questions:", error);
             alert("Đã xảy ra lỗi khi lưu câu hỏi.");
@@ -256,7 +262,7 @@ const CreateQuestion = () => {
 
 
     return (
-        <div style={{ backgroundColor: "pink", fontFamily: "cursive", padding: "20px" }}>
+        <div style={{ padding: "20px" }}>
 
             <div style={{ display: "flex" }}>
                 <DragDropContext onDragEnd={handleDragEnd}>
@@ -443,18 +449,40 @@ const CreateQuestion = () => {
 
 
                         </div>
-                        <button type="button" onClick={handleAddAnswer}
-                            className="custom-button"
-                            style={{
-                                marginTop: "20px",
-                                padding: "10px 20px",
-                                borderRadius: "5px",
-                                backgroundColor: "#4CAF50",
-                                color: "white",
-                                border: "none",
-                                cursor: "pointer"
+                        <div style={{ display: "flex", gap: "20px", justifyContent: "center", width: "600px", marginTop: "20px", padding: "20px" }}>
+                            <button type="button" onClick={handleAddAnswer}
+                                className="custom-button"
+                                style={{
+                                    marginTop: "20px",
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    backgroundColor: "#4CAF50",
+                                    color: "white",
+                                    width: "200px",
+                                    border: "none",
+                                    cursor: "pointer"
 
-                            }}>Add Answer</button>
+                                }}>Add Answer</button>
+                            <button
+                                type="button"
+                                className="custom-button"
+                                style={{
+                                    marginTop: "20px",
+                                    padding: "10px 20px",
+                                    width: "200px",
+                                    borderRadius: "10px",
+                                    backgroundColor: "#1890ff",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer"
+                                }}
+                                onClick={
+                                    handleSaveQuestion
+                                }
+                            >
+                                Save Question
+                            </button>
+                        </div>
                         <button
                             type="button"
                             className="custom-button"
@@ -462,25 +490,9 @@ const CreateQuestion = () => {
                                 marginTop: "20px",
                                 padding: "10px 20px",
                                 borderRadius: "5px",
-                                backgroundColor: "#1890ff",
-                                color: "white",
-                                border: "none",
-                                cursor: "pointer"
-                            }}
-                            onClick={
-                                handleSaveQuestion
-                            }
-                        >
-                            Save Question
-                        </button>
-                        <button
-                            type="button"
-                            className="custom-button"
-                            style={{
-                                marginTop: "20px",
-                                padding: "10px 20px",
-                                borderRadius: "5px",
-                                backgroundColor: "#1890ff",
+                                width: "200px",
+                                height: "80px",
+                                backgroundColor: "#d35400",
                                 color: "white",
                                 border: "none",
                                 cursor: "pointer"

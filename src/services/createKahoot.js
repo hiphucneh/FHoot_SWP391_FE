@@ -4,7 +4,7 @@ const API_URL = "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsit
 
 export const createKahoot = async (kahootData) => {
     try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJUZWFjaGVyIiwiZXhwIjoxNzQ1NjY4MzMyLCJpc3MiOiJLYWhvb3QiLCJhdWQiOiJLYWhvb3QgRW5kIFVzZXJzIn0.Ic8yXpGe5E1oLi1em0mQgPVo9fP8pAUZsyqpkMCSDUI"; // nên tách ra file .env hoặc lấy từ localStorage
+        const token = localStorage.getItem("token")
 
         const response = await axios.post(`${API_URL}/quiz`, kahootData, {
             headers: {

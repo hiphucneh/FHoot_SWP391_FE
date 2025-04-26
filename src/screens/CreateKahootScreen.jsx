@@ -3,19 +3,13 @@ import { useState } from "react";
 import { UploadOutlined } from '@ant-design/icons';
 import { createKahoot } from '../services/createKahoot';
 // ✨ import API đã tách
+import Swal from 'sweetalert2'; // Thay alert bằng SweetAlert2
 import { useNavigate } from "react-router-dom";
 import '../components/CreateQuestion.css';
 import React from 'react';
 
 const CreateKahoot = () => {
-    const inputStyle = {
-        border: "1px solid",
-        width: "300px",
-        height: "30px",
-        margin: "10px",
-        padding: "5px",
-        borderRadius: "5px",
-    };
+
     const navigate = useNavigate();
     const [kahoot, setKahoot] = useState({ Title: "", Description: "" });
     const [file, setFile] = useState(null);
@@ -48,13 +42,32 @@ const CreateKahoot = () => {
 
             if (quizId) {
                 localStorage.setItem("quizId", quizId.toString());
-                alert("Tạo kahoot thành công!");
+                // Thay alert bằng SweetAlert2
+                await Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Kahoot đã được tạo. Bạn sẽ được chuyển đến trang thêm câu hỏi.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#7266ef', // Màu tím
+                })
                 navigate(`/createq`);
             } else {
-                alert("Không lấy được ID từ server!");
+
+                await Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Không lấy được ID từ server!',
+                    icon: 'error',
+                    confirmButtonColor: '#ff4d4f', // Màu đỏ
+                });
             }
         } catch (error) {
-            alert("Tạo kahoot thất bại!");
+
+            await Swal.fire({
+                title: 'Lỗi!',
+                text: 'Tạo Kahoot thất bại!',
+                icon: 'error',
+                confirmButtonColor: '#ff4d4f',
+            });
         }
     };
 
@@ -63,14 +76,13 @@ const CreateKahoot = () => {
         <div
             className="create-kahoot-screen"
             style={{
-                backgroundColor: "pink",
-                fontFamily: "Arial, sans-serif",
+                zIndex: 0,
                 width: "100%",
                 height: "100vh",
                 position: "absolute",
                 top: 0,
                 left: 0,
-                zIndex: 9999,
+                zIndex: 1,
             }}>
 
             <div
@@ -102,8 +114,19 @@ const CreateKahoot = () => {
                 >
                     <input
                         name="KahootTitle"
-                        style={inputStyle}
+                        style={{
+                            backgroundColor: "#f0f0f0",
+                            color: "black"
+                            , textAlign: 'left',
+                            padding: '10px',
+                            borderRadius: "15px",
+                            border: "2px solid #ccc",
+                            margin: "10px",
+                            width: "300px",
+                            height: "50px",
+                        }}
                         type="text"
+
                         onChange={handleOnChangeTitle}
                         placeholder="Kahoot Title"
                         required
@@ -119,8 +142,8 @@ const CreateKahoot = () => {
                             style={{
                                 width: "300px",
                                 height: "50px",
-                                backgroundColor: "pink",
-                                color: "black",
+                                backgroundColor: "#7d3c98 ",
+                                color: "white",
                                 borderRadius: "5px",
                                 margin: "10px",
                             }}
@@ -151,7 +174,7 @@ const CreateKahoot = () => {
                         style={{
                             width: "200px",
                             height: "50px",
-                            backgroundColor: "lightgreen",
+                            backgroundColor: "#7d3c98",
                             border: "none",
                             borderRadius: "10px",
                             marginTop: "10px",
