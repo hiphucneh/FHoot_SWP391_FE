@@ -1,0 +1,93 @@
+.home-for-admin {
+    margin-top: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .admin-feature-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .admin-feature-item {
+    margin-bottom: 12px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .delete-button {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+    color: red;
+    transition: transform 0.2s;
+  }
+  
+  .delete-button:hover {
+    transform: scale(1.2);
+  }
+  
+  .admin-edit-section {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .admin-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .admin-add-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .admin-add-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .admin-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    animation: fadein 0.5s, fadeout 0.5s 1.5s;
+    z-index: 9999;
+  }
+  
+  @keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeout {
+    from {opacity: 1;}
+    to {opacity: 0;}
+  }
+  

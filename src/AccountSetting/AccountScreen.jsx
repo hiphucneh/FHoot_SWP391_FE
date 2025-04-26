@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AdvHost from "../Host/AdvHost"; // 👈 Import AdvHost
+import AdvHost from "../Host/AdvHost";
 import "./AccountScreen.css";
 
 function AccountScreen({ show, onClose, setUser: setParentUser }) {
@@ -9,7 +9,8 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
   const [editData, setEditData] = useState({ name: "", age: "" });
   const [toast, setToast] = useState("");
   const [closing, setClosing] = useState(false);
-  const [showAdvHost, setShowAdvHost] = useState(false); // 👈 trạng thái bật popup AdvHost
+  const [showAdvHost, setShowAdvHost] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // 🔥 New loading state
 
   useEffect(() => {
     if (show) {
@@ -61,6 +62,8 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
     if (avatarFile) formData.append("Avatar", avatarFile);
 
     try {
+      setIsSaving(true); // 🔥 Start loading
+
       const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user", {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
@@ -87,6 +90,8 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
       }
     } catch (err) {
       showToast("❌ Error: " + err.message);
+    } finally {
+      setIsSaving(false); // 🔥 End loading
     }
   };
 
@@ -143,10 +148,18 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
                 <input type="number" name="age" value={editData.age} onChange={handleChange} />
               </div>
               <div className="update-buttons">
-                <button className="login__button save-button" onClick={handleUpdate}>
-                  💾 Save Changes
+                <button
+                  className={`login__button save-button ${isSaving ? "loading" : ""}`}
+                  onClick={handleUpdate}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <div className="spinner"></div> : "💾 Save Changes"}
                 </button>
-                <button className="login__button cancel-button" onClick={() => setEditMode(false)}>
+                <button
+                  className="login__button cancel-button"
+                  onClick={() => setEditMode(false)}
+                  disabled={isSaving}
+                >
                   ❌ Cancel
                 </button>
               </div>

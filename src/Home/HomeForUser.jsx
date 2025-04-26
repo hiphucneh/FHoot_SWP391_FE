@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HomeForUser.css";
 import Banner1 from '../assets/home/banner1.png';
@@ -9,23 +9,40 @@ import AdvHost from "../Host/AdvHost.jsx";
 function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   const navigate = useNavigate();
   const [showAdvHost, setShowAdvHost] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUserRole(user.role);
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    }
+  }, []);
 
   const handleLearnMore = () => {
     navigate("/information");
   };
 
   const handlePlayNow = () => {
-    navigate("/enter-pin"); 
+    navigate("/enter-pin");
   };
 
   const handleBecomeHost = () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      setRedirectAfterLogin("/payhost"); // set path để login xong chuyển tiếp
+      setRedirectAfterLogin("/payhost");
       setShowLogin(true);
     } else {
       navigate("/payhost");
     }
+  };
+
+  const handleCreateKahoot = () => {
+    navigate("/createK");
   };
 
   return (
@@ -56,12 +73,22 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
           <div className="banner-content">
             <h3>Create Your Own Quiz</h3>
             <p>Design interactive quizzes and share them as a host with your class or audience.</p>
-            <button onClick={() => setShowAdvHost(true)}>Become a Host Now</button>
+
+            {/* 👇 Đây là nút thay đổi theo role */}
+            {userRole === "Teacher" ? (
+              <button onClick={handleCreateKahoot}>
+                Create a Kahoot!
+              </button>
+            ) : (
+              <button onClick={() => setShowAdvHost(true)}>
+                Become a Host Now
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Popup Become Host */}
+      {/* Popup Become a Host */}
       <AdvHost 
         show={showAdvHost} 
         onClose={() => setShowAdvHost(false)} 
