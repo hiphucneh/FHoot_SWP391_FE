@@ -58,7 +58,12 @@ function Login({ show, onClose, onSwitchToForgot }) {
         const user = userData.data || userData;
         localStorage.setItem("user", JSON.stringify(user));
 
-        window.location.href = "/Home";
+        // 👉 Check role ở đây
+        if (user.role === "Admin") {
+          window.location.href = "/HomeAdmin";
+        } else {
+          window.location.href = "/Home";
+        }
       } else {
         setErrorMessage("Invalid Email or Password");
       }
@@ -70,13 +75,11 @@ function Login({ show, onClose, onSwitchToForgot }) {
     }
   };
 
-  // 🔥 Hàm Login bằng Google
   const handleGoogleLogin = async () => {
     setErrorMessage("");
     setIsGoogleLoading(true);
 
     try {
-      // Giả lập idToken (thực tế cần dùng Google SDK lấy idToken)
       const idToken = prompt("Enter your Google idToken:");
 
       if (!idToken) {
@@ -90,7 +93,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
         {
           method: "POST",
           headers: {
-            "Authorization": "Bearer dummy-token-for-now", // Nếu API cần Authorization thì đưa token chuẩn
+            "Authorization": "Bearer dummy-token-for-now",
           },
           body: JSON.stringify({
             idToken: idToken,
@@ -120,7 +123,12 @@ function Login({ show, onClose, onSwitchToForgot }) {
         const user = userData.data || userData;
         localStorage.setItem("user", JSON.stringify(user));
 
-        window.location.href = "/Home";
+        // 👉 Check role ở đây
+        if (user.role === "Admin") {
+          window.location.href = "/HomeAdmin";
+        } else {
+          window.location.href = "/Home";
+        }
       } else {
         setErrorMessage(data.message || "Google login failed.");
       }
