@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import ForgotPass from "./ForgotPass";
-import AdvHost from "../Host/AdvHost"; // ✅ THÊM
+import AdvHost from "../Host/AdvHost";
 import "./styles.css";
 import logo from "../assets/Kahoot_logo.png";
 
@@ -10,7 +10,7 @@ function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
-  const [showAdvHost, setShowAdvHost] = useState(false); // ✅ THÊM
+  const [showAdvHost, setShowAdvHost] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ function Header() {
 
     const handleClickOutside = (e) => {
       if (!e.target.closest(".user-dropdown")) {
-        // ...
+        // Đóng dropdown nếu click bên ngoài
       }
     };
     window.addEventListener("click", handleClickOutside);
@@ -46,10 +46,19 @@ function Header() {
       if (userRole?.toLowerCase() === "teacher") {
         navigate("/createK");
       } else if (userRole?.toLowerCase() === "user") {
-        setShowAdvHost(true); // ✅ show popup cho User
+        setShowAdvHost(true);
       } else {
         alert("Your role does not have permission to create a Kahoot.");
       }
+    }
+  };
+
+  const handleJoinGame = (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      setShowLogin(true);
+    } else {
+      navigate("/enter-pin");
     }
   };
 
@@ -71,7 +80,13 @@ function Header() {
           <div className={`nav__menu ${showMenu ? "show-menu" : ""}`} id="nav-menu">
             <ul className="nav__list">
               <li className="nav__item">
-                <a href="#" className="nav__link">Join a game</a>
+                <a
+                  className="nav__link"
+                  onClick={handleJoinGame}
+                  style={{ cursor: "pointer" }}
+                >
+                  Join a game
+                </a>
               </li>
             </ul>
             <div

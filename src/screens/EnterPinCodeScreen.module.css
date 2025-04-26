@@ -1,0 +1,93 @@
+.container {
+    width: 100vw; /* new: full width của màn hình */
+    height: 100vh; /* full height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* đảm bảo không bị scroll thanh ngang */
+  }
+  
+  .formBox {
+    background: white;
+    padding: 30px;
+    border-radius: 8px; /* new: bo góc ít hơn, sắc nét hơn */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 320px; /* nhẹ nhẹ mở rộng box chút xíu cho đẹp */
+  }
+  
+  .title {
+    margin-bottom: 20px;
+    font-size: 26px; /* lớn hơn tí */
+    font-weight: bold;
+    color: #4c1d95;
+  }
+  
+  .inputField {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* new: bo góc ít hơn */
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .joinButton {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px; /* new: bo góc ít hơn */
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .joinButton:hover {
+    background-color: #333;
+  }
+  
+.footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: rgb(0, 0, 0);
+  }
+  
+  .footer a {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  
+  .footerLinks {
+    margin-top: 5px;
+  }
+  
+  .backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .backButton:hover {
+    color: #7d7272;
+  }
+  

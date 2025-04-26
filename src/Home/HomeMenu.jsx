@@ -8,13 +8,14 @@ import './HomeStyles.css';
 import 'remixicon/fonts/remixicon.css';
 
 function HomeMenu() {
+  const navigate = useNavigate();
+  
+  const [joinCode, setJoinCode] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,7 +25,9 @@ function HomeMenu() {
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
-      } catch {}
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
     }
   }, [showAccount, showLogin]);
 
@@ -36,14 +39,31 @@ function HomeMenu() {
     window.location.reload();
   };
 
+  const handleJoin = () => {
+    if (joinCode.trim() !== "") {
+      navigate("/enter-pin", { state: { pin: joinCode.trim() } });
+    } else {
+      alert("Please enter a Game PIN first!");
+    }
+  };
+
   return (
     <div className="home-menu-wrapper">
       <div className="home-menu">
-        {/* Top Section: Join Code + Qbit Box */}
+
+        {/* Top Section: Join Code + Login/Avatar Box */}
         <div className="home-menu__top">
           <div className="home-menu__join-box">
-            <input type="text" placeholder="Enter join code" className="join-input" />
-            <button className="join-button">Join</button>
+            <input
+              type="text"
+              placeholder="Enter join code"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}
+              className="join-input"
+            />
+            <button className="join-button" onClick={handleJoin}>
+              Join
+            </button>
           </div>
 
           <div className="home-menu__qbit-box">
@@ -57,7 +77,7 @@ function HomeMenu() {
                 </button>
                 <button
                   className="login-button"
-                  onClick={() => navigate("/Register")} // ➤ redirect to Register page
+                  onClick={() => navigate("/Register")}
                 >
                   Sign Up for FREE!
                 </button>
@@ -88,6 +108,7 @@ function HomeMenu() {
         {/* Features Section */}
         <div className="home-menu__features">
           <HomeForUser />
+          
           <h2 className="features-title">Why kids love Kahoot!</h2>
           <div className="features-grid">
             <div className="feature-card">
@@ -118,7 +139,7 @@ function HomeMenu() {
       <Login
         show={showLogin}
         onClose={() => setShowLogin(false)}
-        onSwitchToRegister={() => navigate("/Register")} // ➤ in case triggered inside login
+        onSwitchToRegister={() => navigate("/Register")}
         onSwitchToForgot={() => {
           setShowLogin(false);
           setShowForgotPass(true);
