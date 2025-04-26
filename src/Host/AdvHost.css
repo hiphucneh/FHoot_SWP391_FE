@@ -1,0 +1,94 @@
+.advhost-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .advhost-modal {
+    background: #FFF7CC;
+    width: 90%;
+    max-width: 550px;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 15, 15, 0.25);
+    position: relative;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .advhost-banner-wrapper {
+    width: 100%;
+    height: 320px; /* giữ cao hơn nè, chỉ cắt nhẹ */
+    overflow: hidden;
+    border-bottom: 3px solid #7e57c2;
+  }
+  
+  .advhost-banner-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top; /* focus phần trên, cắt nhẹ dưới */
+  }
+  
+  .advhost-contact-button {
+    display: block;
+    width: 80%;
+    margin: 1.5rem auto 2rem;
+    background-color: #30c42d;
+    color: white;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .advhost-contact-button:hover {
+    background-color: #5e35b1;
+  }
+  
+  .advhost-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #555;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Thêm animation cho modal khi show lên */
+.advhost-modal {
+    transform: scale(0.8);
+    opacity: 0;
+    animation: popupOpen 0.4s forwards;
+  }
+  
+  /* Animation xuất hiện */
+  @keyframes popupOpen {
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Overlay cũng fade mượt */
+  .advhost-overlay {
+    animation: overlayFade 0.4s forwards;
+  }
+  
+  @keyframes overlayFade {
+    from { background: rgba(0, 0, 0, 0); }
+    to { background: rgba(0, 0, 0, 0.5); }
+  }
+  

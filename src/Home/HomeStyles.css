@@ -1,7 +1,7 @@
 .home-menu-wrapper {
-  max-width: 100ww; /* hoặc 1000px, tuỳ thiết kế bạn muốn */
-  box-sizing: border-box;
+  margin-top: 80px; /* 👈 tuỳ chiều cao header của bạn, có thể là 60px hoặc 100px */
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 .home-menu {
@@ -11,7 +11,7 @@
 .home-menu {
     padding: 2rem;
     font-family: 'Segoe UI', sans-serif;
-    background: #fafafa;
+    background: hsl(230, 100%, 98%);
   }
   
   .home-menu__top {
@@ -158,3 +158,47 @@
   color: #333;
   font-weight: 500;
 }
+
+.qbit-loggedin {
+  display: flex;
+  flex-direction: column; /* ← thêm dòng này */
+  align-items: center;
+  gap: 0.5rem;
+}
+
+
+.qbit-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ccc;
+  transition: transform 0.3s ease;
+}
+
+.qbit-avatar:hover {
+  transform: scale(1.05);
+}
+
+.qbit-welcome {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.logout-button {
+  background-color: #fff;
+  border: 2px solid #eb4d4d;
+  color: #eb4d4d;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #eb4d4d;
+  color: #fff;
+}
+

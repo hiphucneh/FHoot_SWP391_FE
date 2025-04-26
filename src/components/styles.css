@@ -54,8 +54,13 @@ button {
 
 body {
   background-color: var(--body-color);
+  background-image: url('../assets/background.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   color: var(--text-color);
 }
+
 
 input,
 button {
@@ -582,4 +587,9 @@ img {
   color: red;
   margin-top: 0.5rem;
   font-size: 0.9rem;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* ⬅ Chặn scroll ngang */
 }

@@ -1,43 +1,39 @@
 import { useEffect, useState } from "react";
-import './AccountScreen.css';
+import AdvHost from "../Host/AdvHost"; // 👈 Import AdvHost
+import "./AccountScreen.css";
 
-function AccountScreen({ show, onClose }) {
+function AccountScreen({ show, onClose, setUser: setParentUser }) {
   const [user, setUser] = useState(null);
-  const [editData, setEditData] = useState({
-    name: "",
-    bio: "",
-    gender: "",
-    age: "",
-    location: "",
-  });
+  const [editMode, setEditMode] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [editData, setEditData] = useState({ name: "", age: "" });
   const [toast, setToast] = useState("");
+  const [closing, setClosing] = useState(false);
+  const [showAdvHost, setShowAdvHost] = useState(false); // 👈 trạng thái bật popup AdvHost
 
   useEffect(() => {
-    if (!show) return;
+    if (show) {
+      setEditMode(false);
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "*/*",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-        setEditData({
-          name: data.name || "",
-          bio: data.bio || "",
-          gender: data.gender || "",
-          age: data.age || "",
-          location: data.location || "",
-        });
+      fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "*/*",
+        },
       })
-      .catch(console.error);
+        .then((res) => res.json())
+        .then((resData) => {
+          const data = resData.data || resData;
+          setUser(data);
+          setEditData({
+            name: data.name || "",
+            age: data.age || "",
+          });
+        })
+        .catch(console.error);
+    }
   }, [show]);
 
   const handleChange = (e) => {
@@ -60,11 +56,10 @@ function AccountScreen({ show, onClose }) {
     const formData = new FormData();
     formData.append("FullName", editData.name);
     formData.append("Age", editData.age);
-    formData.append("Gender", editData.gender);
-    formData.append("Location", editData.location);
+    formData.append("Gender", user.gender || "Male");
+    formData.append("Location", user.location || "Viet Nam");
     if (avatarFile) formData.append("Avatar", avatarFile);
 
-    setIsUpdating(true);
     try {
       const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user", {
         method: "PUT",
@@ -75,90 +70,135 @@ function AccountScreen({ show, onClose }) {
       const result = await res.json();
       if (res.ok && result.statusCode === 200) {
         showToast("✅ Profile updated!");
-        // Cập nhật avatar Header
-        const newAvatar = avatarFile ? URL.createObjectURL(avatarFile) : user.avatar;
-        localStorage.setItem("user", JSON.stringify({ ...user, avatar: newAvatar }));
+        setEditMode(false);
+
+        const updatedUser = {
+          ...user,
+          name: editData.name,
+          age: editData.age,
+          avatar: avatarFile ? URL.createObjectURL(avatarFile) : user.avatar,
+        };
+
+        setUser(updatedUser);
+        setParentUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       } else {
         showToast("❌ Update failed.");
       }
     } catch (err) {
       showToast("❌ Error: " + err.message);
-    } finally {
-      setIsUpdating(false);
     }
   };
 
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 300);
+  };
+
   if (!show) return null;
+  if (!user) return <div className="account-modal">Loading...</div>;
 
   return (
-    <div className="account-overlay">
-      <div className="account-modal">
-        <div className="account-header">
-          <h3>Account Information</h3>
-          <i className="ri-close-line close-btn" onClick={onClose}></i>
-        </div>
+    <>
+      <div className={`account-overlay ${closing ? "hide" : ""}`}>
+        <div className="account-modal">
+          <div className="account-header">
+            <h3>Account Information</h3>
+            <i className="ri-close-line close-btn" onClick={handleClose}></i>
+          </div>
 
-        <div className="account-avatar-section">
-          <div className="avatar-wrapper">
-          <img
-  src={
-    avatarFile
-      ? URL.createObjectURL(avatarFile)
-      : (user?.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || "guest"}`)
-  }
-  alt="avatar"
-  className="account-avatar"
-/>
+          <div className="account-avatar-section">
+            <div className="avatar-wrapper">
+              <img
+                src={
+                  avatarFile
+                    ? URL.createObjectURL(avatarFile)
+                    : user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email || "guest"}`
+                }
+                onError={(e) => (e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=guest`)}
+                alt="avatar"
+                className="account-avatar"
+              />
 
-            <label className="camera-icon">
-              <i className="ri-camera-line"></i>
-              <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
-            </label>
+              {editMode && (
+                <label className="camera-icon">
+                  <i className="ri-camera-line"></i>
+                  <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
+                </label>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="account-info">
-          <div className="info-item">
-            <label>Name:</label>
-            <input type="text" name="name" value={editData.name} onChange={handleChange} />
-          </div>
-          <div className="info-item">
-            <label>Bio:</label>
-            <textarea name="bio" value={editData.bio} onChange={handleChange} />
-          </div>
-          <div className="info-item">
-            <label>Gender:</label>
-            <select name="gender" value={editData.gender} onChange={handleChange}>
-              <option value="">Select</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div className="info-item">
-            <label>Age:</label>
-            <input type="number" name="age" value={editData.age} onChange={handleChange} />
-          </div>
-          <div className="info-item">
-            <label>Location:</label>
-            <input type="text" name="location" value={editData.location} onChange={handleChange} />
-          </div>
-          <div className="info-item">
-            <label>Email:</label>
-            <input type="email" value={user?.email || ""} disabled />
-          </div>
-        </div>
+          {editMode ? (
+            <div className="account-info">
+              <div className="info-item">
+                <label>Full Name:</label>
+                <input type="text" name="name" value={editData.name} onChange={handleChange} />
+              </div>
+              <div className="info-item">
+                <label>Age:</label>
+                <input type="number" name="age" value={editData.age} onChange={handleChange} />
+              </div>
+              <div className="update-buttons">
+                <button className="login__button save-button" onClick={handleUpdate}>
+                  💾 Save Changes
+                </button>
+                <button className="login__button cancel-button" onClick={() => setEditMode(false)}>
+                  ❌ Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="account-info">
+              <div className="info-item">
+                <label>Role:</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <p style={{ margin: 0 }}>{user?.role}</p>
+                  {user?.role?.toLowerCase() === "user" && (
+                    <span
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "#ff9800",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                      onClick={() => setShowAdvHost(true)}
+                    >
+                      🚀 Upgrade to Host
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="info-item">
+                <label>Full Name:</label>
+                <p>{user?.name}</p>
+              </div>
+              <div className="info-item">
+                <label>Email:</label>
+                <p>{user?.email}</p>
+              </div>
+              <div className="info-item">
+                <label>Age:</label>
+                <p>{user?.age}</p>
+              </div>
+              <div className="update-button">
+                <button className="login__button" onClick={() => setEditMode(true)}>
+                  ✏️ Edit Profile
+                </button>
+              </div>
+            </div>
+          )}
 
-        <div className="update-button">
-          <button className="login__button" onClick={handleUpdate} disabled={isUpdating}>
-            {isUpdating ? "Saving..." : "💾 Save Changes"}
-          </button>
+          {toast && <div className="toast">{toast}</div>}
         </div>
       </div>
 
-      {/* Toast Notification */}
-      {toast && <div className="toast">{toast}</div>}
-    </div>
+      {/* Popup Upgrade to Host */}
+      <AdvHost show={showAdvHost} onClose={() => setShowAdvHost(false)} />
+    </>
   );
 }
 

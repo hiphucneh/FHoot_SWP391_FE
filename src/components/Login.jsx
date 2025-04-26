@@ -1,19 +1,18 @@
-import "./styles.css";
-import "remixicon/fonts/remixicon.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./styles.css";
+import "remixicon/fonts/remixicon.css";
 
-function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
+function Login({ show, onClose, onSwitchToForgot }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (show) {
-      setErrorMessage("");
-    }
+    if (show) setErrorMessage("");
   }, [show]);
 
   const handleSubmit = async (e) => {
@@ -28,7 +27,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            accept: "*/*",
+            Accept: "*/*",
           },
           body: JSON.stringify({
             email,
@@ -41,13 +40,24 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
       const data = await response.json();
 
       if (response.ok && data.statusCode === 200) {
-        const token = data.data.token;
-        const user = data.data.user;
+        const token = data.data.accessToken || data.data.token;
+        if (!token) throw new Error("No token returned from API");
 
         localStorage.setItem("token", token);
+
+        const userRes = await fetch(
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "*/*",
+            },
+          }
+        );
+        const userData = await userRes.json();
+        const user = userData.data || userData;
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Redirect sau khi login
         window.location.href = "/Home";
       } else {
         setErrorMessage("Invalid Email or Password");
@@ -60,6 +70,68 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
     }
   };
 
+  // 🔥 Hàm Login bằng Google
+  const handleGoogleLogin = async () => {
+    setErrorMessage("");
+    setIsGoogleLoading(true);
+
+    try {
+      // Giả lập idToken (thực tế cần dùng Google SDK lấy idToken)
+      const idToken = prompt("Enter your Google idToken:");
+
+      if (!idToken) {
+        setErrorMessage("No idToken provided.");
+        setIsGoogleLoading(false);
+        return;
+      }
+
+      const response = await fetch(
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer dummy-token-for-now", // Nếu API cần Authorization thì đưa token chuẩn
+          },
+          body: JSON.stringify({
+            idToken: idToken,
+            fcmToken: "web-client-placeholder",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.statusCode === 200) {
+        const token = data.data.accessToken || data.data.token;
+        if (!token) throw new Error("No token returned from Google login");
+
+        localStorage.setItem("token", token);
+
+        const userRes = await fetch(
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "*/*",
+            },
+          }
+        );
+        const userData = await userRes.json();
+        const user = userData.data || userData;
+        localStorage.setItem("user", JSON.stringify(user));
+
+        window.location.href = "/Home";
+      } else {
+        setErrorMessage(data.message || "Google login failed.");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Google login error. Please try again.");
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
   return (
     <div className={`login ${show ? "show-login" : ""}`} id="login">
       <form className="login__form" onSubmit={handleSubmit}>
@@ -67,9 +139,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">
-              Email
-            </label>
+            <label htmlFor="email" className="login__label">Email</label>
             <input
               type="email"
               id="email"
@@ -83,9 +153,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">
-              Password
-            </label>
+            <label htmlFor="password" className="login__label">Password</label>
             <input
               type="password"
               id="password"
@@ -121,7 +189,7 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              onSwitchToRegister();
+              navigate("/Register");
             }}
           >
             Sign up
@@ -140,13 +208,18 @@ function Login({ show, onClose, onSwitchToRegister, onSwitchToForgot }) {
         </a>
 
         <div className="login__google">
-          <button className="login__google-button" type="button" disabled={isLoading}>
+          <button
+            className="login__google-button"
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isGoogleLoading}
+          >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google logo"
               className="google-icon"
             />
-            Continue with Google
+            {isGoogleLoading ? "Connecting..." : "Continue with Google"}
           </button>
         </div>
       </form>

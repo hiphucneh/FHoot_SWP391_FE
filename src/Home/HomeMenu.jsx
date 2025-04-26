@@ -1,19 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Login from '../components/Login';
-import Register from '../components/Register';
 import ForgotPass from '../components/ForgotPass';
+import AccountScreen from '../AccountSetting/AccountScreen';
+import HomeForUser from '../Home/HomeForUser.jsx';
 import './HomeStyles.css';
 import 'remixicon/fonts/remixicon.css';
 
 function HomeMenu() {
   const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {}
+    }
+  }, [showAccount, showLogin]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
+  };
 
   return (
     <div className="home-menu-wrapper">
       <div className="home-menu">
-        {/* Top Section: Join Code + Avatar Box */}
+        {/* Top Section: Join Code + Qbit Box */}
         <div className="home-menu__top">
           <div className="home-menu__join-box">
             <input type="text" placeholder="Enter join code" className="join-input" />
@@ -21,23 +47,47 @@ function HomeMenu() {
           </div>
 
           <div className="home-menu__qbit-box">
-            <button
-              className="sign-up-button"
-              onClick={() => setShowLogin(true)}
-            >
-              Log In
-            </button>
-            <button
-              className="login-button"
-              onClick={() => setShowRegister(true)}
-            >
-              Sign Up for FREE!
-            </button>
+            {!isLoggedIn ? (
+              <>
+                <button
+                  className="sign-up-button"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Log In
+                </button>
+                <button
+                  className="login-button"
+                  onClick={() => navigate("/Register")} // ➤ redirect to Register page
+                >
+                  Sign Up for FREE!
+                </button>
+              </>
+            ) : (
+              <div className="qbit-loggedin">
+                <img
+                  src={
+                    user?.avatar ||
+                    `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || 'guest'}`
+                  }
+                  alt="avatar"
+                  className="qbit-avatar"
+                  onClick={() => setShowAccount(true)}
+                />
+                <div className="qbit-welcome">
+                  <div>Welcome,</div>
+                  <strong>{user?.name || 'User'}</strong>
+                </div>
+                <button className="login-button logout-button" onClick={handleLogout}>
+                  Log Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Features Section */}
         <div className="home-menu__features">
+          <HomeForUser />
           <h2 className="features-title">Why kids love Kahoot!</h2>
           <div className="features-grid">
             <div className="feature-card">
@@ -64,31 +114,17 @@ function HomeMenu() {
         </div>
       </div>
 
-      {/* Login Modal */}
+      {/* Modals */}
       <Login
         show={showLogin}
         onClose={() => setShowLogin(false)}
-        onSwitchToRegister={() => {
-          setShowLogin(false);
-          setShowRegister(true);
-        }}
+        onSwitchToRegister={() => navigate("/Register")} // ➤ in case triggered inside login
         onSwitchToForgot={() => {
           setShowLogin(false);
           setShowForgotPass(true);
         }}
       />
 
-      {/* Register Modal */}
-      <Register
-        show={showRegister}
-        onClose={() => setShowRegister(false)}
-        onSwitchToLogin={() => {
-          setShowRegister(false);
-          setShowLogin(true);
-        }}
-      />
-
-      {/* Forgot Password Modal */}
       <ForgotPass
         show={showForgotPass}
         onClose={() => setShowForgotPass(false)}
@@ -96,6 +132,12 @@ function HomeMenu() {
           setShowForgotPass(false);
           setShowLogin(true);
         }}
+      />
+
+      <AccountScreen
+        show={showAccount}
+        onClose={() => setShowAccount(false)}
+        setUser={setUser}
       />
     </div>
   );

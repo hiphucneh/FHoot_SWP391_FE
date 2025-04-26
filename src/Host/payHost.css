@@ -1,0 +1,121 @@
+.payhost-page {
+    width: 100vw;
+    margin-top: 5rem; /* ⬅ tăng từ 3rem lên 5rem */
+    padding: 2rem 4rem;
+    background: #fff7cc;
+    border-radius: 0;
+    font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+  }
+  
+  
+  .payhost-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .payhost-header h1 {
+    font-size: 2.5rem;
+    color: #7e57c2;
+  }
+  
+  .payhost-header p {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .payhost-options {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  
+  .payhost-card {
+    flex: 1 1 300px;
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    max-width: 320px;
+  }
+  
+  .payhost-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .price {
+    font-size: 2rem;
+    color: #ff5722;
+    margin: 1rem 0;
+  }
+  
+  .payhost-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left;
+  }
+  
+  .payhost-card ul li {
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+  
+  .payhost-card button {
+    margin-top: 1rem;
+    background-color: #30c42d;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .payhost-card button:hover {
+    background-color: #5e35b1;
+  }
+  
+  .popular {
+    border: 3px solid #ff9800;
+    position: relative;
+  }
+  
+  .popular-badge {
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff9800;
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  
+  .payhost-back {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+  
+  .payhost-back button {
+    background-color: #7e57c2;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .payhost-back button:hover {
+    background-color: #5e35b1;
+  }
+  

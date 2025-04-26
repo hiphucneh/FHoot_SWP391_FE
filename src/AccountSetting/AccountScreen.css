@@ -136,3 +136,132 @@
     color: #444;
   }
   
+  .account-modal {
+    /* các thiết lập modal */
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .account-info {
+    margin-top: 20px;
+  }
+  
+  .update-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .save-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .cancel-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .save-button:hover, .cancel-button:hover {
+    opacity: 0.8;
+  }
+
+  .update-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px; /* tạo khoảng cách giữa hai nút */
+    margin-top: 20px;
+  }
+  
+  .save-button,
+  .cancel-button {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 12px; /* bo cong hơn */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.2s ease;
+  }
+  
+  .save-button {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .cancel-button {
+    background-color: #ebdddc;
+    color: white;
+  }
+  
+  .save-button:hover,
+  .cancel-button:hover {
+    opacity: 0.85;
+  }
+  
+  /* Overlay background */
+.account-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease forwards;
+  z-index: 1000;
+}
+
+/* Modal content */
+.account-modal {
+  background: white;
+  width: 400px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 15px;
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Fade in background */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slide in modal */
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Fade out when closing (optional if bạn muốn closing đẹp hơn) */
+.account-overlay.hide {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
