@@ -1,18 +1,19 @@
 import './AdvHost.css';
 import BannerHost from '../assets/host/banner-host.png';
 
-function AdvHost({ show, onClose }) {
+function AdvHost({ show, onClose, onBecomeHost }) {
   if (!show) return null;
-
-  const handleClick = () => {
-    window.location.href = "/payhost"; // 👉 chuyển router và reload
-  };
 
   return (
     <div className="advhost-overlay">
       <div className="advhost-modal">
         <img src={BannerHost} alt="Become a Host" className="advhost-banner" />
-        <button className="advhost-contact-button" onClick={handleClick}>
+        <button className="advhost-contact-button" onClick={() => {
+          onClose();
+          setTimeout(() => {
+            onBecomeHost();
+          }, 300);
+        }}>
           🚀 Become a Host NOW!
         </button>
 

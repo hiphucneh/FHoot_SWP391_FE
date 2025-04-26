@@ -62,51 +62,64 @@ function Header() {
     }
   };
 
+  const handleGoAdmin = (e) => {
+    e.preventDefault();
+    navigate("/HomeAdmin");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/Home";
+  };
+
   return (
     <>
       <header className="header" id="header">
-        <nav className="nav container">
-          <div
-            className="nav__logo"
-            onClick={() => {
-              navigate("/");
-              window.location.href = "/Home";
-            }}
-            style={{ cursor: "pointer" }}
+        <nav className="nav container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          
+          {/* Logo ở trái */}
+          <div 
+            className="nav__logo" 
+            onClick={() => { window.location.href = "/HomeAdmin"; }} 
+            style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
           >
-            <img src={logo} alt="Kahoot Logo" className="logo-image" />
-          </div>
+            <img src={logo} alt="Kahoot Logo" className="logo-image" />          </div>
 
-          <div className={`nav__menu ${showMenu ? "show-menu" : ""}`} id="nav-menu">
-            <ul className="nav__list">
-              <li className="nav__item">
-                <a
-                  className="nav__link"
-                  onClick={handleJoinGame}
-                  style={{ cursor: "pointer" }}
-                >
-                  Join a game
-                </a>
-              </li>
-            </ul>
-            <div
-              className="nav__close"
-              id="nav-close"
-              onClick={() => setShowMenu(false)}
-            >
-              <i className="ri-close-line"></i>
-            </div>
-          </div>
-
-          <div className="nav__actions">
+          {/* Menu ở giữa */}
+          <div className="nav__menu" id="nav-menu" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+            <a className="nav__link" onClick={handleJoinGame} style={{ cursor: "pointer" }}>Join a game</a>
             <a
               href="#"
               className="link"
               id="sign-up"
               onClick={handleCreateKahoot}
+              style={{ backgroundColor: "#ebc0c0", borderRadius: "5px", padding: "0.5rem 1rem" }}
             >
               <i className="fa-regular fa-envelope"></i> Create a Kahoot!
             </a>
+          </div>
+
+          {/* Góc phải - Admin Options */}
+          <div className="nav__actions" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            {isLoggedIn && userRole?.toLowerCase() === "admin" && (
+              <>
+                <button
+                  onClick={handleGoAdmin}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#0277bd",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    fontWeight: "bold",
+                    cursor: "pointer"
+                  }}
+                >
+                  Management
+                </button>
+              </>
+            )}
           </div>
         </nav>
       </header>

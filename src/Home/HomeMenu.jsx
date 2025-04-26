@@ -9,13 +9,14 @@ import 'remixicon/fonts/remixicon.css';
 
 function HomeMenu() {
   const navigate = useNavigate();
-  
+
   const [joinCode, setJoinCode] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -51,7 +52,7 @@ function HomeMenu() {
     <div className="home-menu-wrapper">
       <div className="home-menu">
 
-        {/* Top Section: Join Code + Login/Avatar Box */}
+        {/* Top Section */}
         <div className="home-menu__top">
           <div className="home-menu__join-box">
             <input
@@ -69,26 +70,17 @@ function HomeMenu() {
           <div className="home-menu__qbit-box">
             {!isLoggedIn ? (
               <>
-                <button
-                  className="sign-up-button"
-                  onClick={() => setShowLogin(true)}
-                >
+                <button className="sign-up-button" onClick={() => setShowLogin(true)}>
                   Log In
                 </button>
-                <button
-                  className="login-button"
-                  onClick={() => navigate("/Register")}
-                >
+                <button className="login-button" onClick={() => navigate("/Register")}>
                   Sign Up for FREE!
                 </button>
               </>
             ) : (
               <div className="qbit-loggedin">
                 <img
-                  src={
-                    user?.avatar ||
-                    `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || 'guest'}`
-                  }
+                  src={user?.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || 'guest'}`}
                   alt="avatar"
                   className="qbit-avatar"
                   onClick={() => setShowAccount(true)}
@@ -107,30 +99,15 @@ function HomeMenu() {
 
         {/* Features Section */}
         <div className="home-menu__features">
-          <HomeForUser />
+          <HomeForUser setShowLogin={setShowLogin} setRedirectAfterLogin={setRedirectAfterLogin} />
           
           <h2 className="features-title">Why kids love Kahoot!</h2>
           <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🎮</div>
-              <h3>Game-based Learning</h3>
-              <p>Learning feels like playtime with quizzes and competitions!</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">🎨</div>
-              <h3>Colorful & Fun</h3>
-              <p>Bright colors and animations that keep kids engaged.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">👨‍🏫</div>
-              <h3>For Class & Home</h3>
-              <p>Perfect for classrooms, homework, or fun with friends.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📈</div>
-              <h3>Learn & Improve</h3>
-              <p>Track progress while having fun. Education made exciting!..............................................................................................................................................................................................................................................................................................................................</p>
-            </div>
+            {/* Feature cards */}
+            <div className="feature-card"><div className="feature-icon">🎮</div><h3>Game-based Learning</h3><p>Learning feels like playtime with quizzes and competitions!</p></div>
+            <div className="feature-card"><div className="feature-icon">🎨</div><h3>Colorful & Fun</h3><p>Bright colors and animations that keep kids engaged.</p></div>
+            <div className="feature-card"><div className="feature-icon">👨‍🏫</div><h3>For Class & Home</h3><p>Perfect for classrooms, homework, or fun with friends.</p></div>
+            <div className="feature-card"><div className="feature-icon">📈</div><h3>Learn & Improve</h3><p>Track progress while having fun. Education made exciting!..............................................................................................................................................................................................................................................................................................................................</p></div>
           </div>
         </div>
       </div>
@@ -144,6 +121,7 @@ function HomeMenu() {
           setShowLogin(false);
           setShowForgotPass(true);
         }}
+        redirectPath={redirectAfterLogin || "/Home"} // <== new
       />
 
       <ForgotPass
