@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AdvHost from "../Host/AdvHost"; // 👈 Import AdvHost
 import "./AccountScreen.css";
 
 function AccountScreen({ show, onClose, setUser: setParentUser }) {
@@ -8,6 +9,7 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
   const [editData, setEditData] = useState({ name: "", age: "" });
   const [toast, setToast] = useState("");
   const [closing, setClosing] = useState(false);
+  const [showAdvHost, setShowAdvHost] = useState(false); // 👈 trạng thái bật popup AdvHost
 
   useEffect(() => {
     if (show) {
@@ -100,98 +102,103 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
   if (!user) return <div className="account-modal">Loading...</div>;
 
   return (
-    <div className={`account-overlay ${closing ? "hide" : ""}`}>
-      <div className="account-modal">
-        <div className="account-header">
-          <h3>Account Information</h3>
-          <i className="ri-close-line close-btn" onClick={handleClose}></i>
-        </div>
-
-        <div className="account-avatar-section">
-          <div className="avatar-wrapper">
-            <img
-              src={
-                avatarFile
-                  ? URL.createObjectURL(avatarFile)
-                  : user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email || "guest"}`
-              }
-              onError={(e) => (e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=guest`)}
-              alt="avatar"
-              className="account-avatar"
-            />
-
-            {editMode && (
-              <label className="camera-icon">
-                <i className="ri-camera-line"></i>
-                <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
-              </label>
-            )}
+    <>
+      <div className={`account-overlay ${closing ? "hide" : ""}`}>
+        <div className="account-modal">
+          <div className="account-header">
+            <h3>Account Information</h3>
+            <i className="ri-close-line close-btn" onClick={handleClose}></i>
           </div>
-        </div>
 
-        {editMode ? (
-          <div className="account-info">
-            <div className="info-item">
-              <label>Full Name:</label>
-              <input type="text" name="name" value={editData.name} onChange={handleChange} />
-            </div>
-            <div className="info-item">
-              <label>Age:</label>
-              <input type="number" name="age" value={editData.age} onChange={handleChange} />
-            </div>
-            <div className="update-buttons">
-              <button className="login__button save-button" onClick={handleUpdate}>
-                💾 Save Changes
-              </button>
-              <button className="login__button cancel-button" onClick={() => setEditMode(false)}>
-                ❌ Cancel
-              </button>
+          <div className="account-avatar-section">
+            <div className="avatar-wrapper">
+              <img
+                src={
+                  avatarFile
+                    ? URL.createObjectURL(avatarFile)
+                    : user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email || "guest"}`
+                }
+                onError={(e) => (e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=guest`)}
+                alt="avatar"
+                className="account-avatar"
+              />
+
+              {editMode && (
+                <label className="camera-icon">
+                  <i className="ri-camera-line"></i>
+                  <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
+                </label>
+              )}
             </div>
           </div>
-        ) : (
-          <div className="account-info">
-            <div className="info-item">
-              <label>Role:</label>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                <p style={{ margin: 0 }}>{user?.role}</p>
-                {user?.role?.toLowerCase() === "user" && (
-                  <span
-                    style={{
-                      fontSize: "0.85rem",
-                      color: "#ff9800",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                    }}
-                    onClick={() => window.location.href = "/payhost"}
-                  >
-                    🚀 Upgrade to Host
-                  </span>
-                )}
+
+          {editMode ? (
+            <div className="account-info">
+              <div className="info-item">
+                <label>Full Name:</label>
+                <input type="text" name="name" value={editData.name} onChange={handleChange} />
+              </div>
+              <div className="info-item">
+                <label>Age:</label>
+                <input type="number" name="age" value={editData.age} onChange={handleChange} />
+              </div>
+              <div className="update-buttons">
+                <button className="login__button save-button" onClick={handleUpdate}>
+                  💾 Save Changes
+                </button>
+                <button className="login__button cancel-button" onClick={() => setEditMode(false)}>
+                  ❌ Cancel
+                </button>
               </div>
             </div>
-            <div className="info-item">
-              <label>Full Name:</label>
-              <p>{user?.name}</p>
+          ) : (
+            <div className="account-info">
+              <div className="info-item">
+                <label>Role:</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <p style={{ margin: 0 }}>{user?.role}</p>
+                  {user?.role?.toLowerCase() === "user" && (
+                    <span
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "#ff9800",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                      onClick={() => setShowAdvHost(true)}
+                    >
+                      🚀 Upgrade to Host
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="info-item">
+                <label>Full Name:</label>
+                <p>{user?.name}</p>
+              </div>
+              <div className="info-item">
+                <label>Email:</label>
+                <p>{user?.email}</p>
+              </div>
+              <div className="info-item">
+                <label>Age:</label>
+                <p>{user?.age}</p>
+              </div>
+              <div className="update-button">
+                <button className="login__button" onClick={() => setEditMode(true)}>
+                  ✏️ Edit Profile
+                </button>
+              </div>
             </div>
-            <div className="info-item">
-              <label>Email:</label>
-              <p>{user?.email}</p>
-            </div>
-            <div className="info-item">
-              <label>Age:</label>
-              <p>{user?.age}</p>
-            </div>
-            <div className="update-button">
-              <button className="login__button" onClick={() => setEditMode(true)}>
-                ✏️ Edit Profile
-              </button>
-            </div>
-          </div>
-        )}
+          )}
 
-        {toast && <div className="toast">{toast}</div>}
+          {toast && <div className="toast">{toast}</div>}
+        </div>
       </div>
-    </div>
+
+      {/* Popup Upgrade to Host */}
+      <AdvHost show={showAdvHost} onClose={() => setShowAdvHost(false)} />
+    </>
   );
 }
 

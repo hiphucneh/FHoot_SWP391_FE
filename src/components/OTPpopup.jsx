@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import "./styles.css";
-import "remixicon/fonts/remixicon.css";
-import RegisterSuccessful from "./RegisterSuccessful";
+import "./RegisterPage.css";
+import { useNavigate } from "react-router-dom";
 
-function OTPpopup({ onClose, onBackToRegister, email }) {
+function OTPpopup({ email, password, onClose, onBackToRegister }) {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [message, setMessage] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 6);
@@ -19,15 +19,11 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
   };
 
   const handleVerify = async () => {
-    if (otp.length !== 6) {
-      setMessage("Please enter a 6-digit OTP");
-      return;
-    }
-
+    if (otp.length !== 6) return setMessage("Please enter a 6-digit OTP");
     setIsVerifying(true);
 
     try {
-      const res = await fetch(
+      const verifyRes = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/verify-account",
         {
           method: "POST",
@@ -36,11 +32,39 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
         }
       );
 
-      const result = await res.json();
-      if (result.statusCode === 200) {
-        setShowSuccess(true); // ✅ show success popup
+      const verifyData = await verifyRes.json();
+      if (verifyRes.ok && verifyData.statusCode === 200) {
+        // ✅ Xác thực OTP thành công, tiến hành đăng nhập
+        const loginRes = await fetch(
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "*/*",
+            },
+            body: JSON.stringify({
+              email,
+              password,
+              fcmToken: "web-client-placeholder",
+            }),
+          }
+        );
+
+        const loginData = await loginRes.json();
+        if (loginRes.ok && loginData.statusCode === 200) {
+          const token = loginData.data.accessToken;
+          localStorage.setItem("token", token);
+          localStorage.setItem("refreshToken", loginData.data.refreshToken);
+
+          // ✅ Navigate sang UserSetupPage
+          navigate("/UserSetupPage");
+        } else {
+          setMessage("Auto-login failed. Please login manually.");
+          console.error(loginData);
+        }
       } else {
-        setMessage(result.message || "OTP verification failed");
+        setMessage(verifyData.message || "OTP verification failed");
       }
     } catch (err) {
       setMessage("Error: " + err.message);
@@ -98,84 +122,44 @@ function OTPpopup({ onClose, onBackToRegister, email }) {
   }, [resendDisabled]);
 
   return (
-    <div className="login show-login" id="otp-popup">
-      <form className="login__form" onSubmit={(e) => e.preventDefault()}>
-        <h2 className="login__title">Enter OTP</h2>
-        <p className="login__description">
-          We’ve sent a 6-digit code to {email}
-        </p>
+    <div className="otp-overlay">
+      <div className="register-box otp-box">
+        <h2>📩 Enter Your OTP</h2>
+        <p className="otp-subtext">We've sent a 6-digit code to <strong>{email}</strong></p>
 
-        <div className="login__group">
-          <div>
-            <label htmlFor="otp" className="login__label">
-              OTP Code
-            </label>
-            <input
-              type="text"
-              id="otp"
-              className="login__input"
-              placeholder="______"
-              value={otp}
-              onChange={handleChange}
-              maxLength="6"
-              disabled={isVerifying}
-            />
-          </div>
-        </div>
+        <input
+          type="text"
+          placeholder="🔢 Enter OTP"
+          value={otp}
+          onChange={handleChange}
+          maxLength={6}
+          required
+        />
 
-        {message && <p className="login__error">{message}</p>}
+        {message && <p className="register-error">{message}</p>}
 
         <button
-          type="button"
-          className={`login__button ${isVerifying ? "loading" : ""}`}
+          className={`otp-btn ${isVerifying ? "loading" : ""}`}
           onClick={handleVerify}
           disabled={isVerifying}
         >
           {isVerifying ? "Verifying..." : "Verify"}
         </button>
 
-        <div className="login__resend">
-          <button
-            type="button"
-            className={`login__button resend ${
-              resendDisabled || isResending ? "disabled" : ""
-            }`}
-            onClick={handleResend}
-            disabled={resendDisabled || isResending}
-          >
-            {isResending
-              ? "Resending..."
-              : `Resend OTP ${resendDisabled ? `(${timer}s)` : ""}`}
-          </button>
-        </div>
+        <button
+          className="otp-resend"
+          onClick={handleResend}
+          disabled={resendDisabled || isResending}
+        >
+          {isResending ? "Resending..." : `Resend OTP ${resendDisabled ? `(${timer}s)` : ""}`}
+        </button>
 
-        <p className="login__signup">
-          Wrong email?{" "}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onBackToRegister();
-            }}
-          >
-            Back to Sign Up
-          </a>
+        <p className="login-link">
+          Wrong email? <span onClick={onBackToRegister}>Go Back</span>
         </p>
-      </form>
-      <RegisterSuccessful
-        show={showSuccess}
-        onClose={() => setShowSuccess(false)}
-        onGoToLogin={() => {
-          setShowSuccess(false);
-          onClose(); // đóng popup OTP
-          onBackToRegister(); // quay về Login
-        }}
-      />
-      <i
-        className="ri-close-line login__close"
-        id="otp-close"
-        onClick={onClose}
-      ></i>
+
+        <i className="ri-close-line login__close" onClick={onClose}></i>
+      </div>
     </div>
   );
 }

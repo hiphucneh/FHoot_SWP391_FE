@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Login from '../components/Login';
-import Register from '../components/Register';
 import ForgotPass from '../components/ForgotPass';
 import AccountScreen from '../AccountSetting/AccountScreen';
 import HomeForUser from '../Home/HomeForUser.jsx';
@@ -9,11 +9,12 @@ import 'remixicon/fonts/remixicon.css';
 
 function HomeMenu() {
   const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -56,7 +57,7 @@ function HomeMenu() {
                 </button>
                 <button
                   className="login-button"
-                  onClick={() => setShowRegister(true)}
+                  onClick={() => navigate("/Register")} // ➤ redirect to Register page
                 >
                   Sign Up for FREE!
                 </button>
@@ -86,7 +87,7 @@ function HomeMenu() {
 
         {/* Features Section */}
         <div className="home-menu__features">
-        <HomeForUser />
+          <HomeForUser />
           <h2 className="features-title">Why kids love Kahoot!</h2>
           <div className="features-grid">
             <div className="feature-card">
@@ -117,22 +118,10 @@ function HomeMenu() {
       <Login
         show={showLogin}
         onClose={() => setShowLogin(false)}
-        onSwitchToRegister={() => {
-          setShowLogin(false);
-          setShowRegister(true);
-        }}
+        onSwitchToRegister={() => navigate("/Register")} // ➤ in case triggered inside login
         onSwitchToForgot={() => {
           setShowLogin(false);
           setShowForgotPass(true);
-        }}
-      />
-
-      <Register
-        show={showRegister}
-        onClose={() => setShowRegister(false)}
-        onSwitchToLogin={() => {
-          setShowRegister(false);
-          setShowLogin(true);
         }}
       />
 
@@ -148,7 +137,7 @@ function HomeMenu() {
       <AccountScreen
         show={showAccount}
         onClose={() => setShowAccount(false)}
-        setUser={setUser} // Đồng bộ avatar sau update
+        setUser={setUser}
       />
     </div>
   );

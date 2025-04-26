@@ -1,0 +1,289 @@
+.register-page {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5e9ff, #ffe7e7);
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+
+  
+  
+  .register-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .register-box h2 {
+    font-size: 1.8rem;
+    color: #7e57c2;
+  }
+  
+  .register-box input {
+    padding: 0.75rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .register-box button {
+    background: #30c42d;
+    color: white;
+    font-size: 1rem;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  
+  .register-box button:hover {
+    background: #5e35b1;
+  }
+  
+  .register-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+  }
+  
+  .login-link {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .login-link span {
+    color: #7e57c2;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .password-input {
+    position: relative;
+  }
+  
+  .password-input input {
+    width: 100%;
+  }
+  
+  .password-input i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+  }
+  
+  .password-input i:hover {
+    color: #5eba4c;
+  }
+  
+  .recaptcha-wrapper {
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+ /* ========== OTP POPUP (updated) ========== */
+.otp-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .otp-box {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    padding: 2rem;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1010;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  .otp-box h2 {
+    font-size: 1.7rem;
+    color: #5e35b1;
+    margin-bottom: 0.5rem;
+  }
+  
+  .otp-subtext {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .otp-box input {
+    padding: 0.9rem;
+    font-size: 1.1rem;
+    border-radius: 0.75rem;
+    border: 2px solid #ccc;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .otp-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: white;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+  }
+  
+  .otp-btn:hover {
+    background: linear-gradient(135deg, #388e3c, #66bb6a);
+    transform: scale(1.03);
+  }
+  
+  .otp-resend {
+    display: inline-block;
+    background: #f0f0f0; /* nền xám nhạt */
+    color: #555; /* chữ xám nhẹ */
+    padding: 0.4rem 1rem; /* nhỏ hơn bình thường */
+    border-radius: 50px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+    width: auto; /* không chiếm full */
+    min-width: 140px;
+  }
+  
+  .otp-resend:disabled {
+    opacity: 0.6;
+    background: #eee;
+    cursor: not-allowed;
+  }
+  
+  .otp-resend:not(:disabled):hover {
+    background: #e0e0e0;
+    transform: scale(1.02);
+  }
+  
+  
+  .register-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: -0.3rem;
+  }
+  
+  .login-link {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 1rem;
+  }
+  
+  .login-link span {
+    color: #5e35b1;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .otp-box .login__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .otp-box .login__close:hover {
+    color: #555;
+  }
+  
+  /* FadeIn Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8);}
+    to { opacity: 1; transform: scale(1);}
+  }
+  
+  /* Avatar display */
+.avatar-wrapper {
+    position: relative;
+    width: 120px;
+    margin: 0 auto 1rem;
+  }
+  
+  .avatar-img {
+    width: 100%;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .camera-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #7e57c2;
+    color: white;
+    border-radius: 50%;
+    padding: 0.4rem;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  }
+  
+  /* Toggle Buttons */
+  .interactive-inputs .toggle-btn {
+    background: #f3f0ff;
+    color: #5e35b1;
+    border: 2px solid #d1c4e9;
+    border-radius: 50px;
+    padding: 0.6rem 1.2rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  .interactive-inputs .toggle-btn:hover {
+    background: #e0d7ff;
+  }
+  
+  /* Gender select styling */
+  .gender-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background: #fff;
+    color: #333;
+  }
+  
