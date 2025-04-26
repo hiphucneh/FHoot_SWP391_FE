@@ -1,0 +1,397 @@
+.pageContainer {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #f5f3ff, #e0e7ff);
+  overflow: hidden;
+}
+
+/* Sidebar bên trái */
+.sidebar {
+  width: 300px;
+  background: white;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.backButton {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #4c1d95;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.profile {
+  text-align: center;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid #4c1d95;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.name {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4c1d95;
+}
+
+.email {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.totalQuiz {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Main content bên phải */
+.mainContent {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 28px;
+  color: #4c1d95;
+  margin-bottom: 20px;
+}
+
+/* Search Box */
+.searchBox {
+  margin-bottom: 20px;
+}
+.searchBox input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Quiz List */
+.quizList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quizCard {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s;
+}
+.quizCard:hover {
+  transform: translateY(-5px);
+}
+
+.cardContent {
+  z-index: 1;
+}
+
+.cardActions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.quizCard:hover .cardActions {
+  opacity: 1;
+}
+
+/* Các button Edit + Delete */
+.editButton {
+  background-color: #d1c4e9;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.deleteButton {
+  background-color: #ff5252;
+  color: yellow;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  gap: 15px;
+}
+
+.pageButton {
+  background-color: #4c1d95;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+.pageButton:disabled {
+  background-color: #c4b5fd;
+  cursor: not-allowed;
+}
+.pageNumber {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4c1d95;
+}
+
+/* Modal Confirm Delete */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s;
+}
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  animation: popUp 0.3s;
+}
+.modalButtons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.cancelButton {
+  background: #ccc;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.confirmDeleteButton {
+  background: red;
+  color: yellow;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+@keyframes popUp {
+  from {transform: scale(0.8);}
+  to {transform: scale(1);}
+}
+
+/* Create Kahoot Button */
+.createButtonWrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.createButton {
+  display: flex;
+  padding: 10px 30px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  color: white;
+  background: #6225E6;
+  transition: 0.5s;
+  box-shadow: 6px 6px 0 black;
+  transform: skewX(-15deg);
+  cursor: pointer;
+  text-decoration: none;
+}
+.createButton:hover {
+  box-shadow: 10px 10px 0 #FBC638;
+}
+
+/* Chỉ ảnh hưởng SVG mũi tên trong nút */
+.createButton span {
+  transform: skewX(15deg);
+}
+.createButton span:nth-child(2) {
+  margin-left: 20px;
+  transition: 0.5s;
+}
+.createButton:hover span:nth-child(2) {
+  margin-left: 40px;
+}
+.createButton path.one,
+.createButton path.two {
+  transition: transform 0.5s;
+}
+.createButton:hover path.one,
+.createButton:hover path.two {
+  transform: translateX(0%);
+}
+.createButton:hover path.three {
+  animation: color_anim 1s infinite;
+}
+
+@keyframes color_anim {
+  0% { fill: white; }
+  50% { fill: #FBC638; }
+  100% { fill: white; }
+}
+
+.createButtonWrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.createButton {
+  background-color: #4c1d95;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.createButton:hover {
+  background-color: #6d28d9;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Cập nhật file KahootLists.module.css */
+
+.createButtonWrapper {
+  position: absolute; /* Định vị tuyệt đối theo sidebar */
+  bottom: 30px; /* Cách đáy sidebar 30px */
+  left: 50%; 
+  transform: translateX(-50%); /* Canh giữa */
+  width: 100%; /* Chiếm đủ width sidebar */
+  display: flex;
+  justify-content: center;
+}
+
+.createButton {
+  background: #4c1d95;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(76, 29, 149, 0.3);
+  transition: all 0.3s ease;
+}
+
+.createButton:hover {
+  background: #6d28d9;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(76, 29, 149, 0.4);
+}
+
+/* QUAN TRỌNG: thêm position: relative vào sidebar để absolute hoạt động */
+.sidebar {
+  width: 300px;
+  background: white;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* 🛑 thêm dòng này */
+}
+
+.buttonGroup {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Nút Import File */
+.importButton {
+  background: #e5e7eb; /* màu xám nhạt */
+  color: #333;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px; /* nhẹ nhẹ thôi */
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 80%;
+}
+
+.importButton:hover {
+  background: #d1d5db;
+  transform: translateY(-2px);
+}
+
+/* Nút Create Kahoot! */
+.createButton {
+  background: #4c1d95;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(76, 29, 149, 0.3);
+  width: 80%;
+  
+}
+
+.createButton:hover {
+  background: #6d28d9;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(76, 29, 149, 0.4);
+}

@@ -11,13 +11,13 @@ import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
-import HomeAdmin from "./Admin/HomeAdmin"; // 👉 Import thêm HomeAdmin
+import HomeAdmin from "./Admin/HomeAdmin";
+import KahootLists from "./screens/KahootLists"; // 👉 NEW
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Home Page */}
         <Route
           path="/Home"
           element={
@@ -29,20 +29,17 @@ function App() {
           }
         />
 
-        {/* Home Admin Page */}
         <Route
           path="/HomeAdmin"
           element={
             <>
               <HomeAdmin />
-
             </>
           }
         />
 
         <Route path="/register" element={<RegisterPage />} />
-        
-        {/* Information Page */}
+
         <Route
           path="/Information"
           element={
@@ -56,7 +53,6 @@ function App() {
 
         <Route path="/UserSetupPage" element={<UserSetupPage />} />
 
-        {/* Pay Host Page */}
         <Route
           path="/PayHost"
           element={
@@ -72,7 +68,17 @@ function App() {
 
         <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
 
-        {/* Redirect / to /Home */}
+        {/* New: Your Kahoot Lists */}
+        <Route
+          path="/your-kahoots"
+          element={
+            <>
+              <KahootLists />
+            </>
+          }
+        />
+
+        {/* Default redirect to Home */}
         <Route
           path="/"
           element={

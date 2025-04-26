@@ -1,12 +1,12 @@
 .container {
-    width: 100vw; /* new: full width của màn hình */
-    height: 100vh; /* full height */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-size: cover;
+    background: rgba(142, 94, 225, 0.2); /* 🎯 Màu tím nhạt trong suốt */
     font-family: 'Arial', sans-serif;
-    overflow: hidden; /* đảm bảo không bị scroll thanh ngang */
+    overflow: hidden;
   }
   
   .formBox {
