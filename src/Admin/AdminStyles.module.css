@@ -305,6 +305,43 @@
   }
   
   /* Popup */
+  /* Thêm animation mới */
+@keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Sửa .popupOverlay */
+  .popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  /* Thêm animation popupContent */
+  .popupContent {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    animation: fadeInScale 0.4s ease;
+  }
+  
   .popupOverlay {
     position: fixed;
     top: 0;
@@ -441,3 +478,4 @@
 .blockSmallButton:hover {
     background-color: #dc2626;
 }
+
