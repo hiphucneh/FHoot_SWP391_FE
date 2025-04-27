@@ -593,3 +593,60 @@ html, body {
   width: 100%;
   overflow-x: hidden; /* ⬅ Chặn scroll ngang */
 }
+
+/* Thêm dưới cuối file styles.css */
+.fade-in {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  margin-top: 20px;
+}
+
+.fade-in.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Nhỏ lại nút Check OTP */
+.small-button {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  height: 42px;
+}
+
+/* Spinner loading hiệu ứng */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #fff;
+  border-top: 3px solid #4c1d95; /* màu tím đậm */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+/* Keyframes quay */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.password-checks {
+  margin-top: 6px;
+  text-align: left; /* căn trái */
+  padding-left: 4px; /* nhẹ nhàng */
+}
+
+.password-checks p {
+  font-size: 12px; /* chữ nhỏ hơn */
+  margin: 2px 0;
+  transition: color 0.3s ease;
+}
+
+.password-checks .valid {
+  color: green;
+}
+
+.password-checks .invalid {
+  color: red;
+}

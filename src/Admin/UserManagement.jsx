@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ConfirmModal from "./ConfirmModal";
 import Toast from "./Toast";
 import styles from "./ControlAdminStyles.module.css"; // Import CSS module
 
@@ -58,27 +57,26 @@ function UserManagement() {
           <tbody>
             {users.map((user, idx) => (
               <>
-              <tr key={user.id} className={styles.tableRow}>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td>{user.status}</td>
-                <td>
-                  <button
-                    onClick={() => openRoleModal(user)}
-                    className={styles.actionButton}
-                  >
-                    Change Role
-                  </button>
-                </td>
-              </tr>
-              {/* Dải gạch nhỏ ngăn cách */}
-              {idx !== users.length - 1 && (
-                <tr>
-                  <td colSpan="4">
-                    <div className={styles.separator}></div>
+                <tr key={user.id} className={styles.tableRow}>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>{user.status}</td>
+                  <td>
+                    <button
+                      onClick={() => openRoleModal(user)}
+                      className={styles.actionButton}
+                    >
+                      Change Role
+                    </button>
                   </td>
                 </tr>
-              )}
+                {idx !== users.length - 1 && (
+                  <tr>
+                    <td colSpan="4">
+                      <div className={styles.separator}></div>
+                    </td>
+                  </tr>
+                )}
               </>
             ))}
           </tbody>

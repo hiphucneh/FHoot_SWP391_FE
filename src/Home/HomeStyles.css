@@ -202,3 +202,21 @@
   color: #fff;
 }
 
+.join-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Để input chiếm toàn bộ chiều ngang nếu cần */
+}
+
+.join-error {
+  margin-top: 6px;
+  color: red;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.join-error::before {
+  margin-right: 4px;
+}

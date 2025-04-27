@@ -5,7 +5,7 @@ import styles from "./EnterPinCodeScreen.module.css";
 export default function EnterPinCodeScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [gamePin, setGamePin] = useState("");
 
   useEffect(() => {
@@ -32,10 +32,18 @@ export default function EnterPinCodeScreen() {
           type="text"
           placeholder="Game PIN"
           value={gamePin}
-          onChange={(e) => setGamePin(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            const numericValue = value.replace(/\D/g, ""); // 🔥 Chỉ số
+            if (numericValue.length <= 10) {
+              setGamePin(numericValue);
+            }
+          }}
           className={styles.inputField}
         />
-        <button className={styles.joinButton}>Join</button>
+        <button className={styles.joinButton}>
+          Join
+        </button>
       </div>
 
       <div className={styles.footer}>
