@@ -53,6 +53,11 @@ function RegisterPage() {
     }
   };
 
+  // Check validation rules
+  const isLengthValid = password.length >= 8 && password.length <= 16;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
   return (
     <div className="register-page">
       <form className="register-box" onSubmit={handleSubmit}>
@@ -78,6 +83,19 @@ function RegisterPage() {
             className={showPassword ? "ri-eye-off-line" : "ri-eye-line"}
             onClick={() => setShowPassword((prev) => !prev)}
           ></i>
+        </div>
+
+        {/* ✅ Validation hints */}
+        <div className="password-checks">
+          <p className={isLengthValid ? "valid" : "invalid"}>
+            {isLengthValid ? "✔" : "✖"} 8–16 characters
+          </p>
+          <p className={hasUppercase ? "valid" : "invalid"}>
+            {hasUppercase ? "✔" : "✖"} At least 1 uppercase letter
+          </p>
+          <p className={hasSpecialChar ? "valid" : "invalid"}>
+            {hasSpecialChar ? "✔" : "✖"} At least 1 special character
+          </p>
         </div>
 
         <div className="password-input">
@@ -123,7 +141,7 @@ function RegisterPage() {
           onClose={() => setShowOTP(false)}
           onBackToRegister={() => {
             setShowOTP(false);
-            navigate("/Home", { state: { showLogin: true }, replace: true }); 
+            navigate("/Home", { state: { showLogin: true }, replace: true });
           }}
         />
       )}

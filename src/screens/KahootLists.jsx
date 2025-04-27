@@ -114,7 +114,7 @@ function KahootLists() {
             <h2 className={styles.name}>{userInfo.name}</h2>
             <p className={styles.email}>{userInfo.email}</p>
             <p className={styles.totalQuiz}>
-              Total Quizzes: <strong>{quizzes.length}</strong>
+              {quizzes.length <= 1 ? "Quizz" : "Quizzes"}: <strong>{quizzes.length}</strong>
             </p>
             <div className={styles.buttonGroup}>
               <button className={styles.importButton} onClick={() => alert("Import file feature coming soon!")}>
@@ -147,8 +147,12 @@ function KahootLists() {
           {currentQuizzes.map((quiz) => (
             <div key={quiz.quizId} className={styles.quizCard}>
               <div className={styles.cardContent}>
-                <h3>{quiz.title}</h3>
-                <p>Questions: {quiz.questions.length}</p>
+                <div className={styles.quizInfo}>
+                  <div>
+                    <h3>{quiz.title}</h3>
+                    <p>Questions: {quiz.questions.length}</p>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.cardActions}>

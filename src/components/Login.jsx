@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase"; // 🔥 import Firebase đã config
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
 
@@ -15,61 +17,50 @@ function Login({ show, onClose, onSwitchToForgot }) {
     if (show) setErrorMessage("");
   }, [show]);
 
+  const loginUser = async (token) => {
+    try {
+      const userRes = await fetch(
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
+        { headers: { Authorization: `Bearer ${token}`, Accept: "*/*" } }
+      );
+      const userData = await userRes.json();
+      localStorage.setItem("user", JSON.stringify(userData.data || userData));
+
+      window.location.href = (userData.data || userData).role === "Admin" ? "/HomeAdmin" : "/Home";
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Failed to fetch user info.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setIsLoading(true);
 
     try {
-      const response = await fetch(
+      const res = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            fcmToken: "web-client-placeholder",
-          }),
+          headers: { "Content-Type": "application/json", Accept: "*/*" },
+          body: JSON.stringify({ email, password, fcmToken: "web-client-placeholder" }),
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok && data.statusCode === 200) {
+      const data = await res.json();
+      if (res.ok && data.statusCode === 200) {
         const token = data.data.accessToken || data.data.token;
-        if (!token) throw new Error("No token returned from API");
+        if (!token) throw new Error("No token received");
 
         localStorage.setItem("token", token);
-
-        const userRes = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "*/*",
-            },
-          }
-        );
-        const userData = await userRes.json();
-        const user = userData.data || userData;
-        localStorage.setItem("user", JSON.stringify(user));
-
-        // 👉 Check role ở đây
-        if (user.role === "Admin") {
-          window.location.href = "/HomeAdmin";
-        } else {
-          window.location.href = "/Home";
-        }
+        await loginUser(token);
       } else {
-        setErrorMessage("Invalid Email or Password");
+        setErrorMessage(data.message || "Invalid Email or Password");
       }
     } catch (err) {
       console.error(err);
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage("Something went wrong. Try again.");
     } finally {
       setIsLoading(false);
     }
@@ -80,55 +71,31 @@ function Login({ show, onClose, onSwitchToForgot }) {
     setIsGoogleLoading(true);
 
     try {
-      const idToken = prompt("Enter your Google idToken:");
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
 
-      if (!idToken) {
-        setErrorMessage("No idToken provided.");
-        setIsGoogleLoading(false);
-        return;
-      }
+      const idToken = await result.user.getIdToken(); // 🔥 lấy idToken chuẩn
 
-      const response = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
+      if (!idToken) throw new Error("No idToken received");
+
+      const res = await fetch(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google?idToken=${idToken}&fcmToken=web-client-placeholder`,
         {
           method: "POST",
           headers: {
-            "Authorization": "Bearer dummy-token-for-now",
+            accept: "*/*",
+            Authorization: "Bearer dummy-token", // BE yêu cầu 1 dummy-token
           },
-          body: JSON.stringify({
-            idToken: idToken,
-            fcmToken: "web-client-placeholder",
-          }),
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok && data.statusCode === 200) {
+      const data = await res.json();
+      if (res.ok && data.statusCode === 200) {
         const token = data.data.accessToken || data.data.token;
-        if (!token) throw new Error("No token returned from Google login");
+        if (!token) throw new Error("No token returned");
 
         localStorage.setItem("token", token);
-
-        const userRes = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "*/*",
-            },
-          }
-        );
-        const userData = await userRes.json();
-        const user = userData.data || userData;
-        localStorage.setItem("user", JSON.stringify(user));
-
-        // 👉 Check role ở đây
-        if (user.role === "Admin") {
-          window.location.href = "/HomeAdmin";
-        } else {
-          window.location.href = "/Home";
-        }
+        await loginUser(token);
       } else {
         setErrorMessage(data.message || "Google login failed.");
       }
@@ -147,38 +114,34 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
         <div className="login__group">
           <div>
-            <label htmlFor="email" className="login__label">Email</label>
+            <label className="login__label">Email</label>
             <input
               type="email"
-              id="email"
               className="login__input"
               placeholder="Write your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               disabled={isLoading}
+              required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="login__label">Password</label>
+            <label className="login__label">Password</label>
             <input
               type="password"
-              id="password"
               className="login__input"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
               disabled={isLoading}
+              required
             />
           </div>
         </div>
 
         {errorMessage && (
-          <p style={{ color: "red", marginTop: "10px", marginBottom: "-10px" }}>
-            {errorMessage}
-          </p>
+          <p className="login__error">{errorMessage}</p>
         )}
 
         <div style={{ marginTop: "20px" }}>
@@ -193,13 +156,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
         <p className="login__signup">
           Don't have an account?{" "}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/Register");
-            }}
-          >
+          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/Register"); }}>
             Sign up
           </a>
         </p>
@@ -207,18 +164,15 @@ function Login({ show, onClose, onSwitchToForgot }) {
         <a
           href="#"
           className="login__forgot"
-          onClick={(e) => {
-            e.preventDefault();
-            onSwitchToForgot();
-          }}
+          onClick={(e) => { e.preventDefault(); onSwitchToForgot(); }}
         >
           Forgot your password?
         </a>
 
         <div className="login__google">
           <button
-            className="login__google-button"
             type="button"
+            className="login__google-button"
             onClick={handleGoogleLogin}
             disabled={isGoogleLoading}
           >

@@ -1,0 +1,95 @@
+.advteacher-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .advteacher-modal {
+    background: white;
+    width: 90%;
+    max-width: 650px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    font-family: 'Segoe UI', sans-serif;
+    animation: popupOpen 0.4s forwards;
+  }
+  
+  .advteacher-content {
+    display: flex;
+    width: 100%;
+    height: 300px;
+  }
+  
+  .advteacher-left, .advteacher-right {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .advteacher-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .advteacher-buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1rem;
+    background: white;
+  }
+  
+  .extend-button, .create-button {
+    flex: 1;
+    margin: 0 0.5rem;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .extend-button {
+    background-color: #00BCD4; /* xanh biển */
+    color: white;
+  }
+  
+  .create-button {
+    background-color: #4CAF50; /* xanh lá */
+    color: white;
+  }
+  
+  .extend-button:hover {
+    background-color: #00ACC1;
+  }
+  
+  .create-button:hover {
+    background-color: #43A047;
+  }
+  
+  .advteacher-close {
+    position: absolute;
+    top: 0.7rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #555;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Animation mượt */
+  @keyframes popupOpen {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
