@@ -1,6 +1,6 @@
 import "./components/styles.css";
 import "remixicon/fonts/remixicon.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import CreateQuestion from "./screens/CreateQuestionScreen";
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
-import HomeAdmin from "./Admin/HomeAdmin"; // 👉 Import thêm HomeAdmin
+
 import CreateKahoot from "./screens/CreateKahootScreen"; // 👉 Import thêm CreateKahoot
 import HomeAdmin from "./Admin/HomeAdmin";
 import KahootLists from "./screens/KahootLists";

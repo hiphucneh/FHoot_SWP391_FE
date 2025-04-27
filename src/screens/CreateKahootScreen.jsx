@@ -76,7 +76,7 @@ const CreateKahoot = () => {
         <div
             className="create-kahoot-screen"
             style={{
-                zIndex: 0,
+
                 width: "100%",
                 height: "100vh",
                 position: "absolute",
