@@ -19,6 +19,8 @@ import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 import CreateKahoot from "./screens/CreateKahootScreen"; // 👉 Import thêm CreateKahoot
 import HomeAdmin from "./Admin/HomeAdmin";
 import KahootLists from "./screens/KahootLists";
+import UpdateKahoot from "./screens/UpdateKahootScreen";
+import UpdateQuestion from "./screens/UpdateQuestionScreen";
 
 function App() {
   return (
@@ -27,7 +29,8 @@ function App() {
         <Routes>
           <Route path="/createq" element={<CreateQuestion />} />
           <Route path="/createk" element={<CreateKahoot />} />
-
+          <Route path="/updateK" element={<UpdateKahoot />} />
+          <Route path="/updateq" element={<UpdateQuestion />} />
           {/* Home */}
           <Route path="/Home" element={<><Header /><HomeMenu /><Footer /></>} />
           <Route path="/HomeAdmin" element={<HomeAdmin />} />
@@ -38,6 +41,7 @@ function App() {
           <Route path="/PayHost" element={<><Header /><PayHost /><Footer /></>} />
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
+
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />

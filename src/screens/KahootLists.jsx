@@ -51,7 +51,9 @@ function KahootLists() {
   };
 
   const handleEdit = (quiz) => {
-    alert(`📝 Edit Quiz: ${quiz.title}`);
+
+
+    navigate("/updateK", { state: { quiz } });
   };
 
   const handleDeleteClick = (quiz) => {
