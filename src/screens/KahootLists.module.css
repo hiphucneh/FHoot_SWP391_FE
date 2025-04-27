@@ -395,3 +395,62 @@
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 6px 12px rgba(76, 29, 149, 0.4);
 }
+
+.cardActions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: row; /* 🛑 chuyển từ column thành row */
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* khoảng cách giữa nút */
+  opacity: 0;
+  transition: opacity 0.3s;
+  width: auto; /* co theo nội dung */
+}
+
+.quizCard:hover .cardActions {
+  opacity: 1;
+}
+
+/* Các nút gọn và nhỏ đồng đều */
+.playButton, .editButton, .deleteButton {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap; /* Không bị xuống dòng */
+}
+
+/* Nút Play */
+.playButton {
+  background-color: #4c1d95;
+  color: white;
+  border: none;
+}
+.playButton:hover {
+  background-color: #6d28d9;
+}
+
+/* Nút Edit */
+.editButton {
+  background-color: #d1c4e9;
+  border: none;
+  color: #333;
+}
+.editButton:hover {
+  background-color: #b39ddb;
+}
+
+/* Nút Delete */
+.deleteButton {
+  background-color: #ff5252;
+  color: yellow;
+  border: none;
+}
+.deleteButton:hover {
+  background-color: #e53935;
+}

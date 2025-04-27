@@ -12,6 +12,7 @@ function KahootLists() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,9 +59,46 @@ function KahootLists() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    setQuizzes((prev) => prev.filter((q) => q.id !== quizToDelete.id));
-    setShowDeleteModal(false);
+  const confirmDelete = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/Home");
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/${quizToDelete.quizId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*"
+          }
+        }
+      );
+
+      if (response.ok) {
+        setTimeout(() => {
+          setQuizzes((prev) => prev.filter((q) => q.quizId !== quizToDelete.quizId));
+          setShowDeleteModal(false);
+          setIsDeleting(false);
+        }, 1000);
+      } else {
+        alert("Failed to delete. Please try again!");
+        setIsDeleting(false);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("An error occurred during deletion.");
+      setIsDeleting(false);
+    }
+  };
+
+  const handlePlayGame = (quizId) => {
+    navigate(`/play/${quizId}`);
   };
 
   return (
@@ -79,14 +117,14 @@ function KahootLists() {
               Total Quizzes: <strong>{quizzes.length}</strong>
             </p>
             <div className={styles.buttonGroup}>
-    <button className={styles.importButton} onClick={() => alert("Import file feature coming soon!")}>
-      📂 Import File
-    </button>
+              <button className={styles.importButton} onClick={() => alert("Import file feature coming soon!")}>
+                📂 Import File
+              </button>
 
-    <button className={styles.createButton} onClick={() => navigate("/createK")}>
-      + Create a Kahoot!
-    </button>
-  </div>
+              <button className={styles.createButton} onClick={() => navigate("/createK")}>
+                + Create a Kahoot!
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -107,14 +145,16 @@ function KahootLists() {
         {/* Quiz List */}
         <div className={styles.quizList}>
           {currentQuizzes.map((quiz) => (
-            <div key={quiz.id} className={styles.quizCard}>
+            <div key={quiz.quizId} className={styles.quizCard}>
               <div className={styles.cardContent}>
                 <h3>{quiz.title}</h3>
-                <p>Questions: {quiz.totalQuestion}</p>
-                <p>Status: {quiz.isPublic ? "Public" : "Private"}</p>
+                <p>Questions: {quiz.questions.length}</p>
               </div>
 
               <div className={styles.cardActions}>
+                <button className={styles.playButton} onClick={() => handlePlayGame(quiz.quizId)}>
+                  🚀 Play game NOW!
+                </button>
                 <button className={styles.editButton} onClick={() => handleEdit(quiz)}>
                   Edit
                 </button>
@@ -158,11 +198,19 @@ function KahootLists() {
             <h2>❌ Confirm Delete</h2>
             <p>Are you sure you want to delete <strong>{quizToDelete?.title}</strong>?</p>
             <div className={styles.modalButtons}>
-              <button onClick={() => setShowDeleteModal(false)} className={styles.cancelButton}>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className={styles.cancelButton}
+                disabled={isDeleting}
+              >
                 Cancel
               </button>
-              <button onClick={confirmDelete} className={styles.confirmDeleteButton}>
-                Delete
+              <button
+                onClick={confirmDelete}
+                className={styles.confirmDeleteButton}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
