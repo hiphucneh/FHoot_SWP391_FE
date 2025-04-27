@@ -6,7 +6,7 @@ function PayHost() {
 
   const handleChoosePlan = (plan) => {
     alert(`You have selected: ${plan} 🚀`);
-    // Sau này bạn có thể gắn xử lý thanh toán ở đây
+    // Sau này bạn có thể gắn xử lý thanh toán ở đây.
   };
 
   return (
