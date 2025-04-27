@@ -1,93 +1,109 @@
 .container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(142, 94, 225, 0.2); /* 🎯 Màu tím nhạt trong suốt */
-    font-family: 'Arial', sans-serif;
-    overflow: hidden;
-  }
-  
-  .formBox {
-    background: white;
-    padding: 30px;
-    border-radius: 8px; /* new: bo góc ít hơn, sắc nét hơn */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 320px; /* nhẹ nhẹ mở rộng box chút xíu cho đẹp */
-  }
-  
-  .title {
-    margin-bottom: 20px;
-    font-size: 26px; /* lớn hơn tí */
-    font-weight: bold;
-    color: #4c1d95;
-  }
-  
-  .inputField {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px; /* new: bo góc ít hơn */
-    font-size: 16px;
-    text-align: center;
-  }
-  
-  .joinButton {
-    width: 100%;
-    background-color: black;
-    color: white;
-    padding: 14px;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px; /* new: bo góc ít hơn */
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .joinButton:hover {
-    background-color: #333;
-  }
-  
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(142, 94, 225, 0.2);
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.formBox {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 320px;
+}
+
+.title {
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #4c1d95;
+}
+
+.inputField {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.joinButton {
+  width: 100%;
+  background-color: black;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.joinButton:hover {
+  background-color: #333;
+}
+
 .footer {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    color: rgb(0, 0, 0);
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+}
+
+.footer a {
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footerLinks {
+  margin-top: 5px;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.backButton:hover {
+  color: #7d7272;
+}
+
+/* 🎯 Animation xuất hiện mượt */
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+      transform: translateY(20px);
   }
-  
-  .footer a {
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    text-decoration: none;
+  100% {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  .footer a:hover {
-    text-decoration: underline;
-  }
-  
-  .footerLinks {
-    margin-top: 5px;
-  }
-  
-  .backButton {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
-  
-  .backButton:hover {
-    color: #7d7272;
-  }
-  
+}
+
+.fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}

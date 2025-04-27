@@ -9,13 +9,19 @@ export default function EnterPinCodeScreen() {
   const [gamePin, setGamePin] = useState("");
 
   useEffect(() => {
+    if (performance.navigation.type !== 1) {
+      window.location.reload();
+    }
+  }, []);
+
+  useEffect(() => {
     if (location.state?.pin) {
       setGamePin(location.state.pin);
     }
   }, [location.state]);
 
   const handleBack = () => {
-    navigate("/"); // ➤ Quay về Home
+    navigate("/");
   };
 
   return (
@@ -26,7 +32,8 @@ export default function EnterPinCodeScreen() {
         ← Back
       </button>
 
-      <div className={styles.formBox}>
+      {/* Form nhập PIN */}
+      <div className={`${styles.formBox} ${styles.fadeIn}`}>
         <h1 className={styles.title}>Enter Game PIN</h1>
         <input
           type="text"
@@ -34,7 +41,7 @@ export default function EnterPinCodeScreen() {
           value={gamePin}
           onChange={(e) => {
             const value = e.target.value;
-            const numericValue = value.replace(/\D/g, ""); // 🔥 Chỉ số
+            const numericValue = value.replace(/\D/g, ""); // Chỉ cho số
             if (numericValue.length <= 10) {
               setGamePin(numericValue);
             }
@@ -46,7 +53,8 @@ export default function EnterPinCodeScreen() {
         </button>
       </div>
 
-      <div className={styles.footer}>
+      {/* Footer */}
+      <div className={`${styles.footer} ${styles.fadeIn}`}>
         <p>
           Create your own kahoot for FREE at{" "}
           <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer">
