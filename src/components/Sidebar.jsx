@@ -6,10 +6,29 @@ import {
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 
 const Sidebar = ({ onMenuClick }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathToKey = {
+    "/admin/user-list": "user",
+    "/admin/session-list": "quiz",
+    "/admin/settings": "settings",
+    "/login": "logout",
+  };
+
+  const keyToPath = {
+    user: "/admin/user-list",
+    quiz: "/admin/session-list",
+    settings: "/admin/settings",
+    logout: "/login",
+  };
+
+  const selectedKey = pathToKey[location.pathname] || "user";
   return (
     <Sider
       width={220}
@@ -36,7 +55,7 @@ const Sidebar = ({ onMenuClick }) => {
 
       <Menu
         mode="inline"
-        defaultSelectedKeys={["user"]}
+        selectedKeys={[selectedKey]}
         style={{
           background: "transparent",
           color: "#d1d5db",
@@ -44,7 +63,10 @@ const Sidebar = ({ onMenuClick }) => {
           fontSize: "16px",
           borderRight: "none",
         }}
-        onClick={({ key }) => onMenuClick(key)}
+        onClick={({ key }) => {
+          onMenuClick && onMenuClick(key);
+          navigate(keyToPath[key]);
+        }}
       >
         <Menu.Item
           key="user"
@@ -70,7 +92,7 @@ const Sidebar = ({ onMenuClick }) => {
           }}
           className="menu-item-hover"
         >
-          Quiz Management
+          Session Management
         </Menu.Item>
         <Menu.Item
           key="settings"
@@ -103,14 +125,14 @@ const Sidebar = ({ onMenuClick }) => {
       <style>
         {`
           .menu-item-hover:hover {
-            background-color: #0284c7 !important; // Slightly lighter blue on hover
+            background-color: #0284c7 !important;
             color: #fff !important;
           }
           .menu-item-hover:hover .anticon {
             color: #fff !important;
           }
           .ant-menu-item-selected {
-            background-color: #38bdf8 !important; // Softer blue for selected item
+            background-color: #38bdf8 !important;
             color: #fff !important;
           }
           .ant-menu-item-selected .anticon {
