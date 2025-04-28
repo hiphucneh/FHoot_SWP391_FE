@@ -4,10 +4,10 @@ import { Typography } from "antd";
 const { Title } = Typography;
 
 const answers = [
-  { text: "1888", color: "#ff6f91" }, // Soft coral pink
-  { text: "1905", color: "#ff8da1" }, // Light pink
-  { text: "1912", color: "#f06292" }, // Hot pink
-  { text: "1942", color: "#ffabc1" }, // Blush pink
+  { text: "1888", color: "#60a5fa" }, // Xanh lam sáng
+  { text: "1905", color: "#f472b6" }, // Hồng sáng
+  { text: "1912", color: "#fcd34d" }, // Vàng sáng
+  { text: "1942", color: "#93c5fd" }, // Xanh lam trung bình
 ];
 
 const AnswerScreen = () => {
@@ -31,7 +31,7 @@ const AnswerScreen = () => {
       style={{
         width: "100vw",
         height: "100vh",
-        background: "linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 100%)",
+        background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)", // Giữ gradient
         padding: "1rem",
         fontFamily: "'Inter', 'Poppins', sans-serif",
         display: "flex",
@@ -47,7 +47,7 @@ const AnswerScreen = () => {
         level={2}
         style={{
           textAlign: "center",
-          color: "#ad1457",
+          color: "#1e3a8a", // Xanh lam đậm hơn, dễ đọc
           margin: "0 0 1.5rem",
           fontWeight: 700,
           fontSize: "clamp(1.5rem, 4vw, 2.2rem)",
@@ -70,20 +70,19 @@ const AnswerScreen = () => {
           flexWrap: "wrap",
         }}
       >
-        {/* Timer */}
         <div
           style={{
             width: "80px",
             height: "80px",
             borderRadius: "50%",
-            background: "#ec4899",
+            background: "#3b82f6", // Xanh lam đậm hơn, dựa trên #bae6fd
             color: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: "1.8rem",
             fontWeight: 600,
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             flexShrink: 0,
           }}
         >
@@ -97,7 +96,8 @@ const AnswerScreen = () => {
             height: "250px",
             borderRadius: "0.75rem",
             overflow: "hidden",
-            background: "#fce4ec",
+            background: "#fff", // Nền trắng
+            border: "2px solid #60a5fa", // Viền xanh lam sáng
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             flexShrink: 0,
           }}
@@ -114,13 +114,13 @@ const AnswerScreen = () => {
           style={{
             minWidth: "120px",
             padding: "0.75rem",
-            background: "#f06292",
+            background: "#ec4899", // Hồng đậm hơn, dựa trên #f3d4e5
             color: "#fff",
             textAlign: "center",
             borderRadius: "0.75rem",
             fontWeight: 600,
             fontSize: "1.2rem",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
             flexShrink: 0,
           }}
         >
@@ -134,11 +134,11 @@ const AnswerScreen = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(250px, 1fr))", // 2 cột
-          gridTemplateRows: "repeat(2, auto)", // 2 hàng
+          gridTemplateColumns: "repeat(2, minmax(250px, 1fr))",
+          gridTemplateRows: "repeat(2, auto)",
           gap: "1rem",
           width: "100%",
-          maxWidth: "1400px", // Mở rộng hơn
+          maxWidth: "1400px",
         }}
       >
         {answers.map((answer, index) => (
@@ -146,25 +146,25 @@ const AnswerScreen = () => {
             key={index}
             onClick={() => handleAnswer(answer.text)}
             style={{
-              backgroundColor: answer.color,
-              padding: "1.5rem 2rem", // Kéo dài câu trả lời
+              backgroundColor: answer.color, // Sử dụng màu mới từ answers
+              padding: "1.5rem 2rem",
               borderRadius: "0.75rem",
-              color: "#fff",
+              color: "#1e293b", // Xám đậm để chữ nổi bật
               fontWeight: 600,
               fontSize: "1.5rem",
               textAlign: "center",
               cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
-              minHeight: "80px", // Đảm bảo chiều cao đồng đều
+              minHeight: "80px",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
+              e.currentTarget.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.2)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
             }}
           >
             {answer.text}
