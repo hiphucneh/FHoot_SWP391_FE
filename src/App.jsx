@@ -3,7 +3,12 @@ import "remixicon/fonts/remixicon.css";
 
 import CreateQuestion from "./screens/CreateQuestionScreen";
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import Header from "./components/Header";
@@ -21,31 +26,73 @@ import HomeAdmin from "./Admin/HomeAdmin";
 import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
 import UpdateQuestion from "./screens/UpdateQuestionScreen";
+import HomeForAdmin from "./Home/HomeForAdmin";
+import CreateSession from "../../../gitmain/src/screens/CreateSession";
+import ListOfGroups from "./screens/ListOfGroups";
 
 function App() {
   return (
     <GoogleOAuthProvider clientId="771006964772-t3q4laaqefmkpgl1d6olk9cgiofdcr4u.apps.googleusercontent.com">
       <Router>
         <Routes>
-          <Route path="/createq" element={<CreateQuestion />} />
-          <Route path="/createk" element={<CreateKahoot />} />
-          <Route path="/updateK" element={<UpdateKahoot />} />
-          <Route path="/updateq" element={<UpdateQuestion />} />
+          {/*Host*/}
+          <Route path="/create-question" element={<CreateQuestion />} />
+          <Route path="/create-kahoot" element={<CreateKahoot />} />
+          <Route path="/update-kahoot" element={<UpdateKahoot />} />
+          <Route path="/update-question" element={<UpdateQuestion />} />
+          <Route path="/group-list" element={<ListOfGroups />} />
+          <Route path="/create-session" element={<CreateSession />} />
+
           {/* Home */}
-          <Route path="/Home" element={<><Header /><HomeMenu /><Footer /></>} />
+          <Route
+            path="/Home"
+            element={
+              <>
+                <Header />
+                <HomeMenu />
+                <Footer />
+              </>
+            }
+          />
           <Route path="/HomeAdmin" element={<HomeAdmin />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
           <Route path="/UserSetupPage" element={<UserSetupPage />} />
-          <Route path="/Information" element={<><Header /><Information /><Footer /></>} />
-          <Route path="/PayHost" element={<><Header /><PayHost /><Footer /></>} />
+          <Route
+            path="/Information"
+            element={
+              <>
+                <Header />
+                <Information />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/PayHost"
+            element={
+              <>
+                <Header />
+                <PayHost />
+                <Footer />
+              </>
+            }
+          />
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
 
+          {/* Player */}
+          <Route path="/answer" element={<AnswerScreen />} />
+          <Route path="/choose-group" element={<ChooseGroupScreen />} />
+          <Route path="/waiting-room" element={<WaitingRoomScreen />} />
+
+          {/* Admin */}
+          <Route path="/admin/user-list" element={<UserManagement />} />
+          <Route path="/admin/session-list" element={<SessionManagement />} />
+          <Route path="/admin/setting" element={<HomeForAdmin />} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
-
         </Routes>
       </Router>
     </GoogleOAuthProvider>
