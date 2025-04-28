@@ -99,10 +99,35 @@ const UpdateQuestion = () => {
     }
 
     const handleDuplicateAnswer = (id) => {
+        if (answers.length >= 4) {
+            notification.error({
+                message: 'Số lượng câu trả lời tối đa là 4',
+                description: 'Bạn không thể thêm nhiều hơn 4 câu trả lời.',
+                placement: 'topRight',
+            });
+            return;
+        }
+
         const answerToDuplicate = answers.find((answer) => answer.id === id);
+        if (!answerToDuplicate) {
+            notification.error({
+                message: 'Lỗi',
+                description: 'Không tìm thấy câu trả lời để nhân bản.',
+                placement: 'topRight',
+            });
+            return;
+        }
 
         const newAnswer = { ...answerToDuplicate, id: Date.now() };
         setAnswers([...answers, newAnswer]);
+
+        notification.success({
+            message: 'Thành công',
+            description: 'Câu trả lời đã được nhân bản.',
+            placement: 'topRight',
+        });
+
+        console.log("✅ Đã nhân bản câu trả lời:", newAnswer);
     };
     const handleSaveQuestion = () => {
         const updatedQuestion = {
