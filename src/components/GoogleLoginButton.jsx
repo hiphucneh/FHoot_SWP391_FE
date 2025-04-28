@@ -1,5 +1,5 @@
 import { useGoogleLogin } from "@react-oauth/google";
-import "./styles.css"; // Nếu bạn có CSS riêng
+import "./styles.css";
 import { useNavigate } from "react-router-dom";
 
 function GoogleLoginButton() {
@@ -7,24 +7,36 @@ function GoogleLoginButton() {
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      console.log("Full tokenResponse:", tokenResponse);
+
+      const idToken = tokenResponse.id_token;
+      console.log("Google idToken:", idToken);
+
+      if (!idToken) {
+        alert("Không lấy được idToken từ Google. Vui lòng thử lại.");
+        return;
+      }
+
       try {
-        const idToken = tokenResponse.id_token;
-        console.log("Google idToken:", idToken);
-
-        if (!idToken) throw new Error("No idToken received from Google");
-
+        // Gửi idToken và fcmToken đúng JSON format
         const response = await fetch(
-          `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google?idToken=${idToken}&fcmToken=web-client-placeholder`,
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
           {
             method: "POST",
             headers: {
-              accept: "*/*",
-              Authorization: "Bearer dummy-token", // Dummy token BE yêu cầu
+              "Content-Type": "application/json",
+              Accept: "*/*"
             },
+            body: JSON.stringify({
+              idToken: idToken,
+              fcmToken: "web-client-placeholder" // 🔥 thêm đúng fcmToken
+            }),
           }
         );
 
         const data = await response.json();
+        console.log("Server response:", data);
+
         if (response.ok && data.statusCode === 200) {
           const token = data.data.accessToken || data.data.token;
           if (!token) throw new Error("No token received after Google login");
@@ -43,7 +55,7 @@ function GoogleLoginButton() {
 
           const role = (userData.data || userData).role;
           if (role === "Admin") {
-            window.location.href = "/HomeAdmin";
+            window.location.href = "/HomeAdmin"; // 🔥 vẫn giữ window.location.href như yêu cầu
           } else {
             window.location.href = "/Home";
           }
@@ -52,13 +64,15 @@ function GoogleLoginButton() {
         }
       } catch (err) {
         console.error(err);
-        alert("Google login failed. Try again!");
+        alert("Đăng nhập Google thất bại. Vui lòng thử lại!");
       }
     },
-    onError: () => {
-      alert("Google login error!");
+    onError: (error) => {
+      console.error("Google login error:", error);
+      alert("Lỗi đăng nhập Google!");
     },
-    flow: "implicit", // Nhận trực tiếp id_token
+    flow: "implicit", // bạn yêu cầu giữ implicit (ok!)
+    scope: "openid email profile"
   });
 
   return (

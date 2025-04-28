@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase"; // 🔥 import Firebase đã config
+import { auth } from "../firebase"; 
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
@@ -11,22 +11,30 @@ function Login({ show, onClose, onSwitchToForgot }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Trạng thái để hiện mật khẩu
   const navigate = useNavigate();
 
   useEffect(() => {
     if (show) setErrorMessage("");
   }, [show]);
 
-  const loginUser = async (token) => {
+  const fetchUserInfoAndRedirect = async (token) => {
     try {
       const userRes = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-        { headers: { Authorization: `Bearer ${token}`, Accept: "*/*" } }
+        {
+          headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
+        }
       );
       const userData = await userRes.json();
       localStorage.setItem("user", JSON.stringify(userData.data || userData));
 
-      window.location.href = (userData.data || userData).role === "Admin" ? "/HomeAdmin" : "/Home";
+      const role = (userData.data || userData).role;
+      if (role === "Admin") {
+        window.location.href = "/HomeAdmin";
+      } else {
+        window.location.href = "/Home";
+      }
     } catch (err) {
       console.error(err);
       setErrorMessage("Failed to fetch user info.");
@@ -54,7 +62,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
         if (!token) throw new Error("No token received");
 
         localStorage.setItem("token", token);
-        await loginUser(token);
+        await fetchUserInfoAndRedirect(token);
       } else {
         setErrorMessage(data.message || "Invalid Email or Password");
       }
@@ -74,18 +82,28 @@ function Login({ show, onClose, onSwitchToForgot }) {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      const idToken = await result.user.getIdToken(); // 🔥 lấy idToken chuẩn
+      console.log("Google login result:", result);
 
-      if (!idToken) throw new Error("No idToken received");
+      const idToken = await result.user.getIdToken();
+      console.log("Google idToken:", idToken);
+
+      if (!idToken) {
+        setErrorMessage("Không lấy được idToken từ Google");
+        return;
+      }
 
       const res = await fetch(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google?idToken=${idToken}&fcmToken=web-client-placeholder`,
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
         {
           method: "POST",
           headers: {
-            accept: "*/*",
-            Authorization: "Bearer dummy-token", // BE yêu cầu 1 dummy-token
+            "Content-Type": "application/json",
+            Accept: "*/*",
           },
+          body: JSON.stringify({
+            idToken: idToken,
+            fcmToken: "web-client-placeholder"
+          }),
         }
       );
 
@@ -95,7 +113,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
         if (!token) throw new Error("No token returned");
 
         localStorage.setItem("token", token);
-        await loginUser(token);
+        await fetchUserInfoAndRedirect(token);
       } else {
         setErrorMessage(data.message || "Google login failed.");
       }
@@ -128,15 +146,17 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
           <div>
             <label className="login__label">Password</label>
-            <input
-              type="password"
-              className="login__input"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              required
-            />
+            <div className="login__password-container">
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                className="login__input"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                required
+              />
+            </div>
           </div>
         </div>
 
