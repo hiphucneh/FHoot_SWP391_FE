@@ -29,6 +29,11 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "../../../gitmain/src/screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
+import AnswerScreen from "./screens/AnswerScreen";
+import ChooseGroupScreen from "./screens/ChooseGroupScreen";
+import WaitingRoomScreen from "./screens/WaitingRoomScreen";
+import UserManagement from "./Admin/UserManagement";
+import SessionManagement from "./screens/admin/SessionManagement";
 
 function App() {
   return (
