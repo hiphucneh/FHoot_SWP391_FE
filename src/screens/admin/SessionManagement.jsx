@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   Table,
   Input,
-  Button,
-  Space,
+  Select,
   Typography,
   Layout,
   Card,
   message,
+  Space,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -15,25 +15,27 @@ import Sidebar from "../../components/SideBar";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
+const { Option } = Select;
 
-const QuizManagement = () => {
-  const [quizzes, setQuizzes] = useState([]);
+const SessionManagement = () => {
+  const [sessions, setSessions] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
     total: 0,
   });
+  const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(false);
 
-  const fetchQuizzes = async (params = {}) => {
+  const fetchSessions = async (params = {}) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/my-quiz",
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/my-session",
         {
           headers: {
-            Authorization: `Bearer veyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc0NTc0MTQxMCwiaXNzIjoiS2Fob290IiwiYXVkIjoiS2Fob290IEVuZCBVc2VycyJ9.r0XtzW_BcaWiCU_oz48EXsUUOwzBjCjmGgIK3d3owfA`, // Token fix cứng bạn cho
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJUZWFjaGVyIiwiZXhwIjoxNzQ1ODI0NzA3LCJpc3MiOiJLYWhvb3QiLCJhdWQiOiJLYWhvb3QgRW5kIFVzZXJzIn0.hCdzIKzy04JWUEkrbWvZ2774LabiNtY2QgQ4Eu_GTFE`,
           },
           params: {
             pageIndex: params.pageIndex || 1,
@@ -42,26 +44,32 @@ const QuizManagement = () => {
           },
         }
       );
-      const { data, totalRecords } = response.data;
+      const { data } = response.data;
 
-      setQuizzes(data);
+      setSessions(
+        data.filter((session) => {
+          if (statusFilter === "ongoing") return !session.endAt;
+          if (statusFilter === "ended") return !!session.endAt;
+          return true;
+        })
+      );
       setPagination((prev) => ({
         ...prev,
-        total: totalRecords,
+        total: data.length,
       }));
     } catch (error) {
-      message.error("Failed to fetch quizzes!");
+      message.error("Failed to fetch sessions!");
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchQuizzes({
+    fetchSessions({
       pageIndex: pagination.current,
       pageSize: pagination.pageSize,
       search: searchText,
     });
-  }, [pagination.current, pagination.pageSize, searchText]);
+  }, [pagination.current, pagination.pageSize, searchText, statusFilter]);
 
   const handleTableChange = (pagination) => {
     setPagination({
@@ -72,21 +80,19 @@ const QuizManagement = () => {
   };
 
   const columns = [
-    { title: "Quiz Name", dataIndex: "quizName", key: "quizName" },
-    { title: "Description", dataIndex: "description", key: "description" },
+    { title: "Session Name", dataIndex: "sessionName", key: "sessionName" },
+    { title: "Session Code", dataIndex: "sessionCode", key: "sessionCode" },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (date) => (date ? new Date(date).toLocaleDateString() : "-"),
+      render: (date) => (date ? new Date(date).toLocaleString() : "-"),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Text type={status === "Active" ? "success" : "danger"}>{status}</Text>
-      ),
+      title: "End At",
+      dataIndex: "endAt",
+      key: "endAt",
+      render: (date) => (date ? new Date(date).toLocaleString() : "Ongoing"),
     },
   ];
 
@@ -123,33 +129,54 @@ const QuizManagement = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexWrap: "wrap",
+                gap: "16px",
               }}
             >
               <div>
                 <Title level={3} style={{ margin: 0, color: "#333" }}>
-                  Quiz Management
+                  Session Management
                 </Title>
                 <Text type="secondary" style={{ fontSize: 14 }}>
-                  Total: <b>{pagination.total}</b> quizzes
+                  Total: <b>{pagination.total}</b> sessions
                 </Text>
               </div>
-              <Input
-                placeholder="Tìm kiếm quiz..."
-                prefix={<SearchOutlined />}
-                value={searchText}
-                onChange={(e) => {
-                  setPagination((prev) => ({ ...prev, current: 1 }));
-                  setSearchText(e.target.value);
-                }}
-                allowClear
-                style={{
-                  width: 300,
-                  borderRadius: "8px",
-                  borderColor: "#d1d5db",
-                  background: "#f9fafb",
-                  color: "#333",
-                }}
-              />
+
+              <Space>
+                <Input
+                  placeholder="Search session..."
+                  prefix={<SearchOutlined />}
+                  value={searchText}
+                  onChange={(e) => {
+                    setPagination((prev) => ({ ...prev, current: 1 }));
+                    setSearchText(e.target.value);
+                  }}
+                  allowClear
+                  style={{
+                    width: 250,
+                    borderRadius: "8px",
+                    borderColor: "#d1d5db",
+                    background: "#f9fafb",
+                    color: "#333",
+                  }}
+                />
+
+                <Select
+                  value={statusFilter}
+                  onChange={(value) => {
+                    setStatusFilter(value);
+                    setPagination((prev) => ({ ...prev, current: 1 }));
+                  }}
+                  style={{
+                    width: 150,
+                    borderRadius: "8px",
+                    background: "#f9fafb",
+                  }}
+                >
+                  <Option value="all">All</Option>
+                  <Option value="ongoing">Ongoing</Option>
+                  <Option value="ended">Ended</Option>
+                </Select>
+              </Space>
             </div>
           </Card>
 
@@ -164,9 +191,9 @@ const QuizManagement = () => {
             }}
           >
             <Table
-              dataSource={quizzes}
+              dataSource={sessions}
               columns={columns}
-              rowKey="quizId"
+              rowKey="sessionId"
               loading={loading}
               pagination={{
                 current: pagination.current,
@@ -202,4 +229,4 @@ const QuizManagement = () => {
   );
 };
 
-export default QuizManagement;
+export default SessionManagement;
