@@ -6,6 +6,8 @@ import AccountScreen from "../AccountSetting/AccountScreen";
 import HomeForUser from "../Home/HomeForUser.jsx";
 import HomeForTeacher from "../Home/HomeForTeacher.jsx";
 import HomeForAdmin from "../Home/HomeForAdmin.jsx";
+import BlockJoinGame from "../Host/blockjoingame"; 
+import LogOutButton from "../AccountSetting/LogOutButton"; // <-- Thêm import LogOutButton
 import "./HomeStyles.css";
 import "remixicon/fonts/remixicon.css";
 
@@ -13,10 +15,11 @@ function HomeMenu() {
   const navigate = useNavigate();
 
   const [joinCode, setJoinCode] = useState("");
-  const [joinError, setJoinError] = useState(""); // ⬅️ New: state cho lỗi
+  const [joinError, setJoinError] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+  const [showBlockJoin, setShowBlockJoin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
@@ -57,37 +60,43 @@ function HomeMenu() {
       return;
     }
 
+    if (user?.role === "Teacher") {
+      setShowBlockJoin(true);
+      return;
+    }
+
     navigate("/enter-pin", { state: { pin: joinCode.trim() } });
   };
 
   return (
     <div className="home-menu-wrapper">
       <div className="home-menu">
+
         {/* Top Section */}
         <div className="home-menu__top">
-        <div className="home-menu__join-box">
-  <div className="join-input-wrapper">
-    <input
-      type="text"
-      placeholder="Enter join code"
-      value={joinCode}
-      onChange={(e) => {
-        const value = e.target.value;
-        const numericValue = value.replace(/\D/g, "");
-        if (numericValue.length <= 10) {
-          setJoinCode(numericValue);
-          setJoinError("");
-        }
-      }}
-      className="join-input"
-    />
-    {joinError && <div className="join-error">{joinError}</div>}
-  </div>
+          <div className="home-menu__join-box">
+            <div className="join-input-wrapper">
+              <input
+                type="text"
+                placeholder="Enter join code"
+                value={joinCode}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const numericValue = value.replace(/\D/g, "");
+                  if (numericValue.length <= 10) {
+                    setJoinCode(numericValue);
+                    setJoinError("");
+                  }
+                }}
+                className="join-input"
+              />
+              {joinError && <div className="join-error">{joinError}</div>}
+            </div>
 
-  <button className="join-button" onClick={handleJoin}>
-    Join
-  </button>
-</div>
+            <button className="join-button" onClick={handleJoin}>
+              Join
+            </button>
+          </div>
 
           <div className="home-menu__qbit-box">
             {!isLoggedIn ? (
@@ -120,12 +129,8 @@ function HomeMenu() {
                   <div>Welcome,</div>
                   <strong>{user?.name || "User"}</strong>
                 </div>
-                <button
-                  className="login-button logout-button"
-                  onClick={handleLogout}
-                >
-                  Log Out
-                </button>
+                {/* 👉 THAY nút logout cũ bằng LogOutButton mới */}
+                <LogOutButton onLogout={handleLogout} />
               </div>
             )}
           </div>
@@ -168,6 +173,14 @@ function HomeMenu() {
         show={showAccount}
         onClose={() => setShowAccount(false)}
         setUser={setUser}
+      />
+
+      <BlockJoinGame
+        show={showBlockJoin}
+        onClose={() => setShowBlockJoin(false)}
+        title="Access Restricted"
+        message="❌ Only students can join live games. Teachers can host or create instead."
+        buttonText="Got it!"
       />
     </div>
   );

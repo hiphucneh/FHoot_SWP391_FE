@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Information.css";
 
@@ -8,9 +8,9 @@ function Information() {
   const [sections, setSections] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editedContent, setEditedContent] = useState("");
+  const sectionRefs = useRef([]);
 
   useEffect(() => {
-    // Lấy role
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -21,12 +21,10 @@ function Information() {
       }
     }
 
-    // Lấy nội dung
     const storedSections = localStorage.getItem("infoSections");
     if (storedSections) {
       setSections(JSON.parse(storedSections));
     } else {
-      // Nếu chưa có localStorage -> dùng dữ liệu mặc định
       setSections(defaultSections);
     }
   }, []);
@@ -64,6 +62,33 @@ function Information() {
     }
   ];
 
+  useEffect(() => {
+    if (sections.length === 0) return; // Đợi có sections rồi mới làm tiếp
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      if (sectionRefs.current) {
+        sectionRefs.current.forEach((ref) => {
+          if (ref) observer.unobserve(ref);
+        });
+      }
+    };
+  }, [sections]); // ➔ thêm sections vào dependency
+
   const handleSave = (index) => {
     const updatedSections = [...sections];
     updatedSections[index].content = editedContent;
@@ -76,13 +101,17 @@ function Information() {
   return (
     <div className="info-page">
       <div className="info-inner">
-        <div className="info-header">
+        <div className="info-header fade-in-section" ref={(el) => (sectionRefs.current[-1] = el)}>
           <h1>About Kahoot! <span className="highlight">Fun</span></h1>
           <p>Learn everything about our platform, mission, and policies.</p>
         </div>
 
         {sections.map((section, index) => (
-          <div className="info-section" key={index}>
+          <div
+            className="info-section fade-in-section"
+            key={index}
+            ref={(el) => (sectionRefs.current[index] = el)}
+          >
             <h2>{section.title}</h2>
 
             {editIndex === index ? (
@@ -102,7 +131,6 @@ function Information() {
               <p style={{ whiteSpace: "pre-line" }}>{section.content}</p>
             )}
 
-            {/* Nếu là Admin thì hiện nút Edit */}
             {role === "Admin" && editIndex !== index && (
               <button
                 onClick={() => {
@@ -117,7 +145,7 @@ function Information() {
           </div>
         ))}
 
-        <div className="info-back">
+        <div className="info-back fade-in-section" ref={(el) => (sectionRefs.current[sections.length] = el)}>
           <button onClick={() => navigate(-1)}>⬅ Back to Home</button>
         </div>
       </div>

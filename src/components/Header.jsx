@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Login from "./Login";
 import ForgotPass from "./ForgotPass";
 import AdvHost from "../Host/AdvHost";
+import BlockJoinGame from "../Host/blockjoingame"; // <== NEW
 import "./styles.css";
 import logo from "../assets/Kahoot_logo.png";
 
@@ -11,6 +12,7 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPass, setShowForgotPass] = useState(false);
   const [showAdvHost, setShowAdvHost] = useState(false);
+  const [showBlockJoin, setShowBlockJoin] = useState(false); // <== NEW
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ function Header() {
 
     const handleClickOutside = (e) => {
       if (!e.target.closest(".user-dropdown")) {
-        // Đóng dropdown nếu click bên ngoài
+        // Có thể xử lý đóng menu dropdown nếu bạn có
       }
     };
     window.addEventListener("click", handleClickOutside);
@@ -58,7 +60,11 @@ function Header() {
     if (!isLoggedIn) {
       setShowLogin(true);
     } else {
-      navigate("/enter-pin");
+      if (userRole?.toLowerCase() === "teacher") {
+        setShowBlockJoin(true); // Teacher => block popup
+      } else {
+        navigate("/enter-pin"); // Student/User => join game bình thường
+      }
     }
   };
 
@@ -76,49 +82,77 @@ function Header() {
   return (
     <>
       <header className="header" id="header">
-        <nav className="nav container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          
-          {/* Logo ở trái */}
-          <div 
-            className="nav__logo" 
-            onClick={() => { window.location.href = "/HomeAdmin"; }} 
-            style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+        <nav
+          className="nav container"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Logo bên trái */}
+          <div
+            className="nav__logo"
+            onClick={() => {
+              window.location.href = "/HomeAdmin";
+            }}
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
           >
-            <img src={logo} alt="Kahoot Logo" className="logo-image" />          </div>
+            <img src={logo} alt="Kahoot Logo" className="logo-image" />
+          </div>
 
-          {/* Menu ở giữa */}
-          <div className="nav__menu" id="nav-menu" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-            <a className="nav__link" onClick={handleJoinGame} style={{ cursor: "pointer" }}>Join a game</a>
+          {/* Menu chính ở giữa */}
+          <div
+            className="nav__menu"
+            style={{ display: "flex", alignItems: "center", gap: "2rem" }}
+          >
+            <a
+              className="nav__link"
+              onClick={handleJoinGame}
+              style={{ cursor: "pointer" }}
+            >
+              Join a game
+            </a>
             <a
               href="#"
               className="link"
               id="sign-up"
               onClick={handleCreateKahoot}
-              style={{ backgroundColor: "#ebc0c0", borderRadius: "5px", padding: "0.5rem 1rem" }}
+              style={{
+                backgroundColor: "#ebc0c0",
+                borderRadius: "5px",
+                padding: "0.5rem 1rem",
+              }}
             >
               <i className="fa-regular fa-envelope"></i> Create a Kahoot!
             </a>
           </div>
 
-          {/* Góc phải - Admin Options */}
-          <div className="nav__actions" style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {/* Các action bên phải */}
+          <div
+            className="nav__actions"
+            style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+          >
             {isLoggedIn && userRole?.toLowerCase() === "admin" && (
-              <>
-                <button
-                  onClick={handleGoAdmin}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#0277bd",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    fontWeight: "bold",
-                    cursor: "pointer"
-                  }}
-                >
-                  Management
-                </button>
-              </>
+              <button
+                onClick={handleGoAdmin}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#0277bd",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Management
+              </button>
             )}
           </div>
         </nav>
@@ -144,9 +178,14 @@ function Header() {
         }}
       />
 
-      <AdvHost
-        show={showAdvHost}
-        onClose={() => setShowAdvHost(false)}
+      <AdvHost show={showAdvHost} onClose={() => setShowAdvHost(false)} />
+
+      <BlockJoinGame
+        show={showBlockJoin}
+        onClose={() => setShowBlockJoin(false)}
+        title="Access Restricted"
+        message="❌ Only students can join live games. Teachers can host or create instead."
+        buttonText="Got it!"
       />
     </>
   );
