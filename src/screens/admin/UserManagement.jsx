@@ -40,12 +40,12 @@ const UserManagement = () => {
           },
         }
       );
-      const { data, totalRecords } = response.data;
+      const { data } = response.data;
 
       setUsers(data);
       setPagination((prev) => ({
         ...prev,
-        total: totalRecords,
+        total: data.length,
       }));
     } catch (error) {
       message.error("Failed to fetch users!");
