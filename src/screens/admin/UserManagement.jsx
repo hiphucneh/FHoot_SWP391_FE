@@ -28,7 +28,6 @@ const UserManagement = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Hàm lấy danh sách người dùng
   const fetchUsers = async (params = {}) => {
     setLoading(true);
     try {
@@ -56,7 +55,6 @@ const UserManagement = () => {
     setLoading(false);
   };
 
-  // Hàm thay đổi trạng thái người dùng
   const updateUserStatus = async (userId, newStatus) => {
     try {
       const response = await axios.put(
@@ -69,7 +67,7 @@ const UserManagement = () => {
         }
       );
       message.success(`User status updated to ${newStatus} successfully!`);
-      // Làm mới danh sách người dùng sau khi cập nhật
+
       fetchUsers({
         pageIndex: pagination.current,
         pageSize: pagination.pageSize,
@@ -81,7 +79,6 @@ const UserManagement = () => {
     }
   };
 
-  // Xác nhận trước khi thay đổi trạng thái
   const showConfirm = (userId, currentStatus, newStatus) => {
     confirm({
       title: `Are you sure you want to change this user's status to "${newStatus}"?`,
@@ -111,7 +108,6 @@ const UserManagement = () => {
     });
   };
 
-  // Cột của bảng, bao gồm cột "Action"
   const columns = [
     { title: "ID", dataIndex: "userId", key: "userId" },
     { title: "Full Name", dataIndex: "fullName", key: "fullName" },
