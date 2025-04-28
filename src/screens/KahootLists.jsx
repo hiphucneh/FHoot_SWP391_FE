@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./KahootLists.module.css";
+import BlockJoinGame from "../Host/blockjoingame"; // Import popup dùng chung
 
 function KahootLists() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ function KahootLists() {
   const [quizToDelete, setQuizToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const [showRoleWarning, setShowRoleWarning] = useState(false); // New state block
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -21,6 +24,21 @@ function KahootLists() {
       return;
     }
 
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const role = user.role?.toLowerCase();
+        if (role === "user" || role === "admin") {
+          setShowRoleWarning(true); // Nếu không phải Teacher => block
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    }
+
+    // Nếu role hợp lệ => fetch dữ liệu
     fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
       headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
     })
@@ -34,14 +52,14 @@ function KahootLists() {
       .then((data) => setQuizzes(data.data || []));
   }, [navigate]);
 
+  function filteredQuizzes() {
+    return quizzes.filter((q) => q.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  }
+
   const totalPages = Math.ceil(filteredQuizzes().length / quizzesPerPage);
   const indexOfLastQuiz = currentPage * quizzesPerPage;
   const indexOfFirstQuiz = indexOfLastQuiz - quizzesPerPage;
   const currentQuizzes = filteredQuizzes().slice(indexOfFirstQuiz, indexOfLastQuiz);
-
-  function filteredQuizzes() {
-    return quizzes.filter((q) => q.title.toLowerCase().includes(searchTerm.toLowerCase()));
-  }
 
   const nextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -51,8 +69,6 @@ function KahootLists() {
   };
 
   const handleEdit = (quiz) => {
-
-
     navigate("/updateK", { state: { quiz } });
   };
 
@@ -116,7 +132,7 @@ function KahootLists() {
             <h2 className={styles.name}>{userInfo.name}</h2>
             <p className={styles.email}>{userInfo.email}</p>
             <p className={styles.totalQuiz}>
-              {quizzes.length <= 1 ? "Quizz" : "Quizzes"}: <strong>{quizzes.length}</strong>
+              {quizzes.length <= 1 ? "Quiz" : "Quizzes"}: <strong>{quizzes.length}</strong>
             </p>
             <div className={styles.buttonGroup}>
               <button className={styles.importButton} onClick={() => alert("Import file feature coming soon!")}>
@@ -222,6 +238,15 @@ function KahootLists() {
           </div>
         </div>
       )}
+
+      {/* Popup Block Role */}
+      <BlockJoinGame
+        show={showRoleWarning}
+        onClose={() => navigate("/Home")}
+        title="Access Restricted"
+        message="🚫 Only Teachers are allowed to manage Kahoots."
+        buttonText="Back to Home"
+      />
     </div>
   );
 }

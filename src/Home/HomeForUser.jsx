@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HomeForUser.css";
-import Banner1 from '../assets/home/banner1.png';
-import Banner2 from '../assets/home/banner2.png';
-import Banner3 from '../assets/home/banner3.png';
+import Banner1 from "../assets/home/banner1.png";
+import Banner2 from "../assets/home/banner2.png";
+import Banner3 from "../assets/home/banner3.png";
 import AdvHost from "../Host/AdvHost.jsx";
 import AdvForTeacher from "../Host/AdvForTeacher.jsx";
+import BlockJoinGame from "../Host/blockjoingame.jsx"; // <== Bổ sung import này
 
 function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   const navigate = useNavigate();
   const [showAdvHost, setShowAdvHost] = useState(false);
   const [showAdvTeacher, setShowAdvTeacher] = useState(false);
+  const [showBlockJoin, setShowBlockJoin] = useState(false); // <== Bổ sung state này
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
@@ -30,7 +32,12 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   };
 
   const handlePlayNow = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
+    if (userRole === "Teacher") {
+      setShowBlockJoin(true); // <== Nếu là teacher thì show popup block
+      return;
+    }
+
     if (!token) {
       setRedirectAfterLogin("/enter-pin");
       setShowLogin(true);
@@ -40,7 +47,7 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   };
 
   const handleBecomeHost = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       setRedirectAfterLogin("/payhost");
       setShowLogin(true);
@@ -71,7 +78,10 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
           <img src={Banner1} alt="About Kahoot" />
           <div className="banner-content">
             <h3>What is Kahoot?</h3>
-            <p>Explore the basics of how Kahoot works in a fun and simple way for kids of all ages!</p>
+            <p>
+              Explore the basics of how Kahoot works in a fun and simple way for
+              kids of all ages!
+            </p>
             <button onClick={handleLearnMore}>Learn More</button>
           </div>
         </div>
@@ -81,7 +91,10 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
           <img src={Banner2} alt="Live Games" />
           <div className="banner-content">
             <h3>Play Live Kahoots</h3>
-            <p>Join exciting games in real-time and compete with friends or classmates!</p>
+            <p>
+              Join exciting games in real-time and compete with friends or
+              classmates!
+            </p>
             <button onClick={handlePlayNow}>Play Now</button>
           </div>
         </div>
@@ -91,26 +104,36 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
           <img src={Banner3} alt="Create Quizzes" />
           <div className="banner-content">
             <h3>Create Your Own Quiz</h3>
-            <p>Design interactive quizzes and share them as a host with your class or audience.</p>
-            <button onClick={handleBecomeHostClick}>
-              Become a Host NOW!
-            </button>
+            <p>
+              Design interactive quizzes and share them as a host with your
+              class or audience.
+            </p>
+            <button onClick={handleBecomeHostClick}>Become a Host NOW!</button>
           </div>
         </div>
       </div>
 
       {/* Popup cho Host thường */}
-      <AdvHost 
-        show={showAdvHost} 
-        onClose={() => setShowAdvHost(false)} 
+      <AdvHost
+        show={showAdvHost}
+        onClose={() => setShowAdvHost(false)}
         onBecomeHost={handleBecomeHost}
       />
 
       {/* Popup cho Teacher */}
-      <AdvForTeacher 
-        show={showAdvTeacher} 
-        onClose={() => setShowAdvTeacher(false)} 
+      <AdvForTeacher
+        show={showAdvTeacher}
+        onClose={() => setShowAdvTeacher(false)}
         onBecomeHost={handleCreateKahoot}
+      />
+
+      {/* Popup Block Teacher chơi game */}
+      <BlockJoinGame
+        show={showBlockJoin}
+        onClose={() => setShowBlockJoin(false)}
+        title="Access Restricted"
+        message="❌ Only students can join live games. Teachers can host or create instead."
+        buttonText="Got it!"
       />
     </div>
   );
