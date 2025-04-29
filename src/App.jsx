@@ -34,6 +34,7 @@ import ChooseGroupScreen from "./screens/ChooseGroupScreen";
 import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import UserManagement from "./Admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
+import LeaderBoard from "./screens/LeaderBoardScreen";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
       <Router>
         <Routes>
           {/*Host*/}
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+
           <Route path="/createQ" element={<CreateQuestion />} />
           <Route path="/createK" element={<CreateKahoot />} />
           <Route path="/updateK" element={<UpdateKahoot />} />
@@ -98,6 +101,7 @@ function App() {
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
+
         </Routes>
       </Router>
     </GoogleOAuthProvider>
