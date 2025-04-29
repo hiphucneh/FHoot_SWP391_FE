@@ -5,8 +5,7 @@ function PayHost() {
   const navigate = useNavigate();
 
   const handleChoosePlan = (plan) => {
-    alert(`You have selected: ${plan} 🚀`);
-    // Sau này bạn có thể gắn xử lý thanh toán ở đây.
+    navigate('/payment', { state: { selectedPlan: plan } });
   };
 
   return (
@@ -17,7 +16,6 @@ function PayHost() {
       </div>
 
       <div className="payhost-options">
-        {/* Option 1 Month */}
         <div className="payhost-card">
           <h2>🌟 1 Month</h2>
           <p className="price">$5.99</p>
@@ -29,7 +27,6 @@ function PayHost() {
           <button onClick={() => handleChoosePlan('1 Month')}>Choose Plan</button>
         </div>
 
-        {/* Option 3 Months */}
         <div className="payhost-card popular">
           <div className="popular-badge">Most Popular 🔥</div>
           <h2>🚀 3 Months</h2>
@@ -42,7 +39,6 @@ function PayHost() {
           <button onClick={() => handleChoosePlan('3 Months')}>Choose Plan</button>
         </div>
 
-        {/* Option 9 Months */}
         <div className="payhost-card">
           <h2>🏆 9 Months</h2>
           <p className="price">$39.99</p>
