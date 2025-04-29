@@ -46,18 +46,22 @@ function AdminHeader() {
   return (
     <header className={styles.adminHeader}>
       <div className={styles.leftSection}>
-  <button className={styles.backButton} onClick={handleBack}>
-    {location.pathname === "/system-configuration" ? "← Back" : "← Back to Home"}
-  </button>
+        <button className={styles.backButton} onClick={handleBack}>
+          {location.pathname === "/system-configuration"
+            ? "← Back"
+            : "← Back to Home"}
+        </button>
 
-  {/* Hiện nút System Configuration nếu KHÔNG ở trang đó */}
-  {location.pathname !== "/system-configuration" && (
-    <button className={styles.configButton} onClick={handleGoToSystemConfig}>
-      ⚙ System Configuration
-    </button>
-  )}
-</div>
-
+        {/* Hiện nút System Configuration nếu KHÔNG ở trang đó */}
+        {location.pathname !== "/system-configuration" && (
+          <button
+            className={styles.configButton}
+            onClick={handleGoToSystemConfig}
+          >
+            ⚙ System Configuration
+          </button>
+        )}
+      </div>
 
       <div className={styles.centerSection} onClick={handleReloadAdmin}>
         <img src={logo} alt="Kahoot Logo" className={styles.adminLogo} />
