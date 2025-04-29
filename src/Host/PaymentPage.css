@@ -1,0 +1,251 @@
+.page-bg {
+  background: #f3f1ff;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.payment-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.logo {
+  width: 120px;
+  margin-bottom: 1rem;
+}
+
+.payment-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.payment-left,
+.payment-right {
+  background: white;
+  padding: 2rem;
+}
+
+.payment-left {
+  flex: 2;
+}
+
+.payment-right {
+  flex: 1;
+}
+
+.payment-form input,
+.payment-form select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.input-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.section-label {
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-methods button {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #aaa;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+  filter: brightness(100%);
+  transition: filter 0.3s;
+  border-radius: 0;
+}
+
+.payment-methods button:hover {
+  filter: brightness(90%);
+}
+
+.payment-methods .active {
+  border: 2px solid #7e57c2;
+  background-color: #f1eaff;
+}
+
+.summary-box {
+  box-shadow: 0 0 0px rgba(0,0,0,0.1);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.summary-row.total {
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-top: 1px solid #eee;
+  padding-top: 0.5rem;
+}
+
+.agree-text {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 1rem 0;
+}
+
+.link {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pay-button,
+.paypal-button,
+.gpay-button {
+  width: 100%;
+  padding: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 0;
+  filter: brightness(100%);
+  transition: filter 0.3s;
+}
+
+.pay-button {
+  background-color: #ddd;
+}
+
+.paypal-button {
+  background-color: #0070ba;
+  color: white;
+}
+
+.gpay-button {
+  background-color: black;
+  color: white;
+}
+
+.pay-button:hover,
+.paypal-button:hover,
+.gpay-button:hover {
+  filter: brightness(90%);
+}
+
+.enter-code {
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  background: white;
+  padding: 2rem;
+  width: 300px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.popup-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  background: #eee;
+  border-radius: 0;
+  transition: filter 0.3s;
+}
+
+.popup-buttons button:hover {
+  filter: brightness(90%);
+}
+
+.method-icon {
+  height: 24px;
+  vertical-align: middle;
+}
+
+.method-icon-1 {
+  height: 24px;
+  transform: scale(1.7);
+}
+
+.method-icon-2 {
+  height: 28px;
+  object-fit: contain;
+}
+
+.gpay-button {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  filter: brightness(100%);
+  transition: filter 0.3s;
+  border-radius: 0;
+}
+
+.gpay-button:hover {
+  filter: brightness(90%);
+}
+
+.gpay-btn-img {
+  height: 24px;
+}
+
+.buy-text {
+  color: white;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.code-applied {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.code-text {
+  font-weight: bold;
+  color: green;
+}
+
+.clear-code {
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}

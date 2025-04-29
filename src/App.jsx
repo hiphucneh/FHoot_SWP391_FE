@@ -13,6 +13,7 @@ import RegisterSuccess from "./components/RegisterSuccess";
 import HomeMenu from "./Home/HomeMenu";
 import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
+import PaymentPage from "./Host/PaymentPage";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="/UserSetupPage" element={<UserSetupPage />} />
           <Route path="/Information" element={<><Header /><Information /><Footer /></>} />
           <Route path="/PayHost" element={<><Header /><PayHost /><Footer /></>} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
 
