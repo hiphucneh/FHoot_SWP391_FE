@@ -479,3 +479,25 @@
     background-color: #dc2626;
 }
 
+.configButton {
+  display: inline-block;
+  background-color: #f3f4f6; /* xám nhạt */
+  color: #4b5563; /* chữ xám đậm */
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.configButton:hover {
+  background-color: #e0f2fe; /* xanh nhạt khi hover */
+  color: #0369a1;
+  border-color: #0284c7;
+  transform: translateY(-1px) scale(1.03);
+}
+

@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./AdminStyles.module.css";
 import logo from "../assets/Kahoot_logo.png";
-import userIcon from "../assets/user-icon.png"; // icon user
+import userIcon from "../assets/user-icon.png";
 
 function AdminHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const handleBackHome = () => {
-    navigate("/Home");
+  const handleBack = () => {
+    if (location.pathname === "/system-configuration") {
+      navigate("/HomeAdmin");
+    } else {
+      navigate("/Home");
+    }
+  };
+
+  const handleGoToSystemConfig = () => {
+    navigate("/system-configuration");
   };
 
   const handleReloadAdmin = () => {
@@ -23,7 +32,6 @@ function AdminHeader() {
     window.location.href = "/Home";
   };
 
-  // 🛡️ Bắt sự kiện click ra ngoài để tự đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -38,10 +46,18 @@ function AdminHeader() {
   return (
     <header className={styles.adminHeader}>
       <div className={styles.leftSection}>
-        <button className={styles.backButton} onClick={handleBackHome}>
-          ← Back to Home
-        </button>
-      </div>
+  <button className={styles.backButton} onClick={handleBack}>
+    {location.pathname === "/system-configuration" ? "← Back" : "← Back to Home"}
+  </button>
+
+  {/* Hiện nút System Configuration nếu KHÔNG ở trang đó */}
+  {location.pathname !== "/system-configuration" && (
+    <button className={styles.configButton} onClick={handleGoToSystemConfig}>
+      ⚙ System Configuration
+    </button>
+  )}
+</div>
+
 
       <div className={styles.centerSection} onClick={handleReloadAdmin}>
         <img src={logo} alt="Kahoot Logo" className={styles.adminLogo} />

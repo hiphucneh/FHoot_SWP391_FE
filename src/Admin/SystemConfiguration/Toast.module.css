@@ -1,0 +1,37 @@
+.toast {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    animation: fadeInSlide 0.5s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .toast.success {
+    background-color: #22c55e; /* Xanh thành công */
+  }
+  
+  .toast.error {
+    background-color: #ef4444; /* Đỏ lỗi */
+  }
+  
+  @keyframes fadeInSlide {
+    0% {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
