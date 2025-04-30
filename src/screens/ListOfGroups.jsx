@@ -1,29 +1,99 @@
-import React from "react";
-import { Card, Typography, Space, Tag, Row, Col, Divider } from "antd";
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, Typography, Space, Tag, Row, Col, Button, message } from "antd"; // Thêm Button và message từ antd
 import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import axios from "axios";
+import useSignalR from "../hooks/useSignalR";
 
 const { Title, Text } = Typography;
 
-const groupData = [
-  {
-    name: "Group 1",
-    members: ["Alice", "Bob", "Charlie"],
-    max: 5,
-  },
-  {
-    name: "Group 2",
-    members: ["Daisy", "Eve"],
-    max: 5,
-  },
-  {
-    name: "Group 3",
-    members: ["Frank", "Grace", "Helen", "Ivan"],
-    max: 5,
-  },
-];
-
 const ListOfGroups = () => {
-  const roomCode = "123456";
+  const [groups, setGroups] = useState([]);
+  const sessionCode = localStorage.getItem("sessionCode");
+  const roomCode = sessionCode;
+
+  const fetchTeamsBySession = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/session/${sessionCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*",
+          },
+        }
+      );
+
+      const teams = response.data.data;
+      const transformed = teams.map((team) => ({
+        name: team.teamName,
+        members: team.players.map((p) => p.name),
+        max: 5,
+      }));
+
+      setGroups(transformed);
+    } catch (error) {
+      console.error("❌ Error fetching teams:", error);
+    }
+  };
+
+  const startSession = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/start`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Session started successfully!");
+        console.log("✅ Session started:", response.data);
+      }
+    } catch (error) {
+      console.error("❌ Error starting session:", error);
+      message.error("Failed to start session. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    fetchTeamsBySession();
+  }, []);
+
+  const handleUpdateGroups = useCallback((updatedGroups) => {
+    console.log("✅ Real-time update groups:", updatedGroups);
+    fetchTeamsBySession();
+  }, []);
+
+  const connectionRef = useSignalR({
+    baseHubUrl:
+      "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
+    token: localStorage.getItem("token"),
+    onUpdateGroups: handleUpdateGroups,
+  });
+
+  useEffect(() => {
+    const joinSessionIfConnected = async () => {
+      const connection = connectionRef?.current;
+      if (connection && connection.state === "Connected") {
+        try {
+          await connection.invoke("JoinSession", sessionCode);
+          console.log("📥 Joined session:", sessionCode);
+        } catch (err) {
+          console.error("❌ Failed to join session:", err);
+        }
+      }
+    };
+
+    const timer = setTimeout(joinSessionIfConnected, 1000);
+
+    return () => clearTimeout(timer);
+  }, [connectionRef, sessionCode]);
 
   return (
     <div
@@ -68,7 +138,7 @@ const ListOfGroups = () => {
                 textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
               }}
             >
-              {groupData.reduce((acc, g) => acc + g.members.length, 0)} PLAYERS
+              {groups.reduce((acc, g) => acc + g.members.length, 0)} PLAYERS
             </Text>
           </Space>
 
@@ -96,10 +166,27 @@ const ListOfGroups = () => {
             </Text>
           </Space>
         </div>
+
+        <div style={{ textAlign: "center", marginTop: "16px" }}>
+          <Button
+            type="primary"
+            onClick={startSession}
+            style={{
+              background: "#ff4d7e",
+              borderColor: "#ff4d7e",
+              borderRadius: "8px",
+              padding: "8px 24px",
+              fontSize: "16px",
+              fontWeight: "bold",
+            }}
+          >
+            Start Game
+          </Button>
+        </div>
       </Card>
 
       <Row gutter={[24, 24]} style={{ maxWidth: "1100px", width: "100%" }}>
-        {groupData.map((group, idx) => (
+        {groups.map((group, idx) => (
           <Col xs={24} sm={12} md={8} key={idx}>
             <Card
               title={
@@ -151,7 +238,6 @@ const ListOfGroups = () => {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
-          }
         `}
       </style>
     </div>
