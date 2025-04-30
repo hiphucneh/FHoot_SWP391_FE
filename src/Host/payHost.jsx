@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './PayHost.css';
+import './payHost.css';
 import PayPopup from './PayPopup';
 
 function PayHost() {
