@@ -83,7 +83,9 @@ function HomeForAdmin({ role }) {
         </div>
       )}
 
-      {showToast && <div className="admin-toast">✅ Feature added successfully!</div>}
+      {showToast && (
+        <div className="admin-toast">✅ Feature added successfully!</div>
+      )}
     </div>
   );
 }
