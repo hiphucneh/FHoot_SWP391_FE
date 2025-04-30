@@ -1,8 +1,11 @@
-import './PayHost.css';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './PayHost.css';
+import PayPopup from './PayPopup';
 
 function PayHost() {
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(true); // ✅ Quản lý trạng thái hiển thị popup
 
   const handleChoosePlan = (plan) => {
     navigate('/payment', { state: { selectedPlan: plan } });
@@ -10,6 +13,9 @@ function PayHost() {
 
   return (
     <div className="payhost-page">
+      {/* ✅ Hiển thị popup khi showPopup = true */}
+      {showPopup && <PayPopup onClose={() => setShowPopup(false)} />}
+
       <div className="payhost-header">
         <h1>🚀 Upgrade to Kahoot! Host</h1>
         <p>Unlock premium features and start hosting today!</p>
@@ -52,7 +58,7 @@ function PayHost() {
       </div>
 
       <div className="payhost-back">
-        <button onClick={() => navigate(-1)}>⬅ Go Back</button>
+        <button onClick={() => navigate('/')}>⬅ Back to Home</button>
       </div>
     </div>
   );

@@ -1,0 +1,99 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .formGroup {
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  
+  input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
+  
+  .saveButton {
+    background-color: #38a169;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .saveButton:hover {
+    background-color: #2f855a;
+  }
+  
+  .cancelButton {
+    background-color: #e53e3e;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancelButton:hover {
+    background-color: #c53030;
+  }
+  

@@ -1,12 +1,12 @@
 import './AdvHost.css';
 import BannerHost from '../assets/host/banner-host.png';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react'; // thêm useState
+import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 
-function AdvHost({ show, onClose }) {
+function AdvHost({ show, onClose, }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // trạng thái loading
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -23,12 +23,17 @@ function AdvHost({ show, onClose }) {
   };
 
   const handleBecomeHost = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      onClose(); // đóng popup host
+    }
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       onClose();
       navigate('/payhost');
-    }, 500); // loading 0.5 giây
+    }, 500);
   };
 
   if (!show) return null;
@@ -40,7 +45,7 @@ function AdvHost({ show, onClose }) {
         <button
           className="advhost-contact-button"
           onClick={handleBecomeHost}
-          disabled={loading} // không cho click khi đang loading
+          disabled={loading}
         >
           {loading ? (
             <div className="loading-spinner"></div>

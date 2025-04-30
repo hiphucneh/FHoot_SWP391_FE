@@ -6,13 +6,13 @@ import Banner2 from "../assets/home/banner2.png";
 import Banner3 from "../assets/home/banner3.png";
 import AdvHost from "../Host/AdvHost.jsx";
 import AdvForTeacher from "../Host/AdvForTeacher.jsx";
-import BlockJoinGame from "../Host/blockjoingame.jsx"; // <== Bổ sung import này
+import BlockJoinGame from "../Host/blockjoingame.jsx";
 
 function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   const navigate = useNavigate();
   const [showAdvHost, setShowAdvHost] = useState(false);
   const [showAdvTeacher, setShowAdvTeacher] = useState(false);
-  const [showBlockJoin, setShowBlockJoin] = useState(false); // <== Bổ sung state này
+  const [showBlockJoin, setShowBlockJoin] = useState(false);
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   const handlePlayNow = () => {
     const token = localStorage.getItem("token");
     if (userRole === "Teacher") {
-      setShowBlockJoin(true); // <== Nếu là teacher thì show popup block
+      setShowBlockJoin(true); // Show block popup if Teacher
       return;
     }
 
@@ -47,13 +47,7 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   };
 
   const handleBecomeHost = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setRedirectAfterLogin("/payhost");
-      setShowLogin(true);
-    } else {
-      navigate("/payhost");
-    }
+    navigate("/payhost");
   };
 
   const handleCreateKahoot = () => {
@@ -61,6 +55,14 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
   };
 
   const handleBecomeHostClick = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setRedirectAfterLogin("/payhost");
+      setShowLogin(true);
+      return;
+    }
+
     if (userRole === "Teacher") {
       setShowAdvTeacher(true);
     } else {

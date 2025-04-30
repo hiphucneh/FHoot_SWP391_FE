@@ -22,8 +22,9 @@ import PaymentPage from "./Host/PaymentPage";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 
-import CreateKahoot from "./screens/CreateKahootScreen"; // 👉 Import thêm CreateKahoot
+import CreateKahoot from "./screens/CreateKahootScreen";
 import HomeAdmin from "./Admin/HomeAdmin";
+import SystemConfiguration from "./Admin/SystemConfiguration/SystemConfiguration";
 import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
 import UpdateQuestion from "./screens/UpdateQuestionScreen";
@@ -64,11 +65,33 @@ function App() {
             }
           />
           <Route path="/HomeAdmin" element={<HomeAdmin />} />
+          <Route
+            path="/system-configuration"
+            element={<SystemConfiguration />}
+          />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
           <Route path="/UserSetupPage" element={<UserSetupPage />} />
-          <Route path="/Information" element={<><Header /><Information /><Footer /></>} />
-          <Route path="/PayHost" element={<><Header /><PayHost /><Footer /></>} />
+          <Route
+            path="/Information"
+            element={
+              <>
+                <Header />
+                <Information />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/PayHost"
+            element={
+              <>
+                <Header />
+                <PayHost />
+                <Footer />
+              </>
+            }
+          />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />

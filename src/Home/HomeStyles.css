@@ -30,28 +30,36 @@
     border-radius: 1rem;
     display: flex;
     align-items: center;
+    min-width: 400px;
     gap: 1rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   }
   
   .join-input {
     flex: 1;
-    padding: 1rem;
+    width: 100%;
+    height: 48px; 
+    padding: 0 1rem; 
     font-size: 1rem;
     border-radius: 0.75rem;
     border: 1px solid #ccc;
+    box-sizing: border-box;
   }
-  
+
   .join-button {
     background: #7e57c2;
     color: white;
-    padding: 1rem 1.5rem;
+    height: 48px; /* 👈 chiều cao khớp với input */
+    padding: 0 1.5rem; /* 👈 bỏ padding dọc */
     border: none;
     border-radius: 0.75rem;
     font-weight: bold;
     cursor: pointer;
+    display: flex;              /* 👈 căn giữa chữ */
+    align-items: center;        /* 👈 căn giữa chữ */
+    justify-content: center;
   }
-  
+
   .home-menu__qbit-box {
     flex: 1;
     background: #e8d5fb;
@@ -76,6 +84,7 @@
   border: none;
   border-radius: 5px;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
   width: 100%;
   transition: background-color 0.3s ease, transform 0.3s ease;
@@ -93,49 +102,13 @@
   padding: 12px 24px;
   border: none;
   border-radius: 10px;
+  cursor: pointer;
   font-size: 1rem;
+}
 
-  .home-menu__features {
-    background: #fff8dc;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    margin-top: 2rem;
-  }
-  
-  .features-title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    color: #ff9800;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .feature-card {
-    background-color: #fff3b0;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .feature-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
+.sign-up-button:hover {
+  color: #7e57c2;
+  transform: scale(1.05);
 }
 
 .user-avatar-wrapper {

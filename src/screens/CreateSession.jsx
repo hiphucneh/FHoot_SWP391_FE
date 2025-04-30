@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { Card, Typography, Input, Button, Form, Space, message } from "antd";
 import { PlusCircleOutlined, SmileOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom"; // Add useNavigate
 
 const { Title, Text } = Typography;
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJUZWFjaGVyIiwiZXhwIjoxNzQ1NDgxNzg2LCJpc3MiOiJLYWhvb3QiLCJhdWQiOiJLYWhvb3QgRW5kIFVzZXJzIn0.uSLQm1uR1j7TLvU0xtcXqs9jsPGMRW9zteO6K3VH_oc";
+const token = localStorage.getItem("token");
+
 const CreateSession = ({ onCreate }) => {
+  const { state } = useLocation(); // Get navigation state
+  const quizId = state?.quizId || localStorage.getItem("quizId"); // Use state or fallback to localStorage
+  const navigate = useNavigate(); // Initialize navigate
   const [sessionName, setSessionName] = useState("");
   const [groups, setGroups] = useState([{ id: Date.now(), name: "" }]);
 
@@ -21,13 +25,21 @@ const CreateSession = ({ onCreate }) => {
   };
 
   const handleSubmit = async () => {
-    if (!sessionName || groups.some((g) => !g.name.trim())) return;
+    if (!sessionName || groups.some((g) => !g.name.trim())) {
+      message.error("Vui lòng nhập tên phiên và tên tất cả các nhóm!");
+      return;
+    }
+
+    if (!quizId) {
+      message.error("Không tìm thấy Quiz ID!");
+      return;
+    }
 
     try {
       const sessionRes = await axios.post(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session",
         {
-          quizId: 13,
+          quizId: parseInt(quizId), // Ensure quizId is an integer
           sessionName,
         },
         {
@@ -39,6 +51,14 @@ const CreateSession = ({ onCreate }) => {
 
       const sessionCode = sessionRes.data?.data?.sessionCode;
 
+      if (!sessionCode) {
+        throw new Error("Không nhận được sessionCode từ API!");
+      }
+
+      // Store sessionCode in localStorage
+      localStorage.setItem("sessionCode", sessionCode);
+
+      // Create teams
       await Promise.all(
         groups.map((group) =>
           axios.post(
@@ -57,8 +77,8 @@ const CreateSession = ({ onCreate }) => {
       );
 
       message.success("🎉 Tạo phiên chơi và nhóm thành công!");
-
       if (onCreate) onCreate({ sessionName, sessionCode });
+      navigate("/group-list");
     } catch (error) {
       console.error("Error creating session or teams:", error);
       message.error("❌ Có lỗi xảy ra khi tạo session hoặc nhóm!");
@@ -92,7 +112,8 @@ const CreateSession = ({ onCreate }) => {
             <SmileOutlined /> Create a Session
           </Title>
           <Text type="secondary">
-            Fill in the details to start your game session!
+            Fill in the details to start your game session for Quiz ID:{" "}
+            {quizId || "N/A"}!
           </Text>
         </div>
 
