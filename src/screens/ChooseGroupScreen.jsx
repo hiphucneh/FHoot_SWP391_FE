@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { UploadOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +25,7 @@ const ChooseGroupScreen = () => {
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [fullName, setFullName] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -116,12 +118,22 @@ const ChooseGroupScreen = () => {
         setIsModalVisible(false);
         setFullName("");
         setImageFile(null);
+        console.log(selectedTeamId);
+
+        navigate("/waiting-room", {
+          state: { teamId: selectedTeamId },
+        });
       } else {
         message.error("Failed to join the team. Please try again.");
       }
     } catch (error) {
       console.error("Error joining team:", error);
-      message.error("An error occurred while joining the team.");
+      console.log("Error response:", error.response);
+
+      message.error(
+        error.response?.data?.message ||
+          "Failed to join the team. Please try again."
+      );
     }
   };
 
