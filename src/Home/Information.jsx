@@ -146,7 +146,7 @@ function Information() {
         ))}
 
         <div className="info-back fade-in-section" ref={(el) => (sectionRefs.current[sections.length] = el)}>
-          <button onClick={() => navigate(-1)}>⬅ Back to Home</button>
+          <button onClick={() => navigate("/")}>⬅ Back to Home</button>
         </div>
       </div>
     </div>

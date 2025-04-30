@@ -109,15 +109,18 @@
     background-color: #7e57c2;
     color: white;
     border: none;
-    padding: 0.75rem 2rem;
+    padding: 0.8rem 2.5rem;
+    border-radius: 1rem;
     font-size: 1rem;
-    border-radius: 0.5rem;
     cursor: pointer;
+    box-shadow: 2px 4px 0 #5e35b1;
+    transition: all 0.3s ease;
   }
   
   .payhost-back button:hover {
     background-color: #5e35b1;
-  }
+    transform: translateY(-2px);
+  }  
   
   .payhost-page {
     width: 100vw;
