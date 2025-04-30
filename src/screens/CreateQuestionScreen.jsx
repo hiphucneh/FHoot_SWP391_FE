@@ -4,7 +4,7 @@ import { InputNumber, notification, Upload, Checkbox, Button, Popover } from "an
 import { UploadOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import * as XLSX from 'xlsx';
-import Swal from 'sweetalert2'; // Thay alert bằng SweetAlert2
+import Swal from 'sweetalert2';
 import { createQuestion } from '../services/createQuestion.js';
 
 import '../components/CreateQuestion.css';
@@ -17,11 +17,11 @@ const CreateQuestion = () => {
         content: "",
         file: null,
         answers: [],
-        timeLimitSec: 30, // Giá trị mặc định 30 giây
+        timeLimitSec: 30,
     });
 
     const [savedQuestions, setSavedQuestions] = useState(() => {
-        if (!quizId) return []; // Nếu không có quizId, trả về mảng rỗng
+        if (!quizId) return [];
         const saved = localStorage.getItem(`savedQuestions_${quizId}`);
         return saved ? JSON.parse(saved) : [];
     });
@@ -35,8 +35,8 @@ const CreateQuestion = () => {
         console.log("LOG:", answers);
         if (answers.length >= 4) {
             notification.error({
-                message: 'Số lượng câu trả lời tối đa là 4',
-                description: 'Vui lòng nhập nội dung câu hỏi.',
+                message: 'Max answers are 4',
+                description: 'Please enter question',
                 placement: 'topRight'
             });
         } else {
@@ -67,8 +67,8 @@ const CreateQuestion = () => {
     const handleDuplicateAnswer = (id) => {
         if (question.length == 4) {
             notification.error({
-                message: 'Số lượng câu trả lời tối đa là 4',
-                description: 'Vui lòng nhập nội dung câu hỏi.',
+                message: 'Max answers are 4',
+                description: 'Please input answer content',
                 placement: 'topRight'
             });
         }
@@ -87,21 +87,21 @@ const CreateQuestion = () => {
         const isExist = savedQuestions.some(q => q.id === updatedQuestion.id);
         if (updatedQuestion.content === "") {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập nội dung câu hỏi.',
+                message: 'Error save question',
+                description: 'Please enter question content.',
                 placement: 'topRight'
             });
 
         } else if (updatedQuestion.answers.length < 2) {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập ít nhất 2 câu trả lời.',
+                message: 'Error save question',
+                description: 'Please create at least 2 question',
                 placement: 'topRight'
             });
         } else if (updatedQuestion.answers.some(answer => answer.isAnswer === true) === false) {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập 1 đáp án.',
+                message: 'Error save question',
+                description: 'Choose at least 1 answer',
                 placement: 'topRight'
             });
         }
@@ -212,20 +212,20 @@ const CreateQuestion = () => {
 
         if (!quizId) {
             notification.error({
-                message: 'Lỗi',
-                description: 'Không tìm thấy Quiz ID trong localStorage.',
+                message: 'Error',
+                description: 'No quizId in local storage',
                 placement: 'topRight'
             });
             return;
         }
 
-        console.log("📌 Quiz ID:", quizId);
-        console.log("📌 Raw savedQuestions:", savedQuestions);
+        console.log(" Quiz ID:", quizId);
+
 
         if (!savedQuestions || savedQuestions.length === 0) {
             notification.warning({
-                message: 'Cảnh báo',
-                description: 'Bạn chưa có câu hỏi nào!',
+                message: 'Warning',
+                description: 'Not having any question yet !',
                 placement: 'topRight'
             });
             return;
@@ -244,19 +244,19 @@ const CreateQuestion = () => {
             };
 
             // In  câu hỏi
-            console.log(`Câu hỏi ${index + 1}:`, JSON.stringify(formatted, null, 2));
+            console.log(`Question ${index + 1}:`, JSON.stringify(formatted, null, 2));
             return formatted;
         });
 
 
-        console.log("🚀 Sending full formattedQuestions to API:\n", JSON.stringify(formattedQuestions, null, 2));
+        console.log(" Sending full formattedQuestions to API:\n", JSON.stringify(formattedQuestions, null, 2));
 
         try {
             const res = await createQuestion(formattedQuestions);
             console.log("✅ API Response:", res);
             await Swal.fire({
                 title: 'Success!',
-                text: 'Lưu Quizz thành công !',
+                text: 'Save quizz success !',
                 icon: 'success',
                 confirmButtonColor: 'green',
             });
@@ -264,7 +264,7 @@ const CreateQuestion = () => {
 
         } catch (error) {
             console.error("❌ Error saving questions:", error);
-            alert("Đã xảy ra lỗi khi lưu câu hỏi.");
+            alert("Something went wrong");
         }
     };
 
@@ -408,7 +408,7 @@ const CreateQuestion = () => {
                                 padding: '8px 12px',
                                 fontSize: '16px',
                             }}
-                            addonAfter="giây" // Hiển thị đơn vị
+                            addonAfter="Seconds"
                         />
 
 

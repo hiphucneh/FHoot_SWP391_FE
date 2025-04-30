@@ -42,10 +42,10 @@ const CreateKahoot = () => {
 
             if (quizId) {
                 localStorage.setItem("quizId", quizId.toString());
-                // Thay alert bằng SweetAlert2
+
                 await Swal.fire({
-                    title: 'Thành công!',
-                    text: 'Kahoot đã được tạo. Bạn sẽ được chuyển đến trang thêm câu hỏi.',
+                    title: 'Success!',
+                    text: 'Create Kahoot success, redirect to Create Question page',
                     icon: 'success',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#7266ef', // Màu tím
@@ -54,17 +54,17 @@ const CreateKahoot = () => {
             } else {
 
                 await Swal.fire({
-                    title: 'Lỗi!',
-                    text: 'Không lấy được ID từ server!',
+                    title: 'Error!',
+                    text: 'Cant get id from server !',
                     icon: 'error',
-                    confirmButtonColor: '#ff4d4f', // Màu đỏ
+                    confirmButtonColor: '#ff4d4f',
                 });
             }
         } catch (error) {
 
             await Swal.fire({
-                title: 'Lỗi!',
-                text: 'Tạo Kahoot thất bại!',
+                title: 'Error',
+                text: 'Cant create Kahoot!',
                 icon: 'error',
                 confirmButtonColor: '#ff4d4f',
             });

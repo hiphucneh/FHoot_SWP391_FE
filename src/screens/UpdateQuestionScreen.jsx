@@ -4,7 +4,7 @@ import { InputNumber, notification, Upload, Checkbox, Button, Popover } from "an
 import { UploadOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import * as XLSX from 'xlsx';
-import Swal from 'sweetalert2'; // Thay alert bằng SweetAlert2
+import Swal from 'sweetalert2';
 import { updateQuestion } from '../services/updateQuestion.js';
 import { useLocation } from "react-router-dom";
 import '../components/CreateQuestion.css';
@@ -52,7 +52,7 @@ const UpdateQuestion = () => {
         content: "",
         file: null,
         answers: [],
-        timeLimitSec: 30, // Giá trị mặc định 30 giây
+        timeLimitSec: 30,
     });
 
     const [savedQuestions, setSavedQuestions] = useState(() => {
@@ -70,8 +70,8 @@ const UpdateQuestion = () => {
         console.log("LOG:", answers);
         if (answers.length >= 4) {
             notification.error({
-                message: 'Số lượng câu trả lời tối đa là 4',
-                description: 'Vui lòng nhập nội dung câu hỏi.',
+                message: 'Max question is 4 !',
+                description: 'Cant create more than 4 question',
                 placement: 'topRight'
             });
         } else {
@@ -102,8 +102,8 @@ const UpdateQuestion = () => {
     const handleDuplicateAnswer = (id) => {
         if (answers.length >= 4) {
             notification.error({
-                message: 'Số lượng câu trả lời tối đa là 4',
-                description: 'Bạn không thể thêm nhiều hơn 4 câu trả lời.',
+                message: 'Max answer is 4',
+                description: 'You cant create more than 4 question',
                 placement: 'topRight',
             });
             return;
@@ -112,8 +112,8 @@ const UpdateQuestion = () => {
         const answerToDuplicate = answers.find((answer) => answer.id === id);
         if (!answerToDuplicate) {
             notification.error({
-                message: 'Lỗi',
-                description: 'Không tìm thấy câu trả lời để nhân bản.',
+                message: 'Error',
+                description: 'Cant find question to duplicate',
                 placement: 'topRight',
             });
             return;
@@ -122,13 +122,9 @@ const UpdateQuestion = () => {
         const newAnswer = { ...answerToDuplicate, id: Date.now() };
         setAnswers([...answers, newAnswer]);
 
-        notification.success({
-            message: 'Thành công',
-            description: 'Câu trả lời đã được nhân bản.',
-            placement: 'topRight',
-        });
 
-        console.log("✅ Đã nhân bản câu trả lời:", newAnswer);
+
+        console.log(" Đã nhân bản câu trả lời:", newAnswer);
     };
     const handleSaveQuestion = () => {
         const updatedQuestion = {
@@ -139,21 +135,21 @@ const UpdateQuestion = () => {
         const isExist = savedQuestions.some(q => q.id === updatedQuestion.id);
         if (updatedQuestion.content === "") {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập nội dung câu hỏi.',
+                message: 'Error save question!',
+                description: 'Enter question content',
                 placement: 'topRight'
             });
 
         } else if (updatedQuestion.answers.length < 2) {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập ít nhất 2 câu trả lời.',
+                message: 'Error save question !',
+                description: 'Enter at least 2 question.',
                 placement: 'topRight'
             });
         } else if (updatedQuestion.answers.some(answer => answer.isAnswer === true) === false) {
             notification.error({
-                message: 'Lỗi lưu câu hỏi',
-                description: 'Vui lòng nhập 1 đáp án.',
+                message: 'Error save question',
+                description: 'Enter at least 1 answer.',
                 placement: 'topRight'
             });
         }
@@ -292,7 +288,7 @@ const UpdateQuestion = () => {
                 })),
             };
 
-            // In câu hỏi
+
             console.log(`Câu hỏi ${index + 1}:`, JSON.stringify(formatted, null, 2));
             return formatted;
         });

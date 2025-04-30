@@ -22,10 +22,10 @@ const UpdateKahoot = () => {
     });
     const [file, setFile] = useState(null);
 
-    // Load dữ liệu kahoot ban đầu
+
     useEffect(() => {
         if (location.state?.quiz) {
-            console.log("Quiz nhận được từ location:", location.state.quiz);
+            console.log("savedquiz", location.state.quiz);
             setKahoot({
                 title: location.state.quiz.title || "",
                 description: location.state.quiz.description || "",
@@ -34,25 +34,25 @@ const UpdateKahoot = () => {
             });
             setFile(location.state.quiz.imgUrl || null);
         } else {
-            console.log("Không có quiz trong location.state!");
+            console.log("no quiz");
         }
     }, [location.state]);
 
     const handleOnChangeTitle = (e) => {
         const newTitle = e.target.value;
-        console.log("Title changed: ", newTitle); // Console log khi title thay đổi
+        console.log("Title changed: ", newTitle);
         setKahoot(prev => ({ ...prev, title: newTitle }));
     };
 
     const handleOnChangeDes = (e) => {
         const newDescription = e.target.value;
-        console.log("Description changed: ", newDescription); // Console log khi description thay đổi
+        console.log("Description changed: ", newDescription);
         setKahoot(prev => ({ ...prev, description: newDescription }));
     };
 
     const handleChangeFile = (info) => {
         if (info.file.originFileObj) {
-            console.log("File selected: ", info.file.originFileObj); // Console log khi file thay đổi
+            console.log("File selected: ", info.file.originFileObj);
             setFile(info.file.originFileObj);
         }
     };
@@ -80,16 +80,16 @@ const UpdateKahoot = () => {
                 console.log("Quiz ID received:", quizId);
                 localStorage.setItem("quizId", quizId.toString());
                 await Swal.fire({
-                    title: 'Thành công!',
-                    text: 'Kahoot đã được cập nhật. Bạn sẽ được chuyển đến trang thêm câu hỏi.',
+                    title: 'Success!',
+                    text: 'Update kahoot successfully! Redirect to Update Question page',
                     icon: 'success',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#7266ef',
                 });
-                console.log("Quiz title trước khi điều hướng:", kahoot.title);
+                console.log("update quiz title", kahoot.title);
                 navigate('/updateq', {
                     state: {
-                        quizId: location.state.quiz.quizId, // Access quizId directly from location.state.quiz
+                        quizId: location.state.quiz.quizId,
                         quizTitle: kahoot.title,
                         questions: location.state.quiz.questions
                     }
@@ -97,8 +97,8 @@ const UpdateKahoot = () => {
 
             } else {
                 await Swal.fire({
-                    title: 'Lỗi!',
-                    text: 'Không lấy được ID từ server!',
+                    title: 'Error!',
+                    text: 'Cant get id from sever!',
                     icon: 'error',
                     confirmButtonColor: '#ff4d4f',
                 });
@@ -106,8 +106,8 @@ const UpdateKahoot = () => {
         } catch (error) {
             console.log(error);
             await Swal.fire({
-                title: 'Lỗi!',
-                text: 'Cập nhật Kahoot thất bại!',
+                title: 'Error!',
+                text: 'Update fail!',
                 icon: 'error',
                 confirmButtonColor: '#ff4d4f',
             });
