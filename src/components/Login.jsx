@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase"; 
+import { auth } from "../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
@@ -31,7 +31,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
       const role = (userData.data || userData).role;
       if (role === "Admin") {
-        window.location.href = "/HomeAdmin";
+        window.location.href = "/admin/session-list";
       } else {
         window.location.href = "/Home";
       }

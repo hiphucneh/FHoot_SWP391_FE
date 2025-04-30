@@ -64,7 +64,7 @@ function App() {
               </>
             }
           />
-          <Route path="/HomeAdmin" element={<HomeAdmin />} />
+          <Route path="/admin/session-list" element={<SessionManagement />} />
           <Route
             path="/system-configuration"
             element={<SystemConfiguration />}

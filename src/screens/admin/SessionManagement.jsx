@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Table,
-  Input,
   Select,
   Typography,
   Layout,
@@ -28,6 +27,7 @@ const SessionManagement = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [allData, setAllData] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedLeaderboard, setSelectedLeaderboard] = useState([]);
   const [modalTitle, setModalTitle] = useState("Leaderboard");
@@ -36,9 +36,8 @@ const SessionManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-
       const res = await axios.get(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/list?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/list?pageNumber=1&pageSize=1000`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,9 +45,9 @@ const SessionManagement = () => {
         }
       );
 
-      let rawData = res.data.data;
+      const rawData = res.data.data || [];
 
-      // Filter theo dropdown
+      // Lọc dữ liệu
       let filteredData = rawData;
       if (filterStatus === "ongoing") {
         filteredData = rawData.filter((s) => !s.endAt);
@@ -56,8 +55,14 @@ const SessionManagement = () => {
         filteredData = rawData.filter((s) => s.endAt);
       }
 
-      setSessions(filteredData);
+      // Lưu toàn bộ để phân trang
+      setAllData(filteredData);
       setTotal(filteredData.length);
+
+      // Phân trang thủ công
+      const start = (pageNumber - 1) * pageSize;
+      const end = start + pageSize;
+      setSessions(filteredData.slice(start, end));
     } catch (error) {
       message.error("Không thể tải dữ liệu phiên chơi.");
     } finally {
@@ -67,7 +72,7 @@ const SessionManagement = () => {
 
   useEffect(() => {
     fetchSessions();
-  }, [pageNumber, pageSize, filterStatus]);
+  }, [filterStatus, pageNumber, pageSize]);
 
   const fetchLeaderboard = async (sessionId, sessionName) => {
     const token = localStorage.getItem("token");
@@ -126,7 +131,9 @@ const SessionManagement = () => {
       render: (_, record) => (
         <Button
           type="link"
-          onClick={() => fetchLeaderboard(record.sessionCode, record.sessionName)}
+          onClick={() =>
+            fetchLeaderboard(record.sessionCode, record.sessionName)
+          }
         >
           Detail
         </Button>
@@ -142,7 +149,8 @@ const SessionManagement = () => {
           style={{
             margin: "24px 16px",
             padding: 24,
-            background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+            background:
+              "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
             borderRadius: "8px",
             minHeight: "100vh",
             overflow: "auto",
@@ -179,8 +187,6 @@ const SessionManagement = () => {
               </div>
 
               <Space>
-
-
                 <Select
                   value={filterStatus}
                   style={{
@@ -190,7 +196,7 @@ const SessionManagement = () => {
                   }}
                   onChange={(value) => {
                     setFilterStatus(value);
-                    setPageNumber(1); // reset page
+                    setPageNumber(1); // Reset về trang 1
                   }}
                 >
                   <Option value="all">All</Option>

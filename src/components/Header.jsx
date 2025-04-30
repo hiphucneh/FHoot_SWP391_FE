@@ -70,7 +70,7 @@ function Header() {
 
   const handleGoAdmin = (e) => {
     e.preventDefault();
-    navigate("/HomeAdmin");
+    navigate("/admin/session-list");
   };
 
   const handleLogout = () => {

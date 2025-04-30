@@ -1,276 +1,233 @@
-import React, { Component } from "react";
-import { Table, Card, Typography, Spin, message } from "antd";
-import { TrophyOutlined, FireOutlined, TeamOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Table, Card, Typography, Space, Spin, Button, Tag } from "antd";
 import axios from "axios";
-import "./leaderboard.css";
 
-const { Title } = Typography;
-const sessionCode = 598826;
+const { Title, Text } = Typography;
 
-class LeaderBoard extends Component {
-    state = {
-        teams: [],
-        loading: true,
-        error: null,
-    };
+const LeaderBoardScreen = ({
+  sessionCode,
+  onNextQuestion,
+  currentQuestionIndex,
+  totalQuestions,
+}) => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
 
-    componentDidMount() {
-        this.fetchTeams();
-    }
-
-    fetchTeams = async () => {
-        this.setState({ loading: true, error: null });
-        const token = localStorage.getItem("token");
-        try {
-            const response = await axios.get(
-                `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/session/${sessionCode}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            if (response.data.statusCode === 200) {
-                const sortedTeams = [...response.data.data].sort(
-                    (a, b) => b.totalScore - a.totalScore
-                );
-                this.setState({ teams: sortedTeams });
-            } else {
-                throw new Error(response.data.message || "Failed to fetch teams");
-            }
-        } catch (error) {
-            this.setState({ error: error.message });
-            message.error("Không thể tải bảng xếp hạng");
-        } finally {
-            this.setState({ loading: false });
-        }
-    };
-
-    getRankAvatar = (rank) => {
-        switch (rank) {
-            case 1: return "👑";
-            case 2: return "🥈";
-            case 3: return "🥉";
-            default: return "🎯";
-        }
-    };
-
-    getRankColor = (rank) => {
-        switch (rank) {
-            case 1: return { background: "#ffd700", color: "#000" };
-            case 2: return { background: "#c0c0c0", color: "#000" };
-            case 3: return { background: "#cd7f32", color: "#000" };
-            default: return { background: "#f0f2f5", color: "#000" };
-        }
-    };
-
-    renderTeamMembers = (players) => (
-        <div style={{ paddingLeft: "46px", paddingBottom: "10px" }}>
-            {players.map((player) => (
-                <div
-                    key={player.playerId}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "8px",
-                        padding: "8px",
-                        background: "#f9f9f9",
-                        borderRadius: "8px",
-                        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-                    }}
-                >
-                    <img
-                        src={player.imageUrl || "https://via.placeholder.com/40"}
-                        alt={player.name}
-                        style={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                            marginRight: "12px",
-                            objectFit: "cover",
-                        }}
-                    />
-                    <div>
-                        <div style={{ fontWeight: "500" }}>{player.name}</div>
-                        <div style={{ fontSize: "12px", color: "#666" }}>
-                            Điểm: {player.score} | Tham gia: {new Date(player.joinedAt).toLocaleTimeString()}
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-
-    render() {
-        const { teams, loading, error } = this.state;
-
-        if (loading) {
-            return (
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh"
-                }}>
-                    <Spin size="large" tip="Đang tải bảng xếp hạng..." />
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    color: "#ff4d4f"
-                }}>
-                    <Title level={4}>⚠️ {error}</Title>
-                </div>
-            );
-        }
-
-        return (
-            <div
-                style={{
-                    background: "linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%)",
-                    minHeight: "100vh",
-                    padding: "20px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                <Card
-                    style={{
-                        width: "80%",
-                        maxWidth: "800px",
-                        borderRadius: "20px",
-                        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
-                        overflow: "hidden",
-                        border: "none",
-                    }}
-                    bodyStyle={{ padding: "0" }}
-                >
-                    <div
-                        style={{
-                            background: "linear-gradient(90deg, #ff6b6b 0%, #ff8e53 100%)",
-                            padding: "20px",
-                            textAlign: "center",
-                        }}
-                    >
-                        <Title level={2} style={{ color: "#fff", margin: 0 }}>
-                            <TrophyOutlined /> BẢNG XẾP HẠNG <FireOutlined />
-                        </Title>
-                        <div style={{ color: "#fff", marginTop: "8px" }}>
-                            <TeamOutlined /> Mã phiên: {sessionCode}
-                        </div>
-                    </div>
-
-                    <Table
-                        dataSource={teams.map((team, index) => ({
-                            ...team,
-                            rank: index + 1,
-                        }))}
-                        rowKey="teamId"
-                        pagination={false}
-                        showHeader={false}
-                        style={{ width: "100%" }}
-                        rowClassName={(record) => (record.rank <= 3 ? "highlight-row" : "")}
-                        expandable={{
-                            expandedRowRender: (team) => this.renderTeamMembers(team.players),
-                            rowExpandable: (team) => team.players.length > 0,
-                        }}
-                    >
-                        <Table.Column
-                            title="Rank"
-                            dataIndex="rank"
-                            key="rank"
-                            render={(rank) => (
-                                <div
-                                    style={{
-                                        display: "inline-block",
-                                        width: "30px",
-                                        height: "30px",
-                                        borderRadius: "50%",
-                                        ...this.getRankColor(rank),
-                                        textAlign: "center",
-                                        lineHeight: "30px",
-                                        fontWeight: "bold",
-                                        marginRight: "10px",
-                                    }}
-                                >
-                                    {rank}
-                                </div>
-                            )}
-                        />
-                        <Table.Column
-                            title="Team"
-                            dataIndex="teamName"
-                            key="teamName"
-                            render={(teamName, record) => (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <span
-                                        style={{
-                                            fontSize: "24px",
-                                            marginRight: "10px",
-                                            width: "30px",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        {this.getRankAvatar(record.rank)}
-                                    </span>
-                                    <div>
-                                        <div style={{ fontWeight: "bold" }}>{teamName}</div>
-                                        <div style={{ fontSize: "12px", color: "#666" }}>
-                                            {record.players.length} thành viên
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        />
-                        <Table.Column
-                            title="Score"
-                            dataIndex="totalScore"
-                            key="totalScore"
-                            render={(score) => (
-                                <div
-                                    style={{
-                                        background: "#ff6b6b",
-                                        color: "#fff",
-                                        padding: "5px 15px",
-                                        borderRadius: "20px",
-                                        fontWeight: "bold",
-                                        minWidth: "80px",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {score} pts
-                                </div>
-                            )}
-                        />
-                    </Table>
-
-                    <div
-                        style={{
-                            background: "#f0f2f5",
-                            padding: "15px",
-                            textAlign: "center",
-                            fontStyle: "italic",
-                            color: "#666",
-                        }}
-                    >
-                        {teams.length > 0
-                            ? "Chúc mừng các đội chiến thắng! 🎉"
-                            : "Chưa có đội nào tham gia"}
-                    </div>
-                </Card>
-            </div>
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axios.get(
+          `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/leaderboard`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
-    }
-}
 
-export default LeaderBoard;
+        const teams = response.data.data.map((team) => ({
+          teamId: team.teamId,
+          teamName: team.teamName,
+          score: team.totalScore,
+          rank: team.rank,
+        }));
+
+        setData(teams);
+      } catch (error) {
+        console.error("Lỗi khi fetch leaderboard:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, [sessionCode]);
+
+  const columns = [
+    {
+      title: "Rank",
+      dataIndex: "rank",
+      key: "rank",
+      render: (rank) => {
+        if (rank === 1) return <Tag color="gold">🥇</Tag>;
+        if (rank === 2) return <Tag color="silver">🥈</Tag>;
+        if (rank === 3) return <Tag color="volcano">🥉</Tag>;
+        return <Tag>{rank}</Tag>;
+      },
+      align: "center",
+    },
+    {
+      title: "Team",
+      dataIndex: "teamName",
+      key: "teamName",
+      render: (text) => (
+        <Text strong style={{ color: "#d81b60", fontSize: 16 }}>
+          {text}
+        </Text>
+      ),
+    },
+    {
+      title: "Score",
+      dataIndex: "score",
+      key: "score",
+      render: (score) => (
+        <Text style={{ color: "#ff4081", fontWeight: "bold", fontSize: 16 }}>
+          {score}
+        </Text>
+      ),
+      align: "center",
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Roboto', sans-serif",
+        padding: "24px",
+      }}
+    >
+      <Space direction="vertical" size="large" align="center">
+        <Title
+          level={2}
+          style={{
+            color: "#fff",
+            textShadow: "1px 1px 6px rgba(0,0,0,0.4)",
+            animation: "pulse 2s infinite",
+            marginBottom: 0,
+          }}
+        >
+          🏆 LEADER BOARD 🏆
+        </Title>
+
+        <Card
+          style={{
+            width: "90vw",
+            maxWidth: 600,
+            borderRadius: 16,
+            boxShadow: "0 12px 24px rgba(0,0,0,0.2)",
+            padding: 16,
+            background: "rgba(255,255,255,0.95)",
+            border: "2px solid #d81b60",
+          }}
+        >
+          {loading ? (
+            <div style={{ textAlign: "center", padding: 24 }}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey="teamId"
+              pagination={false}
+              bordered
+              rowClassName={(record) =>
+                record.rank === 1
+                  ? "gold-row"
+                  : record.rank === 2
+                  ? "silver-row"
+                  : record.rank === 3
+                  ? "bronze-row"
+                  : ""
+              }
+            />
+          )}
+        </Card>
+
+        {currentQuestionIndex < totalQuestions - 1 ? (
+          <Button
+            onClick={onNextQuestion}
+            type="primary"
+            size="large"
+            style={{
+              backgroundColor: "#d81b60",
+              borderColor: "#d81b60",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            Next Question
+          </Button>
+        ) : (
+          <Button
+            onClick={async () => {
+              try {
+                await axios.post(
+                  `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/finish`,
+                  {},
+                  {
+                    headers: {
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                  }
+                );
+                alert(
+                  "Session finished! Redirecting to create session page..."
+                );
+                window.location.href = "/create-session";
+              } catch (error) {
+                console.error("Lỗi khi kết thúc phiên:", error);
+              }
+            }}
+            size="large"
+            style={{
+              backgroundColor: "#ff4081",
+              borderColor: "#ff4081",
+              color: "#fff",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            🛑 End Session
+          </Button>
+        )}
+
+        <Text
+          style={{
+            fontSize: 16,
+            color: "#ffffff",
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          Mã phiên: <span>{sessionCode}</span>
+        </Text>
+      </Space>
+
+      <style>
+        {`
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+          .gold-row {
+            background: #fff8dc !important;
+          }
+          .silver-row {
+            background: #f0f0f0 !important;
+          }
+          .bronze-row {
+            background: #fbe7d0 !important;
+          }
+          .ant-table-thead > tr > th {
+            background: #d81b60 !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            text-align: center;
+          }
+        `}
+      </style>
+    </div>
+  );
+};
+
+export default LeaderBoardScreen;
