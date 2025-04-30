@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Input,
@@ -6,8 +6,12 @@ import {
   Typography,
   Layout,
   Card,
-  message,
   Space,
+  message,
+  Button,
+  Modal,
+  List,
+  Divider,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -19,80 +23,114 @@ const { Option } = Select;
 
 const SessionManagement = () => {
   const [sessions, setSessions] = useState([]);
-  const [searchText, setSearchText] = useState("");
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 5,
-    total: 0,
-  });
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedLeaderboard, setSelectedLeaderboard] = useState([]);
+  const [modalTitle, setModalTitle] = useState("Leaderboard");
 
-  const fetchSessions = async (params = {}) => {
+  const fetchSessions = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/my-session",
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/list?pageNumber=${pageNumber}&pageSize=${pageSize}`,
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJUZWFjaGVyIiwiZXhwIjoxNzQ1ODI0NzA3LCJpc3MiOiJLYWhvb3QiLCJhdWQiOiJLYWhvb3QgRW5kIFVzZXJzIn0.hCdzIKzy04JWUEkrbWvZ2774LabiNtY2QgQ4Eu_GTFE`,
-          },
-          params: {
-            pageIndex: params.pageIndex || 1,
-            pageSize: params.pageSize || 5,
-            search: params.search || "",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      const { data } = response.data;
 
-      setSessions(
-        data.filter((session) => {
-          if (statusFilter === "ongoing") return !session.endAt;
-          if (statusFilter === "ended") return !!session.endAt;
-          return true;
-        })
-      );
-      setPagination((prev) => ({
-        ...prev,
-        total: data.length,
-      }));
+      let rawData = res.data.data;
+
+      // Filter theo dropdown
+      let filteredData = rawData;
+      if (filterStatus === "ongoing") {
+        filteredData = rawData.filter((s) => !s.endAt);
+      } else if (filterStatus === "ended") {
+        filteredData = rawData.filter((s) => s.endAt);
+      }
+
+      setSessions(filteredData);
+      setTotal(filteredData.length);
     } catch (error) {
-      message.error("Failed to fetch sessions!");
+      message.error("Không thể tải dữ liệu phiên chơi.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    fetchSessions({
-      pageIndex: pagination.current,
-      pageSize: pagination.pageSize,
-      search: searchText,
-    });
-  }, [pagination.current, pagination.pageSize, searchText, statusFilter]);
+    fetchSessions();
+  }, [pageNumber, pageSize, filterStatus]);
 
-  const handleTableChange = (pagination) => {
-    setPagination({
-      ...pagination,
-      pageSize: pagination.pageSize,
-      current: pagination.current,
-    });
+  const fetchLeaderboard = async (sessionId, sessionName) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.get(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionId}/leaderboard`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setSelectedLeaderboard(res.data.data);
+      setModalTitle(`Leaderboard - ${sessionName}`);
+      setIsModalVisible(true);
+    } catch (error) {
+      console.error("Leaderboard fetch error:", error.response || error);
+      if (error.response?.status === 404) {
+        message.warning("Chưa có dữ liệu leaderboard cho session này.");
+      } else {
+        message.error("Không thể tải leaderboard.");
+      }
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedLeaderboard([]);
   };
 
   const columns = [
-    { title: "Session Name", dataIndex: "sessionName", key: "sessionName" },
-    { title: "Session Code", dataIndex: "sessionCode", key: "sessionCode" },
+    {
+      title: "Session Name",
+      dataIndex: "sessionName",
+      key: "sessionName",
+    },
+    {
+      title: "Session Code",
+      dataIndex: "sessionCode",
+      key: "sessionCode",
+    },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (date) => (date ? new Date(date).toLocaleString() : "-"),
+      render: (value) => new Date(value).toLocaleString("vi-VN"),
     },
     {
       title: "End At",
       dataIndex: "endAt",
       key: "endAt",
-      render: (date) => (date ? new Date(date).toLocaleString() : "Ongoing"),
+      render: (value) =>
+        value ? new Date(value).toLocaleString("vi-VN") : "On Going",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => fetchLeaderboard(record.sessionCode, record.sessionName)}
+        >
+          Detail
+        </Button>
+      ),
     },
   ];
 
@@ -112,7 +150,6 @@ const SessionManagement = () => {
           }}
         >
           <Card
-            bordered={false}
             style={{
               width: "100%",
               maxWidth: "1100px",
@@ -137,7 +174,7 @@ const SessionManagement = () => {
                   Session Management
                 </Title>
                 <Text type="secondary" style={{ fontSize: 14 }}>
-                  Total: <b>{pagination.total}</b> sessions
+                  Total: <b>{total}</b> sessions
                 </Text>
               </div>
 
@@ -145,11 +182,6 @@ const SessionManagement = () => {
                 <Input
                   placeholder="Search session..."
                   prefix={<SearchOutlined />}
-                  value={searchText}
-                  onChange={(e) => {
-                    setPagination((prev) => ({ ...prev, current: 1 }));
-                    setSearchText(e.target.value);
-                  }}
                   allowClear
                   style={{
                     width: 250,
@@ -161,15 +193,15 @@ const SessionManagement = () => {
                 />
 
                 <Select
-                  value={statusFilter}
-                  onChange={(value) => {
-                    setStatusFilter(value);
-                    setPagination((prev) => ({ ...prev, current: 1 }));
-                  }}
+                  value={filterStatus}
                   style={{
                     width: 150,
                     borderRadius: "8px",
                     background: "#f9fafb",
+                  }}
+                  onChange={(value) => {
+                    setFilterStatus(value);
+                    setPageNumber(1); // reset page
                   }}
                 >
                   <Option value="all">All</Option>
@@ -192,20 +224,49 @@ const SessionManagement = () => {
           >
             <Table
               dataSource={sessions}
+              loading={loading}
               columns={columns}
               rowKey="sessionId"
-              loading={loading}
               pagination={{
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
+                current: pageNumber,
+                pageSize: pageSize,
+                total: total,
+                onChange: (page, size) => {
+                  setPageNumber(page);
+                  setPageSize(size);
+                },
                 showSizeChanger: true,
                 pageSizeOptions: ["5", "10", "20"],
               }}
-              onChange={handleTableChange}
               rowClassName={() => "table-row-hover"}
             />
           </Card>
+
+          <Modal
+            title={modalTitle}
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={null}
+            width={600}
+          >
+            {selectedLeaderboard.map((team) => (
+              <div key={team.teamId} style={{ marginBottom: 24 }}>
+                <Title level={5}>
+                  #{team.rank} - {team.teamName} ({team.totalScore} điểm)
+                </Title>
+                <List
+                  size="small"
+                  dataSource={team.players}
+                  renderItem={(player) => (
+                    <List.Item>
+                      {player.name} - {player.totalScore} điểm
+                    </List.Item>
+                  )}
+                />
+                <Divider />
+              </div>
+            ))}
+          </Modal>
         </Content>
       </Layout>
 

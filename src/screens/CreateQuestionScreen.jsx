@@ -64,9 +64,17 @@ const CreateQuestion = () => {
     }
 
     const handleDuplicateAnswer = (id) => {
+        if (question.length == 4) {
+            notification.error({
+                message: 'Số lượng câu trả lời tối đa là 4',
+                description: 'Vui lòng nhập nội dung câu hỏi.',
+                placement: 'topRight'
+            });
+        }
         const answerToDuplicate = answers.find((answer) => answer.id === id);
 
         const newAnswer = { ...answerToDuplicate, id: Date.now() };
+
         setAnswers([...answers, newAnswer]);
     };
     const handleSaveQuestion = () => {

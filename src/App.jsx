@@ -18,22 +18,25 @@ import RegisterSuccess from "./components/RegisterSuccess";
 import HomeMenu from "./Home/HomeMenu";
 import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
+import PaymentPage from "./Host/PaymentPage";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 
-import CreateKahoot from "./screens/CreateKahootScreen"; // 👉 Import thêm CreateKahoot
+import CreateKahoot from "./screens/CreateKahootScreen";
 import HomeAdmin from "./Admin/HomeAdmin";
+import SystemConfiguration from "./Admin/SystemConfiguration/SystemConfiguration";
 import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
 import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
-import CreateSession from "../../../gitmain/src/screens/CreateSession";
+// import CreateSession from "../../../gitmain/src/screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
 import AnswerScreen from "./screens/AnswerScreen";
 import ChooseGroupScreen from "./screens/ChooseGroupScreen";
 import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import UserManagement from "./Admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
+import LeaderBoard from "./screens/LeaderBoardScreen";
 
 function App() {
   return (
@@ -41,12 +44,14 @@ function App() {
       <Router>
         <Routes>
           {/*Host*/}
-          <Route path="/create-question" element={<CreateQuestion />} />
-          <Route path="/create-kahoot" element={<CreateKahoot />} />
-          <Route path="/update-kahoot" element={<UpdateKahoot />} />
-          <Route path="/update-question" element={<UpdateQuestion />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+
+          <Route path="/createQ" element={<CreateQuestion />} />
+          <Route path="/createK" element={<CreateKahoot />} />
+          <Route path="/updateK" element={<UpdateKahoot />} />
+          <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
-          <Route path="/create-session" element={<CreateSession />} />
+          {/* <Route path="/create-session" element={<CreateSession />} /> */}
 
           {/* Home */}
           <Route
@@ -60,6 +65,10 @@ function App() {
             }
           />
           <Route path="/HomeAdmin" element={<HomeAdmin />} />
+          <Route
+            path="/system-configuration"
+            element={<SystemConfiguration />}
+          />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
           <Route path="/UserSetupPage" element={<UserSetupPage />} />
@@ -83,6 +92,7 @@ function App() {
               </>
             }
           />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
 
@@ -98,6 +108,7 @@ function App() {
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
+
         </Routes>
       </Router>
     </GoogleOAuthProvider>
