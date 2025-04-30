@@ -23,7 +23,7 @@ import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 
 import CreateKahoot from "./screens/CreateKahootScreen";
-import HomeAdmin from "./Admin/HomeAdmin";
+import AdminHeader from "./Admin/AdminHeader";
 import SystemConfiguration from "./Admin/SystemConfiguration/SystemConfiguration";
 import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
@@ -64,7 +64,7 @@ function App() {
               </>
             }
           />
-          <Route path="/admin/session-list" element={<SessionManagement />} />
+          <Route path="/admin/session-list" element={<><AdminHeader /> <SessionManagement /></>} />
           <Route
             path="/system-configuration"
             element={<SystemConfiguration />}

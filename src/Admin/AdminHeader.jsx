@@ -12,7 +12,7 @@ function AdminHeader() {
 
   const handleBack = () => {
     if (location.pathname === "/system-configuration") {
-      navigate("/HomeAdmin");
+      navigate("/admin/session-list");
     } else {
       navigate("/Home");
     }
@@ -23,7 +23,7 @@ function AdminHeader() {
   };
 
   const handleReloadAdmin = () => {
-    window.location.href = "/HomeAdmin";
+    window.location.href = "/admin/session-list";
   };
 
   const handleLogout = () => {
