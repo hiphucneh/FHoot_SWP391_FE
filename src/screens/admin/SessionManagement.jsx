@@ -179,18 +179,7 @@ const SessionManagement = () => {
               </div>
 
               <Space>
-                <Input
-                  placeholder="Search session..."
-                  prefix={<SearchOutlined />}
-                  allowClear
-                  style={{
-                    width: 250,
-                    borderRadius: "8px",
-                    borderColor: "#d1d5db",
-                    background: "#f9fafb",
-                    color: "#333",
-                  }}
-                />
+
 
                 <Select
                   value={filterStatus}

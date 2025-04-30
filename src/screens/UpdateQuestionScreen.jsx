@@ -1,4 +1,5 @@
 import React, { state, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { InputNumber, notification, Upload, Checkbox, Button, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -59,7 +60,7 @@ const UpdateQuestion = () => {
         const saved = localStorage.getItem(`savedQuestions_${quizId}`);
         return saved ? JSON.parse(saved) : [];
     });
-
+    const navigate = useNavigate();
     useEffect(() => {
         if (quizId) {
             localStorage.setItem(`savedQuestions_${quizId}`, JSON.stringify(savedQuestions));
@@ -308,6 +309,7 @@ const UpdateQuestion = () => {
                 icon: 'success',
                 confirmButtonColor: 'green',
             });
+            navigate("/your-kahoots")
         } catch (error) {
             console.error("❌ Error saving questions:", error);
             alert("Đã xảy ra lỗi khi lưu câu hỏi.");

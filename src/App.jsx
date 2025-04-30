@@ -28,7 +28,7 @@ import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
 import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
-// import CreateSession from "../../../gitmain/src/screens/CreateSession";
+import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
 import AnswerScreen from "./screens/AnswerScreen";
 import ChooseGroupScreen from "./screens/ChooseGroupScreen";
@@ -50,7 +50,7 @@ function App() {
           <Route path="/updateK" element={<UpdateKahoot />} />
           <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
-          {/* <Route path="/create-session" element={<CreateSession />} /> */}
+          <Route path="/create-session" element={<CreateSession />} />
 
           {/* Home */}
           <Route
