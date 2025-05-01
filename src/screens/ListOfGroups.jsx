@@ -60,13 +60,26 @@ const ListOfGroups = () => {
         }
       );
 
-      if (response.status === 200) {
-        message.success("Session started successfully!");
-        console.log("✅ Session started:", response.data);
+      if (response.data.statusCode === 200) {
+        message.success("Let's playyyy!");
+        console.log("Session started:", response.data);
+        const initialQuestion = response.data.data;
+
+        navigate("/answer-screen", {
+          state: {
+            sessionCode,
+            totalQuestion: initialQuestion.length,
+          },
+        });
+      } else {
+        throw new Error(response.data.message || "Error starting session");
       }
     } catch (error) {
-      console.error("❌ Error starting session:", error);
-      message.error("Failed to start session. Please try again.");
+      console.error(
+        "Error starting session:",
+        error.response?.data || error.message
+      );
+      message.error(error.message || "Cannot start session. Please try again.");
     }
   };
 
@@ -101,7 +114,6 @@ const ListOfGroups = () => {
     };
 
     const timer = setTimeout(joinSessionIfConnected, 1000);
-
     return () => clearTimeout(timer);
   }, [connectionRef, sessionCode]);
 
@@ -109,7 +121,7 @@ const ListOfGroups = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)", // Match CreateSession
+        background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
         padding: "32px",
         display: "flex",
         flexDirection: "column",
@@ -122,7 +134,7 @@ const ListOfGroups = () => {
         style={{
           width: "100%",
           maxWidth: "1100px",
-          background: "rgba(255, 255, 255, 0.95)", // Match CreateSession
+          background: "rgba(255, 255, 255, 0.95)",
           borderRadius: "16px",
           boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
           marginBottom: "32px",
@@ -139,13 +151,12 @@ const ListOfGroups = () => {
           }}
         >
           <Space>
-            <TeamOutlined style={{ fontSize: 24, color: "#d81b60" }} />{" "}
-            {/* Match primary color */}
+            <TeamOutlined style={{ fontSize: 24, color: "#d81b60" }} />
             <Text
               strong
               style={{
                 fontSize: 20,
-                color: "#d81b60", // Match primary color
+                color: "#d81b60",
                 textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
               }}
             >
@@ -157,7 +168,7 @@ const ListOfGroups = () => {
             level={2}
             style={{
               margin: 0,
-              color: "#d81b60", // Match primary color
+              color: "#d81b60",
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
               animation: "pulse 2s infinite",
             }}
@@ -169,12 +180,11 @@ const ListOfGroups = () => {
             <Text
               style={{
                 fontSize: 18,
-                color: "#d81b60", // Match primary color
+                color: "#d81b60",
                 fontWeight: "bold",
               }}
             >
-              GAME PIN: <span style={{ color: "#ff4081" }}>{roomCode}</span>{" "}
-              {/* Keep highlight color */}
+              GAME PIN: <span style={{ color: "#ff4081" }}>{roomCode}</span>
             </Text>
           </Space>
         </div>
@@ -184,7 +194,7 @@ const ListOfGroups = () => {
             type="primary"
             onClick={startSession}
             style={{
-              background: "#d81b60", // Match CreateSession button
+              background: "#d81b60",
               borderColor: "#d81b60",
               borderRadius: "8px",
               padding: "8px 24px",
@@ -209,8 +219,8 @@ const ListOfGroups = () => {
               bordered={false}
               style={{
                 borderRadius: 16,
-                background: "rgba(255, 255, 255, 0.95)", // Match CreateSession
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                background: "rgba(255,255,255,0.95)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
             >
               <div style={{ marginBottom: 8 }}>
@@ -229,14 +239,12 @@ const ListOfGroups = () => {
                       borderRadius: "20px",
                       fontSize: 14,
                       fontWeight: "bold",
-                      color: "#d81b60", // Match primary color
+                      color: "#d81b60",
                       background: "#fff0f6",
-                      border: "1px solid #ff4081", // Match highlight color
+                      border: "1px solid #ff4081",
                     }}
                   >
-                    <UserOutlined
-                      style={{ marginRight: 6, color: "#d81b60" }}
-                    />
+                    <UserOutlined style={{ marginRight: 6 }} />
                     {member}
                   </Tag>
                 ))}
