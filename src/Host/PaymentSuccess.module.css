@@ -1,0 +1,115 @@
+.payment-success-container {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: #f5f0ff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .payment-success-image {
+    max-width: 300px;
+    margin-bottom: 1.5rem;
+    animation: popIn 0.8s ease-out;
+  }
+  
+  .payment-success-title {
+    color: #4caf50;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .payment-success-message {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .payment-success-button {
+    margin-top: 2rem;
+    padding: 0.8rem 2.5rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: #7e57c2;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .payment-success-button:hover {
+    background-color: #5e35b1;
+    transform: translateY(-2px);
+  }
+  
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  .payment-success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem;
+    min-height: 100vh;
+    background-color: #f3f0ff;
+  }
+  
+  .payment-success-image {
+    width: 220px;
+    max-width: 90%;
+    margin-bottom: 1.5rem;
+    animation: popIn 0.8s ease-out;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .payment-success-title {
+    color: #4caf50;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .payment-success-message {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 2rem;
+  }
+  
+  .payment-success-button {
+    background-color: #7e57c2;
+    color: white;
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 4px 0 #5e35b1;
+  }
+  
+  .payment-success-button:hover {
+    background-color: #5e35b1;
+    transform: translateY(-2px);
+  }
+  
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  

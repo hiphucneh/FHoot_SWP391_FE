@@ -19,6 +19,8 @@ import HomeMenu from "./Home/HomeMenu";
 import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
 import PaymentPage from "./Host/PaymentPage";
+import PaymentSuccess from "./Host/PaymentSuccess";
+import PaymentCancel from "./Host/PaymentCancel";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
 
@@ -31,9 +33,6 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
-import AnswerScreen from "./screens/AnswerScreen";
-import ChooseGroupScreen from "./screens/ChooseGroupScreen";
-import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import UserManagement from "./Admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
@@ -64,7 +63,14 @@ function App() {
               </>
             }
           />
-          <Route path="/admin/session-list" element={<><AdminHeader /> <SessionManagement /></>} />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader /> <SessionManagement />
+              </>
+            }
+          />
           <Route
             path="/system-configuration"
             element={<SystemConfiguration />}
@@ -93,13 +99,11 @@ function App() {
             }
           />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
+
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
-
-          {/* Player */}
-          <Route path="/answer" element={<AnswerScreen />} />
-          <Route path="/choose-group" element={<ChooseGroupScreen />} />
-          <Route path="/waiting-room" element={<WaitingRoomScreen />} />
 
           {/* Admin */}
           <Route path="/admin/user-list" element={<UserManagement />} />
@@ -108,7 +112,6 @@ function App() {
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
-
         </Routes>
       </Router>
     </GoogleOAuthProvider>

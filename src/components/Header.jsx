@@ -94,7 +94,7 @@ function Header() {
           <div
             className="nav__logo"
             onClick={() => {
-              window.location.href = "/HomeAdmin";
+              window.location.href = "/Home";
             }}
             style={{
               cursor: "pointer",
