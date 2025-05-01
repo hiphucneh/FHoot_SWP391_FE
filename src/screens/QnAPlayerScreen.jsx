@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
 import LeaderBoardScreen from "./LeaderboardScreen";
+import WaitingAnswer from "./WaitingAnswer";
 
 const { Title } = Typography;
 
@@ -21,6 +22,7 @@ const QnAPlayerScreen = () => {
   const [pendingResults, setPendingResults] = useState(null);
   const [displayResults, setDisplayResults] = useState(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showWatingAnswer, setShowWatingAnswer] = useState(false);
   const [tempPoint, setTempPoint] = useState(0);
 
   const currentQuestionData = questions[currentQuestionIndex] || null;
@@ -53,14 +55,15 @@ const QnAPlayerScreen = () => {
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && !showLeaderboard) {
       setDisplayResults(pendingResults);
-      setShowLeaderboard(true);
-      setScore((prev) => prev + tempPoint);
+      setTimeout(() => {
+        setShowLeaderboard(true);
+        setScore((prev) => prev + tempPoint);
+      }, 2000);
     }
   }, [timeLeft, showLeaderboard, pendingResults]);
 
   const handleAnswer = async (answer) => {
     if (selectedAnswer) return;
-    console.log("cur" + currentQuestionIndex);
     setSelectedAnswer(answer.answerId);
 
     try {
@@ -84,11 +87,16 @@ const QnAPlayerScreen = () => {
       );
 
       if (response.data.statusCode === 200) {
-        const isCorrect = response.data.data?.isCorrect || answer.isCorrect;
-        setPendingResults({ answerId: answer.answerId, isCorrect });
+        const isCorrect = response.data.data?.isCorrect;
+        setPendingResults({
+          answerId: answer.answerId,
+          isCorrect: response.data.data?.isCorrect,
+        });
+
         const points = isCorrect ? response.data.data?.score : 0;
         setTempPoint(points);
         message.success(`Your Answer: ${answer.answerText}`);
+        setShowWatingAnswer(true);
       } else {
         throw new Error(response.data.message || "Error submitting answer");
       }
@@ -163,6 +171,10 @@ const QnAPlayerScreen = () => {
       />
     );
   }
+
+  // if (showWatingAnswer) {
+  //   return <WaitingAnswer />;
+  // }
 
   return (
     <div
@@ -285,9 +297,12 @@ const QnAPlayerScreen = () => {
           const isSelected = selectedAnswer === answer.answerId;
           const isCorrect = answer.isCorrect;
           const showResult = displayResults !== null;
+
           const resultColor = showResult
-            ? isCorrect
-              ? "#4caf50"
+            ? answer.answerId === pendingResults?.answerId
+              ? pendingResults.isCorrect
+                ? "#4caf50"
+                : "#f44336"
               : "#f44336"
             : answerColors[index % answerColors.length];
 
