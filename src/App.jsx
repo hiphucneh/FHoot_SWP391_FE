@@ -41,6 +41,7 @@ import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
 import QnAPlayerScreen from "./screens/QnAPlayerScreen";
 import QnAHostScreen from "./screens/QnAHostScreen";
+import HeaderK from "./screens/HeaderK";
 
 function App() {
   return (
@@ -51,8 +52,8 @@ function App() {
           <Route path="/leaderboard" element={<LeaderBoard />} />
 
           <Route path="/createQ" element={<CreateQuestion />} />
-          <Route path="/createK" element={<CreateKahoot />} />
-          <Route path="/updateK" element={<UpdateKahoot />} />
+          <Route path="/createK" element={<><HeaderK /> <CreateKahoot /> </>} />
+          <Route path="/updateK" element={<><HeaderK /> <UpdateKahoot /> </>} />
           <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
           <Route path="/create-session" element={<CreateSession />} />
