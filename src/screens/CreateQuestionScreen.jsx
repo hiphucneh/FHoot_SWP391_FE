@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { createQuestion } from '../services/createQuestion.js';
 
-import '../components/CreateQuestion.css';
+import "../components/CreateQuestion.css";
 
 const CreateQuestion = () => {
     const quizId = localStorage.getItem("quizId");
@@ -260,7 +260,7 @@ const CreateQuestion = () => {
                 icon: 'success',
                 confirmButtonColor: 'green',
             });
-
+            localStorage.setItem("quizId", "")
             localStorage.setItem(`savedQuestions_${quizId}`, "")
             navigate('/create-session');
 
@@ -527,3 +527,4 @@ const CreateQuestion = () => {
 }
 
 export default CreateQuestion;
+
