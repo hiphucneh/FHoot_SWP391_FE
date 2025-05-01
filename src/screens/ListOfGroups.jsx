@@ -93,9 +93,9 @@ const ListOfGroups = () => {
       // Wait 1s to let the sound play
       setTimeout(() => {
         message.success("Game Started!");
-        navigate("/answer-screen", {
+        navigate("/load", {
           state: { sessionCode, totalQuestion: data.length },
-        });
+        });        
       }, 1000);
     } catch (err) {
       message.error("Cannot start game.");
