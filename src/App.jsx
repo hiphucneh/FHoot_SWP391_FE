@@ -2,6 +2,9 @@ import "./components/styles.css";
 import "remixicon/fonts/remixicon.css";
 
 import CreateQuestion from "./screens/CreateQuestionScreen";
+import ChooseGroupScreen from "./screens/ChooseGroupScreen";
+import WaitingRoomScreen from "./screens/WaitingRoomScreen";
+import Dashboard from "./screens/admin/Dashboard";
 
 import {
   BrowserRouter as Router,
@@ -19,9 +22,11 @@ import HomeMenu from "./Home/HomeMenu";
 import Information from "./Home/Information";
 import PayHost from "./Host/payHost";
 import PaymentPage from "./Host/PaymentPage";
+import PaymentSuccess from "./Host/PaymentSuccess";
+import PaymentCancel from "./Host/PaymentCancel";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
-// import "./Admin/AdminHeader"
+import AdminHeader from "./Admin/AdminHeader";
 import CreateKahoot from "./screens/CreateKahootScreen";
 import HomeAdmin from "./Admin/HomeAdmin";
 import SystemConfiguration from "./Admin/SystemConfiguration/SystemConfiguration";
@@ -31,9 +36,7 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
-import ChooseGroupScreen from "./screens/ChooseGroupScreen";
-import WaitingRoomScreen from "./screens/WaitingRoomScreen";
-import UserManagement from "./Admin/UserManagement";
+import UserManagement from "./screens/admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
 import QnAPlayerScreen from "./screens/QnAPlayerScreen";
@@ -102,18 +105,20 @@ function App() {
             }
           />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
+
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
 
-          {/* Player */}
-          <Route path="/answer" element={<QnAPlayerScreen />} />
+          {/* Admin */}
+          <Route path="/admin/user-list" element={<><AdminHeader /> <UserManagement /></>} />
+          <Route path="/admin/session-list" element={<><AdminHeader /><SessionManagement /></>} />
+          <Route path="/admin/setting" element={<HomeForAdmin />} />
           <Route path="/choose-group" element={<ChooseGroupScreen />} />
           <Route path="/waiting-room" element={<WaitingRoomScreen />} />
-
-          {/* Admin */}
-          <Route path="/admin/user-list" element={<UserManagement />} />
-          <Route path="/admin/session-list" element={<SessionManagement />} />
-          <Route path="/admin/setting" element={<HomeForAdmin />} />
+          <Route path="/answer" element={<QnAPlayerScreen />} />
+          <Route path="/admin/dashboard" element={<><AdminHeader /><Dashboard /></>} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />

@@ -15,6 +15,7 @@ const Sidebar = ({ onMenuClick }) => {
   const location = useLocation();
 
   const pathToKey = {
+    "/admin/dashboard": "dashboard",
     "/admin/user-list": "user",
     "/admin/session-list": "quiz",
     "/admin/settings": "settings",
@@ -22,6 +23,7 @@ const Sidebar = ({ onMenuClick }) => {
   };
 
   const keyToPath = {
+    dashboard: "/admin/dashboard",
     user: "/admin/user-list",
     quiz: "/admin/session-list",
     settings: "/admin/settings",
@@ -68,6 +70,19 @@ const Sidebar = ({ onMenuClick }) => {
           navigate(keyToPath[key]);
         }}
       >
+        <Menu.Item
+          key="dashboard"
+          icon={<UserOutlined />}
+          style={{
+            color: "white",
+            marginBottom: "8px",
+            borderRadius: "6px",
+            transition: "0.3s",
+          }}
+          className="menu-item-hover"
+        >
+          Dashboard
+        </Menu.Item>
         <Menu.Item
           key="user"
           icon={<UserOutlined />}
