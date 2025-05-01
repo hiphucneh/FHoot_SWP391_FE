@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, Typography, Spin, Tag } from "antd";
 import { LoadingOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
-import useSignalR from "../hooks/useSignalR"; // Import useSignalR hook
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import useSignalR from "../hooks/useSignalR";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -11,28 +10,82 @@ const WaitingRoomScreen = () => {
   const [teamData, setTeamData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isJoining, setIsJoining] = useState(false); // State to handle loading/disabling button
-  const [joinError, setJoinError] = useState(null); // State to display join errors
-  const [groups, setGroups] = useState([]); // You might use this later based on hub responses
-  const navigate = useNavigate(); // Use useNavigate from react-router-dom
+  const navigate = useNavigate();
   const location = useLocation();
   const { teamId } = location.state || {};
   const sessionCode = localStorage.getItem("sessionCode");
+  const [firstQuestion, setFirstQuestion] = useState(null);
+  const [isSessionStarted, setIsSessionStarted] = useState(false);
 
-  const handleUpdateGroups = useCallback((updatedGroups) => {
-    console.log("✅ Update groups:", updatedGroups);
-    navigate("/answer"); // Navigate to the game screen
-  }, []); // Mảng dependency rỗng
+  // Fetch team data
+  const fetchTeamScore = async () => {
+    const token = localStorage.getItem("token");
+    if (!teamId || !sessionCode) {
+      setError("Missing teamId or sessionCode");
+      setLoading(false);
+      return;
+    }
 
-  // --- SignalR Connection Setup ---
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/${teamId}/score`,
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+      const text = await response.text();
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! Status: ${response.status}, Response: ${text}`
+        );
+      }
+      const result = JSON.parse(text);
+      if (result.statusCode === 200) {
+        setTeamData(result.data);
+      } else {
+        throw new Error(result.message || "API error");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateGroups = useCallback(() => {
+    console.log("✅ Session started: waiting for question...");
+    setIsSessionStarted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isSessionStarted && firstQuestion) {
+      console.log("🚀 Navigating to QnA screen with first question");
+      navigate("/answer", { state: { teamId, sessionCode, firstQuestion } });
+    }
+  }, [isSessionStarted, firstQuestion, navigate, teamId, sessionCode]);
+
+  const handleNextQuestionSignalR = (newQuestion) => {
+    setFirstQuestion(newQuestion);
+    setTimeLeft(timeLimitSec);
+  };
+
+  const handleSessionStarted = useCallback(() => {
+    navigate("/answer", { state: { teamId, sessionCode, firstQuestion } });
+  }, [navigate, teamId, sessionCode]);
 
   const connectionRef = useSignalR({
     baseHubUrl:
       "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
     token: localStorage.getItem("token"),
     onUpdateGroups: handleUpdateGroups,
+    onNextQuestion: handleNextQuestionSignalR,
   });
 
+  // Join session via SignalR
   useEffect(() => {
     const joinSessionIfConnected = async () => {
       const connection = connectionRef?.current;
@@ -42,50 +95,19 @@ const WaitingRoomScreen = () => {
           console.log("📥 Joined session:", sessionCode);
         } catch (err) {
           console.error("❌ Failed to join session:", err);
+          setError("Không thể tham gia phiên. Vui lòng thử lại.");
         }
       }
     };
 
-    const timer = setTimeout(joinSessionIfConnected, 1000);
-
-    return () => clearTimeout(timer);
+    if (sessionCode) {
+      const timer = setTimeout(joinSessionIfConnected, 1000);
+      return () => clearTimeout(timer);
+    }
   }, [connectionRef, sessionCode]);
 
+  // Fetch team data on mount
   useEffect(() => {
-    const fetchTeamScore = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        setLoading(true);
-        console.log("Fetching team data with token:", token);
-        const response = await fetch(
-          `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/${teamId}/score`,
-          {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-          }
-        );
-        const text = await response.text();
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error! Status: ${response.status}, Response: ${text}`
-          );
-        }
-        const result = JSON.parse(text); // Manually parse JSON
-        console.log("Parsed result:", result); // Log the parsed result
-        if (result.statusCode === 200) {
-          setTeamData(result.data);
-        } else {
-          throw new Error(result.message || "API error");
-        }
-      } catch (err) {
-        console.error("Fetch error:", err); // Log the error
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTeamScore();
   }, [teamId]);
 
