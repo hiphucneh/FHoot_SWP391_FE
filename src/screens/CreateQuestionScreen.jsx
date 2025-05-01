@@ -176,9 +176,31 @@ const CreateQuestionScreen = () => {
 
     try {
       await createQuestion(payload);
-      await Swal.fire("Saved!", "Your quiz is ready.", "success");
-      localStorage.removeItem(`savedQuestions_${quizId}`);
-      navigate("/create-session");
+      await Swal.fire({
+        title: "🎉 Quiz Saved!",
+        text: "Your quiz is ready to go!",
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: "▶️ Play the game!",
+        cancelButtonText: "🏠 Back to Home",
+        confirmButtonColor: "#8A2BE2",   // Kahoot-style purple
+        cancelButtonColor: "#aaaaaa",
+        background: "#fff",
+        customClass: {
+          popup: "swal2-kahoot-popup",
+          title: "swal2-kahoot-title",
+          confirmButton: "swal2-kahoot-confirm",
+          cancelButton: "swal2-kahoot-cancel",
+        },
+      }).then((result) => {
+        localStorage.removeItem(`savedQuestions_${quizId}`);
+        if (result.isConfirmed) {
+          navigate("/create-session");
+        } else {
+          navigate("/");
+        }
+      });
+      
     } catch {
       notification.error({ message: "Failed to save quiz" });
     }
