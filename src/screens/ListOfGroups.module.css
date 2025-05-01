@@ -1,0 +1,122 @@
+.wrapper {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: url("../assets/wating-bg.jpg") center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.headerCard {
+  width: 100%;
+  max-width: 1100px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  margin-bottom: 32px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  color: #8a2be2;
+  animation: pulse 2s infinite;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.playerCount {
+  font-size: 20px;
+  color: #8a2be2;
+  font-weight: bold;
+}
+
+.pin {
+  font-size: 18px;
+  font-weight: bold;
+  color: #6f42c1;
+}
+
+.pin span {
+  color: #ff4081;
+}
+
+.teamIcon {
+  font-size: 24px;
+  color: #8a2be2;
+}
+
+.centerBtn {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.startBtn {
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 12px 32px;
+  font-size: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(255, 0, 128, 0.3);
+  transition: all 0.3s ease;
+}
+
+.startBtn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+.groupRow {
+  width: 100%;
+  max-width: 1100px;
+}
+
+.groupCard {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.groupCard:hover {
+  transform: translateY(-4px);
+}
+
+.groupTitle {
+  color: #e52e71;
+  font-weight: bold;
+}
+
+.tagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.memberTag {
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #d81b60;
+  background: #fff0f6;
+  border: 1px solid #ff4081;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}

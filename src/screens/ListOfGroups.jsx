@@ -1,95 +1,110 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Card, Typography, Space, Tag, Row, Col, Button, message } from "antd";
-import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import {
+  Card,
+  Typography,
+  Space,
+  Tag,
+  Row,
+  Col,
+  Button,
+  message,
+  Spin,
+} from "antd";
+import {
+  TeamOutlined,
+  UserOutlined,
+  SoundOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useSignalR from "../hooks/useSignalR";
+import styles from "./ListOfGroups.module.css";
+
+import bgMusic from "../assets/sound/bg-music.mp3";
+import startSound from "../assets/sound/start.mp3";
 
 const { Title, Text } = Typography;
 
 const ListOfGroups = () => {
   const [groups, setGroups] = useState([]);
+  const [loadingStart, setLoadingStart] = useState(false);
   const sessionCode = localStorage.getItem("sessionCode");
-  const roomCode = sessionCode;
   const navigate = useNavigate();
 
-  const fetchTeamsBySession = async () => {
+  const bgAudioRef = useRef(null);
+  const startAudioRef = useRef(null);
+
+  const fetchTeams = async () => {
     const token = localStorage.getItem("token");
     if (!sessionCode) {
-      message.error("Cannot find session code. Please create a session first.");
-      navigate("/create-session");
-      return;
+      message.error("Missing session code.");
+      return navigate("/create-session");
     }
 
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/session/${sessionCode}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "*/*",
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      const teams = response.data.data;
-      const transformed = teams.map((team) => ({
-        name: team.teamName,
-        members: team.players.map((p) => p.name),
+      const teams = res.data.data || [];
+      const transformed = teams.map((t) => ({
+        name: t.teamName,
+        members: t.players.map((p) => p.name),
         max: 5,
       }));
-
       setGroups(transformed);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-      message.error("Cannot fetch teams. Please try again.");
+    } catch (err) {
+      console.error(err);
+      message.error("Failed to load groups.");
     }
   };
 
-  const startSession = async () => {
+  const fadeOutAudio = (audio, duration = 1000) => {
+    if (!audio) return;
+    const step = audio.volume / (duration / 50);
+    const fade = setInterval(() => {
+      if (audio.volume > step) {
+        audio.volume -= step;
+      } else {
+        audio.volume = 0;
+        audio.pause();
+        clearInterval(fade);
+      }
+    }, 50);
+  };
+
+  const startGame = async () => {
     const token = localStorage.getItem("token");
+    setLoadingStart(true);
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/start`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "*/*",
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (response.data.statusCode === 200) {
-        message.success("Let's playyyy!");
-        console.log("Session started:", response.data);
-        const initialQuestion = response.data.data;
+      const data = res.data?.data;
+      if (!data) throw new Error("Invalid response");
 
+      // Play sound and fade out music
+      startAudioRef.current?.play().catch(() => {});
+      fadeOutAudio(bgAudioRef.current, 1000);
+
+      // Wait 1s to let the sound play
+      setTimeout(() => {
+        message.success("Game Started!");
         navigate("/answer-screen", {
-          state: {
-            sessionCode,
-            totalQuestion: initialQuestion.length,
-          },
+          state: { sessionCode, totalQuestion: data.length },
         });
-      } else {
-        throw new Error(response.data.message || "Error starting session");
-      }
-    } catch (error) {
-      console.error(
-        "Error starting session:",
-        error.response?.data || error.message
-      );
-      message.error(error.message || "Cannot start session. Please try again.");
+      }, 1000);
+    } catch (err) {
+      message.error("Cannot start game.");
+      setLoadingStart(false);
     }
   };
 
-  useEffect(() => {
-    fetchTeamsBySession();
-  }, []);
-
   const handleUpdateGroups = useCallback(() => {
-    console.log("Real-time update groups");
-    fetchTeamsBySession();
+    fetchTeams();
   }, []);
 
   const connectionRef = useSignalR({
@@ -100,152 +115,72 @@ const ListOfGroups = () => {
   });
 
   useEffect(() => {
-    const joinSessionIfConnected = async () => {
-      const connection = connectionRef?.current;
-      if (connection && connection.state === "Connected") {
-        try {
-          await connection.invoke("JoinSession", sessionCode);
-          console.log("Joined session:", sessionCode);
-        } catch (err) {
-          console.error("Failed to join session:", err);
-          message.error("Failed to join session. Please try again.");
-        }
-      }
-    };
+    fetchTeams();
+    if (bgAudioRef.current) {
+      bgAudioRef.current.volume = 0.4;
+      bgAudioRef.current.loop = true;
+      bgAudioRef.current.play().catch(() => {});
+    }
+  }, []);
 
-    const timer = setTimeout(joinSessionIfConnected, 1000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const connection = connectionRef?.current;
+      if (connection?.state === "Connected") {
+        connection.invoke("JoinSession", sessionCode).catch(console.error);
+      }
+    }, 1000);
     return () => clearTimeout(timer);
   }, [connectionRef, sessionCode]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
-        padding: "32px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        fontFamily: "'Roboto', sans-serif",
-      }}
-    >
-      <Card
-        bordered={false}
-        style={{
-          width: "100%",
-          maxWidth: "1100px",
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "16px",
-          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-          marginBottom: "32px",
-          padding: "16px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}
-        >
+    <div className={styles.wrapper}>
+      <audio ref={bgAudioRef} src={bgMusic} />
+      <audio ref={startAudioRef} src={startSound} />
+
+      <Card bordered={false} className={styles.headerCard}>
+        <div className={styles.headerTop}>
           <Space>
-            <TeamOutlined style={{ fontSize: 24, color: "#d81b60" }} />
-            <Text
-              strong
-              style={{
-                fontSize: 20,
-                color: "#d81b60",
-                textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
-              }}
-            >
+            <TeamOutlined className={styles.teamIcon} />
+            <Text className={styles.playerCount}>
               {groups.reduce((acc, g) => acc + g.members.length, 0)} PLAYERS
             </Text>
           </Space>
-
-          <Title
-            level={2}
-            style={{
-              margin: 0,
-              color: "#d81b60",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
-              animation: "pulse 2s infinite",
-            }}
-          >
+          <Title level={2} className={styles.title}>
             🎉 WAITING ROOM
           </Title>
-
-          <Space>
-            <Text
-              style={{
-                fontSize: 18,
-                color: "#d81b60",
-                fontWeight: "bold",
-              }}
-            >
-              GAME PIN: <span style={{ color: "#ff4081" }}>{roomCode}</span>
-            </Text>
-          </Space>
+          <Text className={styles.pin}>
+            GAME PIN: <span>{sessionCode}</span>
+          </Text>
         </div>
-
-        <div style={{ textAlign: "center", marginTop: "16px" }}>
+        <div className={styles.centerBtn}>
           <Button
-            type="primary"
-            onClick={startSession}
-            style={{
-              background: "#d81b60",
-              borderColor: "#d81b60",
-              borderRadius: "8px",
-              padding: "8px 24px",
-              fontSize: "16px",
-              fontWeight: "bold",
-            }}
+            className={styles.startBtn}
+            onClick={startGame}
+            icon={<SoundOutlined />}
+            size="large"
+            loading={loadingStart}
           >
-            Start Game
+            {loadingStart ? "Starting..." : "Start Game"}
           </Button>
         </div>
       </Card>
 
-      <Row gutter={[24, 24]} style={{ maxWidth: "1100px", width: "100%" }}>
+      <Row gutter={[24, 24]} className={styles.groupRow}>
         {groups.map((group, idx) => (
           <Col xs={24} sm={12} md={8} key={idx}>
             <Card
-              title={
-                <div style={{ color: "#d81b60", fontWeight: "bold" }}>
-                  {group.name}
-                </div>
-              }
+              title={<div className={styles.groupTitle}>{group.name}</div>}
               bordered={false}
-              style={{
-                borderRadius: 16,
-                background: "rgba(255,255,255,0.95)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              }}
+              className={styles.groupCard}
             >
-              <div style={{ marginBottom: 8 }}>
-                <Text strong>
-                  Member: {group.members.length}/{group.max}
-                </Text>
-              </div>
-
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {group.members.map((member, index) => (
-                  <Tag
-                    key={index}
-                    color="pink"
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "20px",
-                      fontSize: 14,
-                      fontWeight: "bold",
-                      color: "#d81b60",
-                      background: "#fff0f6",
-                      border: "1px solid #ff4081",
-                    }}
-                  >
-                    <UserOutlined style={{ marginRight: 6 }} />
-                    {member}
+              <Text strong>
+                Members: {group.members.length}/{group.max}
+              </Text>
+              <div className={styles.tagsWrap}>
+                {group.members.map((member, i) => (
+                  <Tag key={i} color="pink" className={styles.memberTag}>
+                    <UserOutlined /> {member}
                   </Tag>
                 ))}
               </div>
@@ -253,15 +188,6 @@ const ListOfGroups = () => {
           </Col>
         ))}
       </Row>
-
-      <style>
-        {`
-          @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-          `}
-      </style>
     </div>
   );
 };

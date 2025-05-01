@@ -95,7 +95,7 @@ const CreateSession = () => {
       );
 
       message.success("🎉 Session and groups created!");
-      navigate("/group-list");
+      navigate("/loadcode");
     } catch {
       message.error("❌ Error creating session or groups!");
     }

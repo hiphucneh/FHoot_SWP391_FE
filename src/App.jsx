@@ -42,6 +42,7 @@ import LeaderBoard from "./screens/LeaderBoardScreen";
 import QnAPlayerScreen from "./screens/QnAPlayerScreen";
 import QnAHostScreen from "./screens/QnAHostScreen";
 import HeaderK from "./screens/HeaderK";
+import LoadCode from "./screens/loadcode";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="/group-list" element={<ListOfGroups />} />
           <Route path="/create-session" element={<><HeaderK /><CreateSession /> </>} />
           <Route path="/answer-screen" element={<QnAHostScreen />} />
+          <Route path="/loadcode" element={<LoadCode />} />
 
           {/* Home */}
           <Route
