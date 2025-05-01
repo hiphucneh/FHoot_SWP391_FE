@@ -1,37 +1,207 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "antd";
+import { Typography, message } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import useSignalR from "../hooks/useSignalR";
+import LeaderboardScreen from "./LeaderboardScreen";
 
 const { Title } = Typography;
 
-const answers = [
-  { text: "1888", color: "#60a5fa" }, // Xanh lam sáng
-  { text: "1905", color: "#f472b6" }, // Hồng sáng
-  { text: "1912", color: "#fcd34d" }, // Vàng sáng
-  { text: "1942", color: "#93c5fd" }, // Xanh lam trung bình
-];
-
 const QnAHostScreen = () => {
-  const [timeLeft, setTimeLeft] = useState(20);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { sessionCode, totalQuestion } = location.state || {};
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerCount, setAnswerCount] = useState(0);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [flagFirstTimeQuestion, setFlagFirstTimeQuestion] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  const [flagQuestion, setFlagQuestion] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [flagChangeFistTime, setfFlagChangeFistTime] = useState(false);
+
+  const timeLimitSec =
+    currentQuestion?.timeLimitSec || currentQuestion?.timeLimitSec || 10;
+
+  const [answers, setAnswers] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+  const [questionText, setQuestionText] = useState("");
+
+  const shuffledAnswers = currentQuestion?.isRandomAnswer
+    ? [...answers].sort(() => Math.random() - 0.5)
+    : answers;
+
+  const answerColors = ["#60a5fa", "#f472b6", "#fcd34d", "#93c5fd"];
+
+  const handleChangeQuestion = () => {
+    setAnswers(currentQuestion?.answers || []);
+    setImgUrl(currentQuestion?.imgUrl);
+    setQuestionText(currentQuestion?.questionText || "Không có câu hỏi");
+    console.log(currentQuestion);
+  };
+
+  useEffect(() => {
+    setTimeLeft(timeLimitSec);
+    handleChangeQuestion();
+  }, [currentQuestionIndex, flagChangeFistTime]);
+
+  useEffect(() => {
+    if (sessionCode && questions.length === 0) {
+      handleNextQuestion(currentQuestionIndex + 1);
+    }
+  }, [sessionCode]);
+
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await axios.get(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/leaderboard`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.data.statusCode === 200) {
+        setLeaderboardData(response.data.data);
+        setShowLeaderboard(true);
+      }
+    } catch (error) {
+      console.error("❌ Lỗi khi lấy bảng xếp hạng:", error);
+      message.error("Không thể tải bảng xếp hạng.");
+    }
+  };
 
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && sessionCode && flagQuestion) {
+      console.log("⏰ Hết thời gian trả lời câu hỏi!");
+      fetchLeaderboard();
     }
-  }, [timeLeft]);
+  }, [timeLeft, sessionCode]);
 
-  const handleAnswer = (answer) => {
-    setAnswerCount((prev) => prev + 1);
-    alert(`You selected: ${answer}`);
+  const handleNextQuestion = async (sortOrder) => {
+    try {
+      const response = await axios.post(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/next-question?sortOrder=${sortOrder}&timeLimitSec=${timeLimitSec}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.statusCode === 200) {
+        if (response.data.data) {
+          setQuestions((prev) => [...prev, response.data.data]);
+
+          setCurrentQuestionIndex((prev) => prev + 1);
+
+          console.log("currentQuestionIndex", currentQuestionIndex);
+
+          setFlagFirstTimeQuestion(true);
+          setShowLeaderboard(false);
+          setFlagQuestion(true);
+          setCurrentQuestion(response.data.data.question);
+          console.log("curentQuestionIndex", currentQuestionIndex);
+
+          setfFlagChangeFistTime(true);
+        } else {
+          fetchLeaderboard();
+        }
+      }
+    } catch (error) {
+      console.error("❌ Lỗi khi chuyển câu hỏi:", error);
+      message.error("Không thể chuyển sang câu hỏi tiếp theo.");
+    }
   };
+
+  const handleAnswerReceived = (data) => {
+    setAnswerCount((prev) => prev + 1);
+  };
+
+  const handleNextQuestionSignalR = (data) => {
+    // Update questions with the new question data from SignalR
+    setQuestions((prev) => [...prev, data]);
+
+    setShowLeaderboard(false);
+    setTimeLeft(timeLimitSec);
+  };
+
+  const handleShowLeaderboard = () => {
+    fetchLeaderboard();
+  };
+
+  const { connection } = useSignalR({
+    baseHubUrl:
+      "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
+    token: localStorage.getItem("token"),
+    onNextQuestion: handleNextQuestionSignalR,
+    onShowLeaderboard: handleShowLeaderboard,
+    onAnswerReceived: handleAnswerReceived,
+  });
+
+  useEffect(() => {
+    const joinSessionIfConnected = async () => {
+      if (connection?.current && connection.current.state === "Connected") {
+        try {
+          await connection.current.invoke("JoinSession", sessionCode);
+          console.log("📥 Đã tham gia phiên:", sessionCode);
+        } catch (err) {
+          console.error("❌ Không thể tham gia phiên:", err);
+        }
+      }
+    };
+
+    if (sessionCode) {
+      joinSessionIfConnected();
+    }
+  }, [connection, sessionCode]);
+
+  if (!questions || questions.length === 0) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'Inter', 'Poppins', sans-serif",
+        }}
+      >
+        <Title level={2} style={{ color: "#1e3a8a" }}>
+          Không có câu hỏi để hiển thị
+        </Title>
+      </div>
+    );
+  }
+
+  if (showLeaderboard) {
+    return (
+      <LeaderboardScreen
+        leaderboardData={leaderboardData}
+        sessionCode={sessionCode}
+        onNextQuestion={() => handleNextQuestion(currentQuestionIndex + 1)}
+        currentQuestionIndex={currentQuestionIndex}
+        totalQuestions={totalQuestion}
+      />
+    );
+  }
 
   return (
     <div
       style={{
         width: "100vw",
         height: "100vh",
-        background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)", // Giữ gradient
+        background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
         padding: "1rem",
         fontFamily: "'Inter', 'Poppins', sans-serif",
         display: "flex",
@@ -47,16 +217,17 @@ const QnAHostScreen = () => {
         level={2}
         style={{
           textAlign: "center",
-          color: "#1e3a8a", // Xanh lam đậm hơn, dễ đọc
+          color: "#1e3a8a",
           margin: "0 0 1.5rem",
           fontWeight: 700,
           fontSize: "clamp(1.5rem, 4vw, 2.2rem)",
           lineHeight: 1.2,
         }}
       >
-        When did the first cornea transplant take place?
+        {questionText}
       </Title>
 
+      {/* Timer, Image, Answer Count Container */}
       <div
         style={{
           display: "flex",
@@ -74,7 +245,7 @@ const QnAHostScreen = () => {
             width: "80px",
             height: "80px",
             borderRadius: "50%",
-            background: "#3b82f6", // Xanh lam đậm hơn, dựa trên #bae6fd
+            background: "#3b82f6",
             color: "#fff",
             display: "flex",
             alignItems: "center",
@@ -88,32 +259,33 @@ const QnAHostScreen = () => {
           {timeLeft}
         </div>
 
-        <div
-          style={{
-            minWidth: "300px",
-            width: "400px",
-            height: "250px",
-            borderRadius: "0.75rem",
-            overflow: "hidden",
-            background: "#fff", // Nền trắng
-            border: "2px solid #60a5fa", // Viền xanh lam sáng
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            flexShrink: 0,
-          }}
-        >
-          <img
-            src="https://lienquan.garena.vn/wp-content/uploads/2024/05/ea4408de26b25e684372f0298d838837658d3f256a9ce-2.jpg"
-            alt="Question visual"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </div>
+        {imgUrl && (
+          <div
+            style={{
+              minWidth: "300px",
+              width: "400px",
+              height: "250px",
+              borderRadius: "0.75rem",
+              overflow: "hidden",
+              background: "#fff",
+              border: "2px solid #60a5fa",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              flexShrink: 0,
+            }}
+          >
+            <img
+              src={imgUrl}
+              alt="Question visual"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        )}
 
-        {/* Answer */}
         <div
           style={{
             minWidth: "120px",
             padding: "0.75rem",
-            background: "#ec4899", // Hồng đậm hơn, dựa trên #f3d4e5
+            background: "#ec4899",
             color: "#fff",
             textAlign: "center",
             borderRadius: "0.75rem",
@@ -124,6 +296,7 @@ const QnAHostScreen = () => {
           }}
         >
           {answerCount}
+          <br />
           Answers
         </div>
       </div>
@@ -132,26 +305,29 @@ const QnAHostScreen = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(250px, 1fr))",
-          gridTemplateRows: "repeat(2, auto)",
+          gridTemplateColumns: `repeat(${Math.ceil(
+            shuffledAnswers.length / 2
+          )}, minmax(250px, 1fr))`,
+          gridTemplateRows: `repeat(${Math.ceil(
+            shuffledAnswers.length / 2
+          )}, auto)`,
           gap: "1rem",
           width: "100%",
           maxWidth: "1400px",
         }}
       >
-        {answers.map((answer, index) => (
+        {shuffledAnswers.map((answer, index) => (
           <div
-            key={index}
-            onClick={() => handleAnswer(answer.text)}
+            key={answer.answerId}
             style={{
-              backgroundColor: answer.color, // Sử dụng màu mới từ answers
+              backgroundColor: answerColors[index % answerColors.length],
               padding: "1.5rem 2rem",
               borderRadius: "0.75rem",
-              color: "#1e293b", // Xám đậm để chữ nổi bật
+              color: "#1e293b",
               fontWeight: 600,
               fontSize: "1.5rem",
               textAlign: "center",
-              cursor: "pointer",
+              cursor: "default",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
               minHeight: "80px",
@@ -165,7 +341,7 @@ const QnAHostScreen = () => {
               e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
             }}
           >
-            {answer.text}
+            {answer.answerText}
           </div>
         ))}
       </div>
