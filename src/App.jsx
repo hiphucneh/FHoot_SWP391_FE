@@ -31,12 +31,13 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
-import AnswerScreen from "./screens/AnswerScreen";
 import ChooseGroupScreen from "./screens/ChooseGroupScreen";
 import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import UserManagement from "./Admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
+import QnAPlayerScreen from "./screens/QnAPlayerScreen";
+import QnAHostScreen from "./screens/QnAHostScreen";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
           <Route path="/create-session" element={<CreateSession />} />
+          <Route path="/answer-screen" element={<QnAHostScreen />} />
 
           {/* Home */}
           <Route
@@ -64,7 +66,14 @@ function App() {
               </>
             }
           />
-          <Route path="/admin/session-list" element={<><AdminHeader /> <SessionManagement /></>} />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader /> <SessionManagement />
+              </>
+            }
+          />
           <Route
             path="/system-configuration"
             element={<SystemConfiguration />}
@@ -97,7 +106,7 @@ function App() {
           <Route path="/your-kahoots" element={<KahootLists />} />
 
           {/* Player */}
-          <Route path="/answer" element={<AnswerScreen />} />
+          <Route path="/answer" element={<QnAPlayerScreen />} />
           <Route path="/choose-group" element={<ChooseGroupScreen />} />
           <Route path="/waiting-room" element={<WaitingRoomScreen />} />
 
@@ -108,7 +117,6 @@ function App() {
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
-
         </Routes>
       </Router>
     </GoogleOAuthProvider>
