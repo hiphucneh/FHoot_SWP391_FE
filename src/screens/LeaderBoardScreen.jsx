@@ -9,9 +9,13 @@ const LeaderBoardScreen = ({
   onNextQuestion,
   currentQuestionIndex,
   totalQuestions,
+  showControls = true, // Thêm prop mới, mặc định là true
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+
+  console.log(totalQuestions);
+  console.log(currentQuestionIndex);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -141,55 +145,58 @@ const LeaderBoardScreen = ({
           )}
         </Card>
 
-        {currentQuestionIndex < totalQuestions - 1 ? (
-          <Button
-            onClick={onNextQuestion}
-            type="primary"
-            size="large"
-            style={{
-              backgroundColor: "#d81b60",
-              borderColor: "#d81b60",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              fontSize: 16,
-            }}
-          >
-            Next Question
-          </Button>
-        ) : (
-          <Button
-            onClick={async () => {
-              try {
-                await axios.post(
-                  `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/finish`,
-                  {},
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                );
-                alert(
-                  "Session finished! Redirecting to create session page..."
-                );
-                window.location.href = "/create-session";
-              } catch (error) {
-                console.error("Lỗi khi kết thúc phiên:", error);
-              }
-            }}
-            size="large"
-            style={{
-              backgroundColor: "#ff4081",
-              borderColor: "#ff4081",
-              color: "#fff",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              fontSize: 16,
-            }}
-          >
-            🛑 End Session
-          </Button>
-        )}
+        {showControls &&
+          (currentQuestionIndex < totalQuestions ? (
+            <Button
+              onClick={onNextQuestion}
+              type="primary"
+              size="large"
+              style={{
+                backgroundColor: "#d81b60",
+                borderColor: "#d81b60",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              Next Question
+            </Button>
+          ) : (
+            <Button
+              onClick={async () => {
+                try {
+                  await axios.post(
+                    `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/finish`,
+                    {},
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }
+                  );
+                  alert(
+                    "Session finished! Redirecting to create session page..."
+                  );
+                  window.location.href = "/create-session";
+                } catch (error) {
+                  console.error("Lỗi khi kết thúc phiên:", error);
+                }
+              }}
+              size="large"
+              style={{
+                backgroundColor: "#ff4081",
+                borderColor: "#ff4081",
+                color: "#fff",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              🛑 End Session
+            </Button>
+          ))}
 
         <Text
           style={{
