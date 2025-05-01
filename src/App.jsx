@@ -112,13 +112,13 @@ function App() {
           <Route path="/your-kahoots" element={<KahootLists />} />
 
           {/* Admin */}
-          <Route path="/admin/user-list" element={<UserManagement />} />
-          <Route path="/admin/session-list" element={<SessionManagement />} />
+          <Route path="/admin/user-list" element={<><AdminHeader /> <UserManagement /></>} />
+          <Route path="/admin/session-list" element={<><AdminHeader /><SessionManagement /></>} />
           <Route path="/admin/setting" element={<HomeForAdmin />} />
           <Route path="/choose-group" element={<ChooseGroupScreen />} />
           <Route path="/waiting-room" element={<WaitingRoomScreen />} />
           <Route path="/answer" element={<QnAPlayerScreen />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/dashboard" element={<><AdminHeader /><Dashboard /></>} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
