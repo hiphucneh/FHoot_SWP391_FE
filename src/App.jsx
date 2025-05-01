@@ -36,6 +36,8 @@ import ListOfGroups from "./screens/ListOfGroups";
 import UserManagement from "./Admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
+import QnAPlayerScreen from "./screens/QnAPlayerScreen";
+import QnAHostScreen from "./screens/QnAHostScreen";
 
 function App() {
   return (
@@ -51,6 +53,7 @@ function App() {
           <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
           <Route path="/create-session" element={<CreateSession />} />
+          <Route path="/answer-screen" element={<QnAHostScreen />} />
 
           {/* Home */}
           <Route
