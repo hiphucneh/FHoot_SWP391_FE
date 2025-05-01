@@ -56,7 +56,7 @@ function App() {
           <Route path="/updateK" element={<><HeaderK /> <UpdateKahoot /> </>} />
           <Route path="/updateQ" element={<UpdateQuestion />} />
           <Route path="/group-list" element={<ListOfGroups />} />
-          <Route path="/create-session" element={<CreateSession />} />
+          <Route path="/create-session" element={<><HeaderK /><CreateSession /> </>} />
           <Route path="/answer-screen" element={<QnAHostScreen />} />
 
           {/* Home */}
