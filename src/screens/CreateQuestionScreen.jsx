@@ -260,7 +260,7 @@ const CreateQuestion = () => {
                 icon: 'success',
                 confirmButtonColor: 'green',
             });
-            localStorage.setItem("quizId", "")
+
             localStorage.setItem(`savedQuestions_${quizId}`, "")
             navigate('/create-session');
 

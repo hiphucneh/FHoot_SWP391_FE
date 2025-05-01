@@ -21,9 +21,9 @@ import PayHost from "./Host/payHost";
 import PaymentPage from "./Host/PaymentPage";
 import UserSetupPage from "./components/UserSetupPage";
 import EnterPinCodeScreen from "./screens/EnterPinCodeScreen";
-
+import "./Admin/AdminHeader"
 import CreateKahoot from "./screens/CreateKahootScreen";
-import AdminHeader from "./Admin/AdminHeader";
+import HomeAdmin from "./Admin/HomeAdmin";
 import SystemConfiguration from "./Admin/SystemConfiguration/SystemConfiguration";
 import KahootLists from "./screens/KahootLists";
 import UpdateKahoot from "./screens/UpdateKahootScreen";
@@ -31,7 +31,7 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
-import AnswerScreen from "./screens/AnswerScreen";
+// import AnswerScreen from "./screens/AnswerScreen";
 import ChooseGroupScreen from "./screens/ChooseGroupScreen";
 import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import UserManagement from "./Admin/UserManagement";
@@ -64,7 +64,7 @@ function App() {
               </>
             }
           />
-          <Route path="/admin/session-list" element={<><AdminHeader /> <SessionManagement /></>} />
+          <Route path="/admin/session-list" element={<> <SessionManagement /></>} />
           <Route
             path="/system-configuration"
             element={<SystemConfiguration />}
@@ -97,7 +97,7 @@ function App() {
           <Route path="/your-kahoots" element={<KahootLists />} />
 
           {/* Player */}
-          <Route path="/answer" element={<AnswerScreen />} />
+          {/* <Route path="/answer" element={<AnswerScreen />} /> */}
           <Route path="/choose-group" element={<ChooseGroupScreen />} />
           <Route path="/waiting-room" element={<WaitingRoomScreen />} />
 
