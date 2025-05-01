@@ -9,7 +9,7 @@ const LeaderBoardScreen = ({
   onNextQuestion,
   currentQuestionIndex,
   totalQuestions,
-  showControls = true, // Thêm prop mới, mặc định là true
+  showControls = true,
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -176,6 +176,7 @@ const LeaderBoardScreen = ({
                       },
                     }
                   );
+                  localStorage.removeItem("sessionCode");
                   alert(
                     "Session finished! Redirecting to create session page..."
                   );
@@ -205,7 +206,7 @@ const LeaderBoardScreen = ({
             textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
           }}
         >
-          Mã phiên: <span>{sessionCode}</span>
+          Session Code: <span>{sessionCode}</span>
         </Text>
       </Space>
 

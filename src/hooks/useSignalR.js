@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import axios from "axios";
 
-const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion }) => {
+const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion, onCountAnswer }) => {
     const connectionRef = useRef(null);
     const [connectionId, setConnectionId] = useState(null);
 
@@ -60,6 +60,11 @@ const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion }) => {
             console.log("ShowQuestion nhận được:", data);
             if (onNextQuestion) onNextQuestion(data);
         });
+
+        connection.on("PlayerAnswer", (data) => {
+            onCountAnswer();
+        });
+
 
         connection.start()
             .then(() => {

@@ -16,15 +16,16 @@ const QnAHostScreen = () => {
   const [answerCount, setAnswerCount] = useState(0);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [flagFirstTimeQuestion, setFlagFirstTimeQuestion] = useState(false);
+  const [flagShowLeaderBoard, setFlagShowLeaderBoard] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [countAnswer, setCountAnswer] = useState(0);
 
   const [flagQuestion, setFlagQuestion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [flagChangeFistTime, setfFlagChangeFistTime] = useState(false);
 
-  const timeLimitSec =
-    currentQuestion?.timeLimitSec || currentQuestion?.timeLimitSec || 10;
+  const timeLimitSec = currentQuestion?.timeLimitSec || 10;
 
   const [answers, setAnswers] = useState("");
   const [imgUrl, setImgUrl] = useState("");
@@ -39,8 +40,12 @@ const QnAHostScreen = () => {
   const handleChangeQuestion = () => {
     setAnswers(currentQuestion?.answers || []);
     setImgUrl(currentQuestion?.imgUrl);
-    setQuestionText(currentQuestion?.questionText || "Không có câu hỏi");
+    setQuestionText(currentQuestion?.questionText || "Don't have question");
     console.log(currentQuestion);
+  };
+
+  const handleCountAnswer = () => {
+    setCountAnswer((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -69,8 +74,8 @@ const QnAHostScreen = () => {
         setShowLeaderboard(true);
       }
     } catch (error) {
-      console.error("❌ Lỗi khi lấy bảng xếp hạng:", error);
-      message.error("Không thể tải bảng xếp hạng.");
+      console.error("Fail to fetch leader board", error);
+      message.error("Fail to fetch leader board");
     }
   };
 
@@ -79,7 +84,7 @@ const QnAHostScreen = () => {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && sessionCode && flagQuestion) {
-      console.log("⏰ Hết thời gian trả lời câu hỏi!");
+      console.log("⏰ Time up!");
       fetchLeaderboard();
     }
   }, [timeLeft, sessionCode]);
@@ -108,7 +113,7 @@ const QnAHostScreen = () => {
           setShowLeaderboard(false);
           setFlagQuestion(true);
           setCurrentQuestion(response.data.data.question);
-          console.log("curentQuestionIndex", currentQuestionIndex);
+          setCountAnswer(0);
 
           setfFlagChangeFistTime(true);
         } else {
@@ -116,8 +121,8 @@ const QnAHostScreen = () => {
         }
       }
     } catch (error) {
-      console.error("❌ Lỗi khi chuyển câu hỏi:", error);
-      message.error("Không thể chuyển sang câu hỏi tiếp theo.");
+      console.error("Fail to next question", error);
+      message.error("Cannot next question. Please try again.");
     }
   };
 
@@ -126,7 +131,6 @@ const QnAHostScreen = () => {
   };
 
   const handleNextQuestionSignalR = (data) => {
-    // Update questions with the new question data from SignalR
     setQuestions((prev) => [...prev, data]);
 
     setShowLeaderboard(false);
@@ -137,31 +141,33 @@ const QnAHostScreen = () => {
     fetchLeaderboard();
   };
 
-  const { connection } = useSignalR({
+  const connectionRef = useSignalR({
     baseHubUrl:
       "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
     token: localStorage.getItem("token"),
     onNextQuestion: handleNextQuestionSignalR,
     onShowLeaderboard: handleShowLeaderboard,
     onAnswerReceived: handleAnswerReceived,
+    onCountAnswer: handleCountAnswer,
   });
 
   useEffect(() => {
     const joinSessionIfConnected = async () => {
-      if (connection?.current && connection.current.state === "Connected") {
+      const connection = connectionRef?.current;
+      if (connection && connection.state === "Connected") {
         try {
-          await connection.current.invoke("JoinSession", sessionCode);
-          console.log("📥 Đã tham gia phiên:", sessionCode);
+          await connection.invoke("JoinSession", sessionCode);
+          console.log("📥 Joined session:", sessionCode);
         } catch (err) {
-          console.error("❌ Không thể tham gia phiên:", err);
+          console.error("❌ Failed to join session:", err);
+          message.error("Không thể tham gia phiên. Vui lòng thử lại.");
         }
       }
     };
 
-    if (sessionCode) {
-      joinSessionIfConnected();
-    }
-  }, [connection, sessionCode]);
+    const timer = setTimeout(joinSessionIfConnected, 1000);
+    return () => clearTimeout(timer);
+  }, [connectionRef, sessionCode]);
 
   if (!questions || questions.length === 0) {
     return (
@@ -178,7 +184,7 @@ const QnAHostScreen = () => {
         }}
       >
         <Title level={2} style={{ color: "#1e3a8a" }}>
-          Không có câu hỏi để hiển thị
+          Don't have any question yet.
         </Title>
       </div>
     );
@@ -212,7 +218,6 @@ const QnAHostScreen = () => {
         overflow: "auto",
       }}
     >
-      {/* Question */}
       <Title
         level={2}
         style={{
@@ -227,7 +232,6 @@ const QnAHostScreen = () => {
         {questionText}
       </Title>
 
-      {/* Timer, Image, Answer Count Container */}
       <div
         style={{
           display: "flex",
@@ -295,13 +299,12 @@ const QnAHostScreen = () => {
             flexShrink: 0,
           }}
         >
-          {answerCount}
+          {countAnswer}
           <br />
           Answers
         </div>
       </div>
 
-      {/* Answers */}
       <div
         style={{
           display: "grid",

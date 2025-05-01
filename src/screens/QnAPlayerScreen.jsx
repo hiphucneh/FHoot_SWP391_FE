@@ -17,10 +17,11 @@ const QnAPlayerScreen = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const [score, setScore] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null); // Theo dõi đáp án đã chọn
-  const [pendingResults, setPendingResults] = useState(null); // Lưu kết quả tạm thời
-  const [displayResults, setDisplayResults] = useState(null); // Hiển thị kết quả khi hết thời gian
-  const [showLeaderboard, setShowLeaderboard] = useState(false); // Hiển thị Leaderboard
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [pendingResults, setPendingResults] = useState(null);
+  const [displayResults, setDisplayResults] = useState(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [tempPoint, setTempPoint] = useState(0);
 
   const currentQuestionData = questions[currentQuestionIndex] || null;
   const currentQuestion = currentQuestionData?.question || {};
@@ -40,10 +41,10 @@ const QnAPlayerScreen = () => {
 
   useEffect(() => {
     setTimeLeft(timeLimitSec);
-    setSelectedAnswer(null); // Reset đáp án đã chọn
-    setPendingResults(null); // Reset kết quả tạm thời
-    setDisplayResults(null); // Reset kết quả hiển thị
-    setShowLeaderboard(false); // Reset Leaderboard
+    setSelectedAnswer(null);
+    setPendingResults(null);
+    setDisplayResults(null);
+    setShowLeaderboard(false);
   }, [currentQuestionIndex, timeLimitSec]);
 
   useEffect(() => {
@@ -51,22 +52,20 @@ const QnAPlayerScreen = () => {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && !showLeaderboard) {
-      // Khi hết thời gian, hiển thị kết quả và chuyển sang Leaderboard
-      setDisplayResults(pendingResults); // Hiển thị kết quả đúng/sai
-      setTimeout(() => {
-        setShowLeaderboard(true); // Chuyển sang Leaderboard sau 2 giây
-      }, 2000); // Đợi 2 giây để người chơi thấy kết quả
+      setDisplayResults(pendingResults);
+      setShowLeaderboard(true);
+      setScore((prev) => prev + tempPoint);
     }
   }, [timeLeft, showLeaderboard, pendingResults]);
 
   const handleAnswer = async (answer) => {
-    if (selectedAnswer) return; // Không cho phép chọn lại nếu đã chọn
+    if (selectedAnswer) return;
     console.log("cur" + currentQuestionIndex);
-
-    setSelectedAnswer(answer.answerId); // Đánh dấu đáp án đã chọn
+    setSelectedAnswer(answer.answerId);
 
     try {
       const formData = new FormData();
+      formData.append("sessionCode", sessionCode);
       formData.append(
         "questionSessionId",
         currentQuestionData.questionSessionId || 0
@@ -86,17 +85,17 @@ const QnAPlayerScreen = () => {
 
       if (response.data.statusCode === 200) {
         const isCorrect = response.data.data?.isCorrect || answer.isCorrect;
-        setPendingResults({ answerId: answer.answerId, isCorrect }); // Lưu kết quả tạm thời
-        const points = isCorrect ? 10 : 0;
-        setScore((prev) => prev + points);
-        message.success(`Bạn đã chọn: ${answer.answerText}`);
+        setPendingResults({ answerId: answer.answerId, isCorrect });
+        const points = isCorrect ? response.data.data?.score : 0;
+        setTempPoint(points);
+        message.success(`Your Answer: ${answer.answerText}`);
       } else {
-        throw new Error(response.data.message || "Không thể gửi câu trả lời");
+        throw new Error(response.data.message || "Error submitting answer");
       }
     } catch (error) {
-      console.error("❌ Lỗi khi gửi câu trả lời:", error);
-      message.error("Không thể gửi câu trả lời. Vui lòng thử lại.");
-      setSelectedAnswer(null); // Reset nếu có lỗi
+      console.error("Error submitting answer", error);
+      message.error("Cannot submit answer. Please try again.");
+      setSelectedAnswer(null);
     }
   };
 
@@ -181,7 +180,6 @@ const QnAPlayerScreen = () => {
         overflow: "auto",
       }}
     >
-      {/* Question */}
       <Title
         level={2}
         style={{
@@ -196,7 +194,6 @@ const QnAPlayerScreen = () => {
         {questionText}
       </Title>
 
-      {/* Timer, Image, Score Container */}
       <div
         style={{
           display: "flex",
@@ -270,7 +267,6 @@ const QnAPlayerScreen = () => {
         </div>
       </div>
 
-      {/* Answers */}
       <div
         style={{
           display: "grid",
@@ -287,13 +283,13 @@ const QnAPlayerScreen = () => {
       >
         {shuffledAnswers.map((answer, index) => {
           const isSelected = selectedAnswer === answer.answerId;
-          const isCorrect = answer.isCorrect; // Đáp án đúng từ dữ liệu câu hỏi
-          const showResult = displayResults !== null; // Hiển thị kết quả khi hết thời gian
+          const isCorrect = answer.isCorrect;
+          const showResult = displayResults !== null;
           const resultColor = showResult
             ? isCorrect
-              ? "#4caf50" // Màu xanh nếu đúng
-              : "#f44336" // Màu đỏ nếu sai
-            : answerColors[index % answerColors.length]; // Màu mặc định nếu chưa hiển thị kết quả
+              ? "#4caf50"
+              : "#f44336"
+            : answerColors[index % answerColors.length];
 
           return (
             <div

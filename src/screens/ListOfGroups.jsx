@@ -16,7 +16,7 @@ const ListOfGroups = () => {
   const fetchTeamsBySession = async () => {
     const token = localStorage.getItem("token");
     if (!sessionCode) {
-      message.error("Không tìm thấy mã phiên! Vui lòng tạo lại phiên.");
+      message.error("Cannot find session code. Please create a session first.");
       navigate("/create-session");
       return;
     }
@@ -41,8 +41,8 @@ const ListOfGroups = () => {
 
       setGroups(transformed);
     } catch (error) {
-      console.error("❌ Error fetching teams:", error);
-      message.error("Không thể tải danh sách nhóm. Vui lòng thử lại.");
+      console.error("Error fetching teams:", error);
+      message.error("Cannot fetch teams. Please try again.");
     }
   };
 
@@ -88,7 +88,7 @@ const ListOfGroups = () => {
   }, []);
 
   const handleUpdateGroups = useCallback(() => {
-    console.log("✅ Real-time update groups");
+    console.log("Real-time update groups");
     fetchTeamsBySession();
   }, []);
 
@@ -105,10 +105,10 @@ const ListOfGroups = () => {
       if (connection && connection.state === "Connected") {
         try {
           await connection.invoke("JoinSession", sessionCode);
-          console.log("📥 Joined session:", sessionCode);
+          console.log("Joined session:", sessionCode);
         } catch (err) {
-          console.error("❌ Failed to join session:", err);
-          message.error("Không thể tham gia phiên. Vui lòng thử lại.");
+          console.error("Failed to join session:", err);
+          message.error("Failed to join session. Please try again.");
         }
       }
     };
