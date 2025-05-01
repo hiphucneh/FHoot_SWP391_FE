@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import congratsImage from "../assets/payment-success.png"; // 🎉 Thay ảnh thật ở đây
-import "./PaymentSuccess.module.css"; // (tùy bạn muốn style thêm)
+import congratsImage from "../assets/payment-success.png";
+import "./PaymentSuccess.css";
 
 function PaymentSuccess() {
   const navigate = useNavigate();
@@ -18,7 +18,6 @@ function PaymentSuccess() {
       }
 
       try {
-        // Step 1: Gọi callback xác nhận thanh toán
         const callbackRes = await fetch(
           "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/package/payos-callback?status=PAID",
           {
@@ -37,7 +36,6 @@ function PaymentSuccess() {
           return;
         }
 
-        // Step 2: Gọi lại API user info để cập nhật role
         const whoamiRes = await fetch(
           "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
           {
@@ -68,28 +66,19 @@ function PaymentSuccess() {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }}>
+    <div className="payment-success-container">
       <img
         src={congratsImage}
         alt="Payment Success"
-        style={{ maxWidth: "300px", marginBottom: "1.5rem" }}
+        className="payment-success-image"
       />
-      <h1 style={{ color: "#4caf50" }}>✅ Payment Success</h1>
-      <p style={{ fontSize: "1.2rem", marginTop: "1rem" }}>{message}</p>
+      <h1 className="payment-success-title">✅ Payment Success</h1>
+      <p className="payment-success-message">{message}</p>
 
       {!loading && (
         <button
+          className="payment-success-button"
           onClick={() => navigate("/")}
-          style={{
-            marginTop: "2rem",
-            padding: "0.7rem 2rem",
-            fontSize: "1rem",
-            borderRadius: "10px",
-            border: "none",
-            background: "#7e57c2",
-            color: "#fff",
-            cursor: "pointer",
-          }}
         >
           🏠 Go to Home
         </button>

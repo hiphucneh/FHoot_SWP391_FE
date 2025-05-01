@@ -2,6 +2,9 @@ import "./components/styles.css";
 import "remixicon/fonts/remixicon.css";
 
 import CreateQuestion from "./screens/CreateQuestionScreen";
+import ChooseGroupScreen from "./screens/ChooseGroupScreen";
+import WaitingRoomScreen from "./screens/WaitingRoomScreen";
+import Dashboard from "./screens/admin/Dashboard";
 
 import {
   BrowserRouter as Router,
@@ -33,7 +36,7 @@ import UpdateQuestion from "./screens/UpdateQuestionScreen";
 import HomeForAdmin from "./Home/HomeForAdmin";
 import CreateSession from "./screens/CreateSession";
 import ListOfGroups from "./screens/ListOfGroups";
-import UserManagement from "./Admin/UserManagement";
+import UserManagement from "./screens/admin/UserManagement";
 import SessionManagement from "./screens/admin/SessionManagement";
 import LeaderBoard from "./screens/LeaderBoardScreen";
 import QnAPlayerScreen from "./screens/QnAPlayerScreen";
@@ -112,6 +115,10 @@ function App() {
           <Route path="/admin/user-list" element={<UserManagement />} />
           <Route path="/admin/session-list" element={<SessionManagement />} />
           <Route path="/admin/setting" element={<HomeForAdmin />} />
+          <Route path="/choose-group" element={<ChooseGroupScreen />} />
+          <Route path="/waiting-room" element={<WaitingRoomScreen />} />
+          <Route path="/answer" element={<QnAPlayerScreen />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
