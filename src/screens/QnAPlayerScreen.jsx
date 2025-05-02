@@ -3,7 +3,7 @@ import { Typography, message } from "antd";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
-import LeaderBoardScreen from "./LeaderboardScreen";
+import LeaderBoardScreen from "./LeaderBoardScreen";
 import WaitingAnswer from "./WaitingAnswer";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const { Title } = Typography;
 
 const QnAPlayerScreen = () => {
   const location = useLocation();
-  const { sessionCode, firstQuestion } = location.state || {};
+  const { sessionCode, firstQuestion, teamId } = location.state || {};
 
   const [questions, setQuestions] = useState(() =>
     firstQuestion ? [firstQuestion] : []
@@ -64,8 +64,11 @@ const QnAPlayerScreen = () => {
     }
   }, [timeLeft, showLeaderboard, pendingResults]);
 
+  useEffect(() => {
+    console.log("Pending Results:", pendingResults);
+  }, [pendingResults]);
   const endSession = (data) => {
-    navigate("/bingo", { state: { teamDataFinal: data } });
+    navigate("/bingo", { state: { teamDataFinal: data, teamId: teamId } });
   };
   const handleAnswer = async (answer) => {
     if (selectedAnswer) return;
@@ -94,8 +97,8 @@ const QnAPlayerScreen = () => {
       if (response.data.statusCode === 200) {
         const isCorrect = response.data.data?.isCorrect;
         setPendingResults({
-          answerId: answer.answerId,
-          isCorrect: response.data.data?.isCorrect,
+          answerId: response.data.data?.trueAnswer,
+          isCorrect: true,
         });
 
         const points = isCorrect ? response.data.data?.score : 0;
@@ -177,10 +180,6 @@ const QnAPlayerScreen = () => {
       />
     );
   }
-
-  // if (showWatingAnswer) {
-  //   return <WaitingAnswer />;
-  // }
 
   return (
     <div
@@ -304,13 +303,18 @@ const QnAPlayerScreen = () => {
           const isCorrect = answer.isCorrect;
           const showResult = displayResults !== null;
 
+          const baseColor = answerColors[index % answerColors.length];
+          const isThisSelected = selectedAnswer === answer.answerId;
+
           const resultColor = showResult
             ? answer.answerId === pendingResults?.answerId
               ? pendingResults.isCorrect
                 ? "#4caf50"
                 : "#f44336"
               : "#f44336"
-            : answerColors[index % answerColors.length];
+            : isThisSelected
+            ? "#1e40af"
+            : baseColor;
 
           return (
             <div
@@ -320,14 +324,15 @@ const QnAPlayerScreen = () => {
                 backgroundColor: resultColor,
                 padding: "1.5rem 2rem",
                 borderRadius: "0.75rem",
-                color: "#1e293b",
+                color: isThisSelected ? "#fff" : "#1e293b",
                 fontWeight: 600,
                 fontSize: "1.5rem",
                 textAlign: "center",
                 cursor: selectedAnswer ? "default" : "pointer",
-                boxShadow: isSelected
-                  ? "0 0 0 4px rgba(0, 0, 0, 0.2)"
-                  : "0 4px 12px rgba(0, 0, 0, 0.1)",
+                boxShadow: isThisSelected
+                  ? "0 0 0 4px rgba(30, 64, 175, 0.4)" // viền xanh đậm
+                  : "0 4px 12px rgba(235, 7, 155, 0.1)",
+                transform: isThisSelected ? "scale(1.05)" : "none",
                 transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 minHeight: "80px",
                 animation: isSelected ? "pulse 0.5s" : "none",
