@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Typography, Space, Button, Tag } from "antd";
-import Lottie from "lottie-react";
-import confettiAnimation from "../assets/animations/congratuation.json";
+// import Lottie from "lottie-react";
+// import confettiAnimation from "../assets/animations/congratuation.json";
 const { Title, Text } = Typography;
 
 const PlayerResultScreen = ({
@@ -27,7 +27,7 @@ const PlayerResultScreen = ({
       }}
     >
       {/* 🎉 Confetti Animation */}
-      <Lottie
+      {/* <Lottie
         animationData={confettiAnimation}
         loop={false}
         style={{
@@ -39,7 +39,7 @@ const PlayerResultScreen = ({
           zIndex: 0,
           pointerEvents: "none", // không làm ảnh hưởng tới click
         }}
-      />
+      /> */}
 
       {/* Nội dung UI */}
       <Space
