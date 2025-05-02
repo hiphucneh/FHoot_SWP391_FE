@@ -30,7 +30,7 @@ function KahootLists() {
         const user = JSON.parse(storedUser);
         const role = user.role?.toLowerCase();
         if (role === "user" || role === "admin") {
-          setShowRoleWarning(true); // Nếu không phải Teacher => block
+          setShowRoleWarning(true);
           return;
         }
       } catch (error) {
@@ -38,7 +38,7 @@ function KahootLists() {
       }
     }
 
-    // Nếu role hợp lệ => fetch dữ liệu
+
     fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
       headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
     })
@@ -116,7 +116,7 @@ function KahootLists() {
   };
 
   const handlePlayGame = (quizId) => {
-    navigate(`/play/${quizId}`);
+    navigate(`/create-session/`);
   };
 
   return (
