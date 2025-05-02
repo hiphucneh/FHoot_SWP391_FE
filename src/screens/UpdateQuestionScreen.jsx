@@ -22,7 +22,37 @@ const UpdateQuestionScreen = () => {
   const [question, setQuestion] = useState({});
   const [answers, setAnswers] = useState([]);
   const [savedQuestions, setSavedQuestions] = useState([]);
+  const [questionLengthConfig, setQuestionLengthConfig] = useState({ minValue: 1, maxValue: 500 });
+  const [answerLimitConfig, setAnswerLimitConfig] = useState({ minValue: 2, maxValue: 6 });
+  const [timeLimitConfig, setTimeLimitConfig] = useState({ minValue: 10, maxValue: 300 })
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      const config11 = await getConfigData(11);
+      const config12 = await getConfigData(12);
+      const config13 = await getConfigData(13);
 
+      if (config11) {
+        setQuestionLengthConfig({
+          minValue: config11.minValue,
+          maxValue: config11.maxValue,
+        });
+      }
+
+      if (config12) {
+        setAnswerLimitConfig({
+          minValue: config12.minValue,
+          maxValue: config12.maxValue,
+        });
+      }
+      if (config13)
+        setTimeLimitConfig({
+          minValue: config13.minValue,
+          maxValue: config13.maxValue,
+        })
+    };
+
+    fetchConfigs();
+  }, []);
   useEffect(() => {
     const parsed = initialQuestions.map((q) => ({
       id: q.questionId,
@@ -213,20 +243,19 @@ const UpdateQuestionScreen = () => {
               return (
                 <div
                   key={answer.id}
-                  className={`${styles.answerBox} ${
-                    [styles.red, styles.blue, styles.yellow, styles.green][idx]
-                  }`}
+                  className={`${styles.answerBox} ${[styles.red, styles.blue, styles.yellow, styles.green][idx]
+                    }`}
                 >
                   <div className={styles.iconBox}>
                     {["▲", "◆", "●", "■"][idx]}
                   </div>
                   <Input
-  value={answer.content}
-  placeholder={`Answer ${idx + 1}`}
-  onChange={(e) =>
-    handleChangeAnswer(answer.id, e.target.value)
-  }
-/>
+                    value={answer.content}
+                    placeholder={`Answer ${idx + 1}`}
+                    onChange={(e) =>
+                      handleChangeAnswer(answer.id, e.target.value)
+                    }
+                  />
                   <Checkbox
                     checked={answer.isAnswer}
                     onChange={(e) =>
@@ -280,48 +309,47 @@ const UpdateQuestionScreen = () => {
                           ref={dragProvided.innerRef}
                           {...dragProvided.draggableProps}
                           {...dragProvided.dragHandleProps}
-                          className={`${styles.questionItem} ${
-                            q.id === question.id ? styles.active : ""
-                          }`}
+                          className={`${styles.questionItem} ${q.id === question.id ? styles.active : ""
+                            }`}
                           onClick={() => handleSelectQuestion(q)}
-onContextMenu={(e) => {
-  e.preventDefault();
-  const menu = document.createElement("div");
-  menu.className = styles.contextMenu;
-  menu.style.top = `${e.clientY}px`;
-  menu.style.left = `${e.clientX}px`;
-  menu.innerHTML = `
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            const menu = document.createElement("div");
+                            menu.className = styles.contextMenu;
+                            menu.style.top = `${e.clientY}px`;
+                            menu.style.left = `${e.clientX}px`;
+                            menu.innerHTML = `
     <div class="${styles.menuItem}" id="dup">Duplicate</div>
     <div class="${styles.menuItem}" id="del">Delete</div>
   `;
-  document.body.appendChild(menu);
+                            document.body.appendChild(menu);
 
-  const remove = () =>
-    document.body.contains(menu) && document.body.removeChild(menu);
+                            const remove = () =>
+                              document.body.contains(menu) && document.body.removeChild(menu);
 
-  menu.querySelector("#dup").onclick = () => {
-    setSavedQuestions((prev) => [
-      ...prev,
-      { ...q, id: Date.now() },
-    ]);
-    remove();
-  };
+                            menu.querySelector("#dup").onclick = () => {
+                              setSavedQuestions((prev) => [
+                                ...prev,
+                                { ...q, id: Date.now() },
+                              ]);
+                              remove();
+                            };
 
-  menu.querySelector("#del").onclick = () => {
-    if (savedQuestions.length === 1) {
-      notification.warning({
-        message: "Cannot delete last question",
-      });
-    } else {
-      setSavedQuestions((prev) =>
-        prev.filter((i) => i.id !== q.id)
-      );
-    }
-    remove();
-  };
+                            menu.querySelector("#del").onclick = () => {
+                              if (savedQuestions.length === 1) {
+                                notification.warning({
+                                  message: "Cannot delete last question",
+                                });
+                              } else {
+                                setSavedQuestions((prev) =>
+                                  prev.filter((i) => i.id !== q.id)
+                                );
+                              }
+                              remove();
+                            };
 
-  document.addEventListener("click", remove, { once: true });
-}}
+                            document.addEventListener("click", remove, { once: true });
+                          }}
 
                         >
                           {`Q${index + 1}: ${q.content.slice(0, 20)}...`}
@@ -364,6 +392,8 @@ onContextMenu={(e) => {
             onChange={(e) =>
               setQuestion((prev) => ({ ...prev, content: e.target.value }))
             }
+            minLength={questionLengthConfig.minValue}
+            maxLength={questionLengthConfig.maxValue}
             placeholder="Enter your question"
             autoSize={{ minRows: 2 }}
           />
@@ -400,14 +430,19 @@ onContextMenu={(e) => {
           <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
           <Select
             value={question.timeLimitSec}
+            minValue={timeLimitConfig.minValue}
+            maxValue={timeLimitConfig.maxValue}
             onChange={(val) =>
               setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
             }
             style={{ width: "100%" }}
           >
-            {[5, 10, 15, 20, 30, 40].map((sec) => (
+            {Array.from(
+              { length: Math.floor((timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10) + 1 },
+              (_, i) => timeLimitConfig.minValue + i * 10
+            ).map((sec) => (
               <Option key={sec} value={sec}>
-                {sec}
+                {sec} giây
               </Option>
             ))}
           </Select>
