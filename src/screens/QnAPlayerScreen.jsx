@@ -5,6 +5,7 @@ import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
 import LeaderBoardScreen from "./LeaderboardScreen";
 import WaitingAnswer from "./WaitingAnswer";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -40,6 +41,7 @@ const QnAPlayerScreen = () => {
     : answers;
 
   const answerColors = ["#60a5fa", "#f472b6", "#fcd34d", "#93c5fd"];
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeLeft(timeLimitSec);
@@ -62,6 +64,9 @@ const QnAPlayerScreen = () => {
     }
   }, [timeLeft, showLeaderboard, pendingResults]);
 
+  const endSession = (data) => {
+    navigate("/bingo", { state: { teamDataFinal: data } });
+  };
   const handleAnswer = async (answer) => {
     if (selectedAnswer) return;
     setSelectedAnswer(answer.answerId);
@@ -120,6 +125,7 @@ const QnAPlayerScreen = () => {
       "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
     token: localStorage.getItem("token"),
     onNextQuestion: handleNextQuestionSignalR,
+    onEndSession: endSession,
   });
 
   useEffect(() => {
