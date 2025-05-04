@@ -5,7 +5,7 @@ import ForgotPass from "./ForgotPass";
 import AdvHost from "../Host/AdvHost";
 import BlockJoinGame from "../Host/blockjoingame"; // <== NEW
 import "./styles.css";
-import logo from "../assets/FhootLogo.png";
+import logo from "../assets/Kahoot_logo.png";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
@@ -70,7 +70,7 @@ function Header() {
 
   const handleGoAdmin = (e) => {
     e.preventDefault();
-    navigate("/admin/session-list");
+    navigate("/HomeAdmin");
   };
 
   const handleLogout = () => {
@@ -94,17 +94,16 @@ function Header() {
           <div
             className="nav__logo"
             onClick={() => {
-              window.location.href = "/Home";
+              window.location.href = "/HomeAdmin";
             }}
             style={{
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-
               gap: "8px",
             }}
           >
-            <img style={{ width: "60%", height: "50%", marginTop: "10px", objectFit: "scale-down" }} src={logo} alt="Kahoot Logo" className="logo-image" />
+            <img src={logo} alt="Kahoot Logo" className="logo-image" />
           </div>
 
           {/* Menu chính ở giữa */}

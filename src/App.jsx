@@ -50,7 +50,7 @@ import MyGame from "./screens/MyGame";
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="771006964772-t3q4laaqefmkpgl1d6olk9cgiofdcr4u.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="872792915542-tdot930v32243olj0gbkidj4lpscc2cc.apps.googleusercontent.com">
       <Router>
         <Routes>
           {/*Host*/}
