@@ -52,7 +52,7 @@ function KahootLists() {
 
   const filteredQuizzes = () =>
     quizzes
-      .filter((q) => q.questions.length > 0)
+      .filter((q) => q.questions.length >= 0)
       .filter((q) => q.title.toLowerCase().includes(searchTerm.toLowerCase()))
       .sort((a, b) => b.quizId - a.quizId);
 

@@ -270,3 +270,18 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.view-history-button {
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: 500;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.view-history-button:hover {
+  background-color: #d5d5d5;
+}

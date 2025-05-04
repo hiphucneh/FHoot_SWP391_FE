@@ -13,9 +13,9 @@ const LeaderBoardScreen = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-
-  console.log(totalQuestions);
-  console.log(currentQuestionIndex);
+  console.log("currentQuestionIndex", currentQuestionIndex);
+  console.log("totalQuestions", totalQuestions);
+  console.log(currentQuestionIndex < totalQuestions);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {

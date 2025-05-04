@@ -16,9 +16,9 @@ const CreateQuestionScreen = () => {
     const quizId = localStorage.getItem("quizId");
     const navigate = useNavigate();
 
-    const [questionLengthConfig, setQuestionLengthConfig] = useState({ minValue: 1, maxValue: 500 });
-    const [answerLimitConfig, setAnswerLimitConfig] = useState({ minValue: 2, maxValue: 6 });
-    const [timeLimitConfig, setTimeLimitConfig] = useState({ minValue: 10, maxValue: 300 })
+    const [questionLengthConfig, setQuestionLengthConfig] = useState({ min: 1, max: 500 });
+    const [answerLimitConfig, setAnswerLimitConfig] = useState({ min: 2, max: 6 });
+    const [timeLimitConfig, setTimeLimitConfig] = useState({ min: 10, max: 300 })
     const [question, setQuestion] = useState({});
     const [answers, setAnswers] = useState([]);
     const [savedQuestions, setSavedQuestions] = useState(() => {
@@ -37,36 +37,6 @@ const CreateQuestionScreen = () => {
         }
         return parsed;
     });
-    useEffect(() => {
-        const fetchConfigs = async () => {
-            const config11 = await getConfigData(11);
-            const config12 = await getConfigData(12);
-            const config13 = await getConfigData(13);
-
-            if (config11) {
-                setQuestionLengthConfig({
-                    minValue: config11.minValue,
-                    maxValue: config11.maxValue,
-                });
-            }
-
-            if (config12) {
-                setAnswerLimitConfig({
-                    minValue: config12.minValue,
-                    maxValue: config12.maxValue,
-                });
-            }
-            if (config13)
-                setTimeLimitConfig({
-                    minValue: config13.minValue,
-                    maxValue: config13.maxValue,
-                })
-        };
-
-        fetchConfigs();
-    }, []);
-
-
     async function getConfigData(configId) {
 
         const url = `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/system-configuration/${configId}`;
@@ -80,16 +50,49 @@ const CreateQuestionScreen = () => {
             });
             const data = await response.json();
             console.log(configId)
-            console.log(data);
-            return data.id;
+            console.log("53", data.data.maxValue);
+            return data.data;
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
+    useEffect(() => {
+        const fetchConfigs = async () => {
+            const config11 = await getConfigData(11);
+            const config12 = await getConfigData(12);
+            const config10 = await getConfigData(10);
+
+            if (config11) {
+                setQuestionLengthConfig({
+                    min: config11.minValue,
+                    max: config11.maxValue,
+                });
+            }
+
+            if (config12) {
+                setAnswerLimitConfig({
+                    min: config12.minValue,
+                    max: config12.maxValue,
+                });
+            }
+            if (config10)
+                setTimeLimitConfig(
+                    {
+                        min: config10.minValue,
+                        max: config10.maxValue,
+                    }
+                )
+        };
+
+        fetchConfigs();
+    }, []);
 
 
-    getConfigData(11);
-    console.log(getConfigData(11).minValue)
+
+
+
+
+
 
     useEffect(() => {
         if (savedQuestions.length > 0 && !question.id) {
@@ -239,7 +242,7 @@ const CreateQuestionScreen = () => {
                 showCancelButton: true,
                 confirmButtonText: "▶️ Play the game!",
                 cancelButtonText: "🏠 Back to Home",
-                confirmButtonColor: "#8A2BE2",   // Kahoot-style purple
+                confirmButtonColor: "#8A2BE2",
                 cancelButtonColor: "#aaaaaa",
                 background: "#fff",
                 customClass: {
@@ -290,8 +293,8 @@ const CreateQuestionScreen = () => {
                                     <Input
                                         value={answer.content}
                                         placeholder={`Answer ${idx + 1}`}
-                                        minLength={answerLimitConfig.minValue}
-                                        maxLength={answerLimitConfig.maxValue}
+                                        minLength={answerLimitConfig.min}
+                                        maxLength={answerLimitConfig.max}
                                         onChange={(e) =>
                                             handleChangeAnswer(answer.id, e.target.value)
                                         }
@@ -433,8 +436,8 @@ const CreateQuestionScreen = () => {
                         }
                         placeholder="Enter your question"
                         autoSize={{ minRows: 2 }}
-                        minLength={questionLengthConfig.minValue}
-                        maxLength={questionLengthConfig.maxValue}
+                        minLength={questionLengthConfig.min}
+                        maxLength={questionLengthConfig.max}
                     />
 
                     <div className={styles.editorImage}>
@@ -471,16 +474,16 @@ const CreateQuestionScreen = () => {
                     <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
                     <Select
                         value={question.timeLimitSec}
-                        minValue={timeLimitConfig.minValue}
-                        maxValue={timeLimitConfig.maxValue}
+                        minvalue={timeLimitConfig.min}
+                        maxvalue={timeLimitConfig.max}
                         onChange={(val) =>
                             setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
                         }
                         style={{ width: "100%" }}
                     >
                         {Array.from(
-                            { length: Math.floor((timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10) + 1 },
-                            (_, i) => timeLimitConfig.minValue + i * 10
+                            { length: Math.floor((timeLimitConfig.max - timeLimitConfig.min) / 10) + 1 },
+                            (_, i) => timeLimitConfig.min + i * 10
                         ).map((sec) => (
                             <Option key={sec} value={sec}>
                                 {sec} giây

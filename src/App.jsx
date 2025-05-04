@@ -13,6 +13,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import MyHistorySession from "./screens/MyHistorySession";
+import PlayerResultScreen from "./screens/PlayerResultScreen";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -44,6 +46,7 @@ import QnAHostScreen from "./screens/QnAHostScreen";
 import HeaderK from "./screens/HeaderK";
 import LoadCode from "./screens/loadcode";
 import LoadGame from "./screens/LoadGame";
+import MyGame from "./screens/MyGame";
 
 function App() {
   return (
@@ -115,7 +118,7 @@ function App() {
 
           <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
           <Route path="/your-kahoots" element={<KahootLists />} />
-
+          <Route path="/my-game" element={<MyGame />} />
           {/* Admin */}
           <Route path="/admin/user-list" element={<><AdminHeader /> <UserManagement /></>} />
           <Route path="/admin/session-list" element={<><AdminHeader /><SessionManagement /></>} />
@@ -124,6 +127,8 @@ function App() {
           <Route path="/waiting-room" element={<WaitingRoomScreen />} />
           <Route path="/answer" element={<QnAPlayerScreen />} />
           <Route path="/admin/dashboard" element={<><AdminHeader /><Dashboard /></>} />
+          <Route path="/bingo" element={<PlayerResultScreen />} />
+          <Route path="/result" element={<MyHistorySession />} />
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />

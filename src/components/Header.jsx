@@ -5,7 +5,7 @@ import ForgotPass from "./ForgotPass";
 import AdvHost from "../Host/AdvHost";
 import BlockJoinGame from "../Host/blockjoingame"; // <== NEW
 import "./styles.css";
-import logo from "../assets/Kahoot_logo.png";
+import logo from "../assets/FhootLogo.png";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
@@ -100,10 +100,11 @@ function Header() {
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+
               gap: "8px",
             }}
           >
-            <img src={logo} alt="Kahoot Logo" className="logo-image" />
+            <img style={{ width: "60%", height: "50%", marginTop: "10px", objectFit: "scale-down" }} src={logo} alt="Kahoot Logo" className="logo-image" />
           </div>
 
           {/* Menu chính ở giữa */}

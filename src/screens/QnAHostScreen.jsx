@@ -3,7 +3,7 @@ import { Typography, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
-import LeaderboardScreen from "./LeaderboardScreen";
+import LeaderboardScreen from "./LeaderBoardScreen";
 
 const { Title } = Typography;
 

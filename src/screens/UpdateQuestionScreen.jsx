@@ -22,33 +22,52 @@ const UpdateQuestionScreen = () => {
   const [question, setQuestion] = useState({});
   const [answers, setAnswers] = useState([]);
   const [savedQuestions, setSavedQuestions] = useState([]);
-  const [questionLengthConfig, setQuestionLengthConfig] = useState({ minValue: 1, maxValue: 500 });
-  const [answerLimitConfig, setAnswerLimitConfig] = useState({ minValue: 2, maxValue: 6 });
-  const [timeLimitConfig, setTimeLimitConfig] = useState({ minValue: 10, maxValue: 300 })
+  const [questionLengthConfig, setQuestionLengthConfig] = useState({ min: 1, max: 500 });
+  const [answerLimitConfig, setAnswerLimitConfig] = useState({ min: 2, max: 6 });
+  const [timeLimitConfig, setTimeLimitConfig] = useState({ min: 10, max: 300 })
+  async function getConfigData(configId) {
+
+    const url = `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/system-configuration/${configId}`;
+    try {
+      const token = localStorage.getItem("token")
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      console.log(configId)
+
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
   useEffect(() => {
     const fetchConfigs = async () => {
       const config11 = await getConfigData(11);
       const config12 = await getConfigData(12);
-      const config13 = await getConfigData(10);
+      const config10 = await getConfigData(10);
 
       if (config11) {
         setQuestionLengthConfig({
-          minValue: config11.minValue,
-          maxValue: config11.maxValue,
+          min: config11.minValue,
+          max: config11.maxValue,
         });
       }
 
       if (config12) {
         setAnswerLimitConfig({
-          minValue: config12.minValue,
-          maxValue: config12.maxValue,
+          min: config12.minValue,
+          max: config12.maxValue,
         });
       }
-      if (config13)
-        setTimeLimitConfig({
-          minValue: config13.minValue,
-          maxValue: config13.maxValue,
-        })
+      setTimeLimitConfig({
+        min: config10.minValue,
+        max: config10.maxValue,
+      })
     };
 
     fetchConfigs();
@@ -57,7 +76,6 @@ const UpdateQuestionScreen = () => {
     const parsed = initialQuestions.map((q) => ({
       id: q.questionId,
       content: q.questionText,
-      file: q.imgUrl,
       timeLimitSec: q.timeLimitSec || 30,
       answers: q.answers.map((a) => ({
         id: a.answerId,
@@ -66,8 +84,10 @@ const UpdateQuestionScreen = () => {
       })),
     }));
     setSavedQuestions(parsed);
-    setQuestion(parsed[0]);
-    setAnswers(parsed[0].answers);
+    if (parsed.length > 0) {
+      setQuestion(parsed[0]);
+      setAnswers(parsed[0].answers);
+    }
   }, [initialQuestions]);
 
   useEffect(() => {
@@ -319,9 +339,9 @@ const UpdateQuestionScreen = () => {
                             menu.style.top = `${e.clientY}px`;
                             menu.style.left = `${e.clientX}px`;
                             menu.innerHTML = `
-    <div class="${styles.menuItem}" id="dup">Duplicate</div>
-    <div class="${styles.menuItem}" id="del">Delete</div>
-  `;
+      <div class="${styles.menuItem}" id="dup">Duplicate</div>
+      <div class="${styles.menuItem}" id="del">Delete</div>
+    `;
                             document.body.appendChild(menu);
 
                             const remove = () =>
@@ -392,8 +412,8 @@ const UpdateQuestionScreen = () => {
             onChange={(e) =>
               setQuestion((prev) => ({ ...prev, content: e.target.value }))
             }
-            minLength={questionLengthConfig.minValue}
-            maxLength={questionLengthConfig.maxValue}
+            minLength={questionLengthConfig.min}
+            maxLength={questionLengthConfig.max}
             placeholder="Enter your question"
             autoSize={{ minRows: 2 }}
           />
@@ -430,16 +450,16 @@ const UpdateQuestionScreen = () => {
           <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
           <Select
             value={question.timeLimitSec}
-            minValue={timeLimitConfig.minValue}
-            maxValue={timeLimitConfig.maxValue}
+            min={timeLimitConfig.min}
+            max={timeLimitConfig.max}
             onChange={(val) =>
               setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
             }
             style={{ width: "100%" }}
           >
             {Array.from(
-              { length: Math.floor((timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10) + 1 },
-              (_, i) => timeLimitConfig.minValue + i * 10
+              { length: Math.floor((timeLimitConfig.max - timeLimitConfig.min) / 10) + 1 },
+              (_, i) => timeLimitConfig.min + i * 10
             ).map((sec) => (
               <Option key={sec} value={sec}>
                 {sec} giây

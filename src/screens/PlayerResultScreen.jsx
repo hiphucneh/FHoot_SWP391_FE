@@ -1,15 +1,46 @@
-import React from "react";
-import { Card, Typography, Space, Button, Tag } from "antd";
-// import Lottie from "lottie-react";
-// import confettiAnimation from "../assets/animations/congratuation.json";
+import React, { useEffect, useState } from "react";
+import { Card, Typography, Space, Button, Tag, Avatar, List } from "antd";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+
 const { Title, Text } = Typography;
 
-const PlayerResultScreen = ({
-  teamName = "Your Team",
-  rank = 1,
-  score = 0,
-  sessionCode = "SAMPLE_CODE",
-}) => {
+const PlayerResultScreen = () => {
+  const sessionCode = localStorage.getItem("sessionCode");
+  const location = useLocation();
+  const { teamId } = location.state || {};
+
+  const [teamData, setTeamData] = useState(null);
+
+  useEffect(() => {
+    const fetchTeamScore = async () => {
+      try {
+        const res = await axios.get(
+          `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/team/${teamId}/score`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (res.data?.statusCode === 200) {
+          setTeamData(res.data.data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy điểm team:", error);
+      }
+    };
+
+    if (teamId) {
+      fetchTeamScore();
+    }
+  }, [teamId]);
+
+  if (!teamData) return <div>Loading...</div>;
+
+  const { teamName, totalScore, rank, players } = teamData;
+
   return (
     <div
       style={{
@@ -22,26 +53,10 @@ const PlayerResultScreen = ({
         justifyContent: "center",
         fontFamily: "'Roboto', sans-serif",
         padding: "24px",
-        position: "relative", // ⬅ để chứa animation phía dưới
-        overflow: "hidden",
+        position: "relative",
+        overflow: "auto",
       }}
     >
-      {/* 🎉 Confetti Animation */}
-      {/* <Lottie
-        animationData={confettiAnimation}
-        loop={false}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-          pointerEvents: "none", // không làm ảnh hưởng tới click
-        }}
-      /> */}
-
-      {/* Nội dung UI */}
       <Space
         direction="vertical"
         size="large"
@@ -97,37 +112,55 @@ const PlayerResultScreen = ({
           }}
         >
           <Space direction="vertical" size="middle">
-            <div>
-              <Text strong style={{ fontSize: 20, color: "#d81b60" }}>
-                Your Team: {teamName}
-              </Text>
-            </div>
-            <div>
-              <Text style={{ fontSize: 18, color: "#ff4081" }}>
-                Rank:{" "}
-                {rank === 1 ? (
-                  <Tag color="gold">🥇 1st</Tag>
-                ) : rank === 2 ? (
-                  <Tag color="silver">🥈 2nd</Tag>
-                ) : rank === 3 ? (
-                  <Tag color="volcano">🥉 3rd</Tag>
-                ) : (
-                  <Tag>{rank}th</Tag>
-                )}
-              </Text>
-            </div>
-            <div>
-              <Text strong style={{ fontSize: 24, color: "#ff4081" }}>
-                Score: {score}
-              </Text>
-            </div>
+            <Text strong style={{ fontSize: 20, color: "#d81b60" }}>
+              Your Team: {teamName}
+            </Text>
+            <Text style={{ fontSize: 18, color: "#ff4081" }}>
+              Rank:{" "}
+              {rank === 1 ? (
+                <Tag color="gold">🥇 1st</Tag>
+              ) : rank === 2 ? (
+                <Tag color="silver">🥈 2nd</Tag>
+              ) : rank === 3 ? (
+                <Tag color="volcano">🥉 3rd</Tag>
+              ) : (
+                <Tag>{rank}th</Tag>
+              )}
+            </Text>
+            <Text strong style={{ fontSize: 24, color: "#ff4081" }}>
+              Score: {totalScore}
+            </Text>
           </Space>
+        </Card>
+
+        <Card
+          title="Team Members"
+          style={{ width: "90vw", maxWidth: 500, borderRadius: 12 }}
+        >
+          <List
+            dataSource={players}
+            renderItem={(player) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      style={{ backgroundColor: "#f06292" }}
+                      src={player.imageUrl}
+                    >
+                      {player.name[0]}
+                    </Avatar>
+                  }
+                  title={player.name}
+                  description={`Score: ${player.score}`}
+                />
+              </List.Item>
+            )}
+          />
         </Card>
 
         <Button
           onClick={() => {
-            localStorage.removeItem("sessionCode");
-            window.location.href = "/join-session";
+            window.location.href = "/result";
           }}
           type="primary"
           size="large"
@@ -139,7 +172,7 @@ const PlayerResultScreen = ({
             fontSize: 16,
           }}
         >
-          Back to Join Session
+          Next
         </Button>
 
         <Text
