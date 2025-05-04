@@ -130,7 +130,6 @@ function App() {
           <Route path="/admin/dashboard" element={<><AdminHeader /><Dashboard /></>} />
           <Route path="/bingo" element={<PlayerResultScreen />} />
           <Route path="/result" element={<MyHistorySession />} />
-
           {/* Default */}
           <Route path="/" element={<Navigate to="/Home" />} />
         </Routes>

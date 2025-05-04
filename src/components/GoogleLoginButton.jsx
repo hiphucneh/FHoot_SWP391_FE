@@ -1,96 +1,55 @@
-import { useGoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
-import "./styles.css";
+import { useEffect, useRef } from "react";
 
-function GoogleLoginButton() {
-  const navigate = useNavigate();
+function GoogleLoginButton({ onLoginSuccess }) {
+  const googleButtonRef = useRef(null);
 
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      console.log("Google tokenResponse:", tokenResponse);
-      const idToken = tokenResponse.id_token;
+  useEffect(() => {
+    /* global google */
+    if (window.google && googleButtonRef.current) {
+      google.accounts.id.initialize({
+        client_id: "872792915542-tdot930v32243olj0gbkidj4lpscc2cc.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+      });
 
-      if (!idToken) {
-        alert("Không lấy được idToken từ Google. Vui lòng thử lại.");
-        return;
+      google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        width: "300",
+      });
+    }
+  }, []);
+
+  const handleCredentialResponse = async (response) => {
+    const idToken = response.credential;
+    console.log("✅ idToken:", idToken);
+
+    try {
+      const url = new URL("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google");
+      url.searchParams.set("idToken", idToken);
+      url.searchParams.set("fcmToken", "web-client-placeholder");
+
+      const res = await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+        },
+      });
+
+      const data = await res.json();
+      if (res.ok && data.statusCode === 200) {
+        const token = data.data?.accessToken || data.data?.token;
+        localStorage.setItem("token", token);
+        onLoginSuccess?.(token);
+      } else {
+        alert(data.message || "Google login failed.");
       }
+    } catch (err) {
+      console.error("Google login error:", err);
+      alert("Google login failed.");
+    }
+  };
 
-      try {
-        // Gửi token đến API backend
-        const response = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "*/*"
-            },
-            body: JSON.stringify({
-              idToken,
-              fcmToken: "web-client-placeholder"
-            }),
-          }
-        );
-
-        const data = await response.json();
-        console.log("Login API response:", data);
-
-        if (response.ok && data.statusCode === 200) {
-          const token = data.data.accessToken || data.data.token;
-          if (!token) throw new Error("No token received");
-
-          localStorage.setItem("token", token);
-
-          // Lấy thông tin user
-          const userRes = await fetch(
-            "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "*/*"
-              }
-            }
-          );
-
-          const userData = await userRes.json();
-          localStorage.setItem("user", JSON.stringify(userData.data || userData));
-
-          const role = (userData.data || userData).role;
-          if (role === "Admin") {
-            window.location.href = "/HomeAdmin";
-          } else {
-            window.location.href = "/Home";
-          }
-        } else {
-          alert(data.message || "Đăng nhập Google thất bại.");
-        }
-      } catch (err) {
-        console.error("Google login error:", err);
-        alert("Đăng nhập Google thất bại. Vui lòng thử lại!");
-      }
-    },
-    onError: (error) => {
-      console.error("Google login failed:", error);
-      alert("Google login error.");
-    },
-    flow: "token", // ✅ Đúng để nhận được id_token trên frontend
-    scope: "openid email profile"
-  });
-
-  return (
-    <button
-      type="button"
-      className="login__google-button"
-      onClick={() => login()}
-    >
-      <img
-        src="https://www.svgrepo.com/show/475656/google-color.svg"
-        alt="Google logo"
-        className="google-icon"
-      />
-      Continue with Google
-    </button>
-  );
+  return <div ref={googleButtonRef}></div>;
 }
 
 export default GoogleLoginButton;
