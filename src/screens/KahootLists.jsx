@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./KahootLists.module.css";
-import BlockJoinGame from "../Host/blockjoingame"; // Import popup dùng chung
+import BlockJoinGame from "../Host/blockjoingame";
 
 function KahootLists() {
   const navigate = useNavigate();
@@ -14,8 +14,7 @@ function KahootLists() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const [showRoleWarning, setShowRoleWarning] = useState(false); // New state block
+  const [showRoleWarning, setShowRoleWarning] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -38,23 +37,24 @@ function KahootLists() {
       }
     }
 
-
     fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
-      headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => setUserInfo(data));
 
     fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/my-quiz", {
-      headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => setQuizzes(data.data || []));
   }, [navigate]);
 
-  function filteredQuizzes() {
-    return quizzes.filter((q) => q.title.toLowerCase().includes(searchTerm.toLowerCase()));
-  }
+  const filteredQuizzes = () =>
+    quizzes
+      .filter((q) => q.questions.length > 0)
+      .filter((q) => q.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => b.quizId - a.quizId);
 
   const totalPages = Math.ceil(filteredQuizzes().length / quizzesPerPage);
   const indexOfLastQuiz = currentPage * quizzesPerPage;
@@ -62,10 +62,11 @@ function KahootLists() {
   const currentQuizzes = filteredQuizzes().slice(indexOfFirstQuiz, indexOfLastQuiz);
 
   const nextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
+
   const prevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   const handleEdit = (quiz) => {
@@ -93,38 +94,38 @@ function KahootLists() {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
-            Accept: "*/*"
-          }
+          },
         }
       );
 
       if (response.ok) {
-        setTimeout(() => {
-          setQuizzes((prev) => prev.filter((q) => q.quizId !== quizToDelete.quizId));
-          setShowDeleteModal(false);
-          setIsDeleting(false);
-        }, 1000);
+        setQuizzes((prev) => prev.filter((q) => q.quizId !== quizToDelete.quizId));
+        setShowDeleteModal(false);
       } else {
         alert("Failed to delete. Please try again!");
-        setIsDeleting(false);
       }
     } catch (error) {
       console.error("Delete error:", error);
       alert("An error occurred during deletion.");
+    } finally {
       setIsDeleting(false);
     }
   };
 
-  const handlePlayGame = (quizId) => {
-    navigate(`/create-session/`);
+  const handlePlayGame = (quiz) => {
+    navigate("/create-session", {
+      state: {
+        quizId: quiz.quizId,
+        quizTitle: quiz.title,
+        questions: quiz.questions,
+      },
+    });
   };
 
   return (
     <div className={styles.pageContainer}>
       <div className={styles.sidebar}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>
-          ← Back
-        </button>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>← Back</button>
 
         {userInfo && (
           <div className={styles.profile}>
@@ -132,13 +133,13 @@ function KahootLists() {
             <h2 className={styles.name}>{userInfo.name}</h2>
             <p className={styles.email}>{userInfo.email}</p>
             <p className={styles.totalQuiz}>
-              {quizzes.length <= 1 ? "Quiz" : "Quizzes"}: <strong>{quizzes.length}</strong>
+              {filteredQuizzes().length <= 1 ? "Quiz" : "Quizzes"}:{" "}
+              <strong>{filteredQuizzes().length}</strong>
             </p>
             <div className={styles.buttonGroup}>
               <button className={styles.importButton} onClick={() => alert("Import file feature coming soon!")}>
                 📂 Import File
               </button>
-
               <button className={styles.createButton} onClick={() => navigate("/createK")}>
                 + Create a Kahoot!
               </button>
@@ -150,7 +151,6 @@ function KahootLists() {
       <div className={styles.mainContent}>
         <h1 className={styles.title}>📚 Your Kahoot! Games</h1>
 
-        {/* Search box */}
         <div className={styles.searchBox}>
           <input
             type="text"
@@ -160,7 +160,6 @@ function KahootLists() {
           />
         </div>
 
-        {/* Quiz List */}
         <div className={styles.quizList}>
           {currentQuizzes.map((quiz) => (
             <div key={quiz.quizId} className={styles.quizCard}>
@@ -174,7 +173,7 @@ function KahootLists() {
               </div>
 
               <div className={styles.cardActions}>
-                <button className={styles.playButton} onClick={() => handlePlayGame(quiz.quizId)}>
+                <button className={styles.playButton} onClick={() => handlePlayGame(quiz)}>
                   🚀 Play game NOW!
                 </button>
                 <button className={styles.editButton} onClick={() => handleEdit(quiz)}>
@@ -189,31 +188,21 @@ function KahootLists() {
           {currentQuizzes.length === 0 && <p>No quizzes found!</p>}
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className={styles.pagination}>
-            <button
-              className={styles.pageButton}
-              onClick={prevPage}
-              disabled={currentPage === 1}
-            >
+            <button onClick={prevPage} disabled={currentPage === 1} className={styles.pageButton}>
               ⬅ Prev
             </button>
             <span className={styles.pageNumber}>
               Page {currentPage} of {totalPages}
             </span>
-            <button
-              className={styles.pageButton}
-              onClick={nextPage}
-              disabled={currentPage === totalPages}
-            >
+            <button onClick={nextPage} disabled={currentPage === totalPages} className={styles.pageButton}>
               Next ➡
             </button>
           </div>
         )}
       </div>
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -239,7 +228,6 @@ function KahootLists() {
         </div>
       )}
 
-      {/* Popup Block Role */}
       <BlockJoinGame
         show={showRoleWarning}
         onClose={() => navigate("/Home")}
