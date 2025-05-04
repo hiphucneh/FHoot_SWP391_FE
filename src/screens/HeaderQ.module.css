@@ -4,21 +4,26 @@
   align-items: center;
   background-color: white;
   padding: 15px 30px;
-  border-bottom: 1px solid #e0e0e0;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 
 .left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  cursor: pointer;
 }
 
 .logo {
-  height: 50%;
-  width: 50%;
-  margin-top: 15px;
-  object-fit: fill;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  margin-right: 15px;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
 }
 
 .title {
@@ -35,4 +40,58 @@
 
 .button {
   font-weight: 500;
+  padding: 6px 16px;
+}
+
+.aiButton {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.aiButton:hover {
+  background-color: #f9fafb;
+  border-color: #ccc;
+}
+
+.aiIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.generatedQuiz {
+  margin-top: 30px;
+}
+
+.questionCard {
+  margin-top: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px;
+  background: #f9fafb;
 }
