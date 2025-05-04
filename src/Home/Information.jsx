@@ -33,7 +33,7 @@ function Information() {
     {
       title: "🌟 About Us",
       content:
-        "Kahoot! Fun is a vibrant learning platform designed to make education exciting, interactive, and accessible for all ages. We aim to inspire curiosity and joy in learning through live quizzes, games, and community engagement."
+        "Fhoot! Fun is a vibrant learning platform designed to make education exciting, interactive, and accessible for all ages. We aim to inspire curiosity and joy in learning through live quizzes, games, and community engagement."
     },
     {
       title: "🎯 Our Audience",
@@ -43,7 +43,7 @@ function Information() {
     {
       title: "📜 Terms of Use",
       content:
-        "By accessing and using Kahoot! Fun, users agree to comply with our community standards and platform rules..."
+        "By accessing and using Fhoot! Fun, users agree to comply with our community standards and platform rules..."
     },
     {
       title: "🤝 Community Guidelines",
@@ -58,7 +58,7 @@ function Information() {
     {
       title: "📧 Contact Information",
       content:
-        "Have questions or feedback? Reach out to us at support@kahootfun.com."
+        "Have questions or feedback? Reach out to us at support@fhootfun.com."
     }
   ];
 
@@ -101,10 +101,6 @@ function Information() {
   return (
     <div className="info-page">
       <div className="info-inner">
-        <div className="info-header fade-in-section" ref={(el) => (sectionRefs.current[-1] = el)}>
-          <h1>About Kahoot! <span className="highlight">Fun</span></h1>
-          <p>Learn everything about our platform, mission, and policies.</p>
-        </div>
 
         {sections.map((section, index) => (
           <div

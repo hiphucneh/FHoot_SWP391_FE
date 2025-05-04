@@ -81,13 +81,14 @@ function App() {
             path="/admin/session-list"
             element={
               <>
+                <AdminHeader />
                 <SessionManagement />
               </>
             }
           />
           <Route
             path="/system-configuration"
-            element={<SystemConfiguration />}
+            element={<><AdminHeader /><SystemConfiguration /></>}
           />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/RegisterSuccess" element={<RegisterSuccess />} />

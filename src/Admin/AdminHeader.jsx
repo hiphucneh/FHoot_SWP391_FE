@@ -1,25 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./AdminStyles.module.css";
 import logo from "../assets/Kahoot_logo.png";
 import userIcon from "../assets/user-icon.png";
 
 function AdminHeader() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const handleBack = () => {
-    if (location.pathname === "/system-configuration") {
-      navigate("/admin/session-list");
-    } else {
-      navigate("/Home");
-    }
-  };
-
-  const handleGoToSystemConfig = () => {
-    navigate("/system-configuration");
+    navigate("/Home");
   };
 
   const handleReloadAdmin = () => {
@@ -47,20 +38,8 @@ function AdminHeader() {
     <header className={styles.adminHeader}>
       <div className={styles.leftSection}>
         <button className={styles.backButton} onClick={handleBack}>
-          {location.pathname === "/system-configuration"
-            ? "← Back"
-            : "← Back to Home"}
+          ← Back to Home
         </button>
-
-        {/* Hiện nút System Configuration nếu KHÔNG ở trang đó */}
-        {location.pathname !== "/system-configuration" && (
-          <button
-            className={styles.configButton}
-            onClick={handleGoToSystemConfig}
-          >
-            ⚙ System Configuration
-          </button>
-        )}
       </div>
 
       <div className={styles.centerSection} onClick={handleReloadAdmin}>

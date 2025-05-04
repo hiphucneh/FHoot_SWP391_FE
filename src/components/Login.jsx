@@ -34,7 +34,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
       const role = (userData.data || userData).role;
 
       if (role === "Admin") {
-        window.location.href = "/admin/session-list";
+        window.location.href = "/admin/dashboard";
       } else {
         window.location.href = "/Home";
       }
@@ -89,7 +89,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
       console.log("Google token response:", tokenResponse);
       const idToken = tokenResponse.id_token;
       if (!idToken) {
-        setErrorMessage("Không lấy được idToken từ Google.");
+        setErrorMessage("Unable to get idToken from Google.");
         return;
       }
 

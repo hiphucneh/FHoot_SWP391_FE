@@ -31,19 +31,21 @@ const UserManagement = () => {
   const fetchUsers = async (params = {}) => {
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
+
       const response = await axios.get(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc0NTgyODI2NiwiaXNzIjoiS2Fob290IiwiYXVkIjoiS2Fob290IEVuZCBVc2VycyJ9.d7bk3Q5T1jeaeytA96v91VUEG6ZC-cORzPhtpYf0auQ`,
+            Authorization: `Bearer ${token}`,
           },
           params: {
             search: params.search,
           },
         }
       );
-      const { data } = response.data;
 
+      const { data } = response.data;
       setUsers(data);
       setPagination((prev) => ({
         ...prev,
@@ -57,47 +59,42 @@ const UserManagement = () => {
 
   const updateUserStatus = async (userId, newStatus) => {
     try {
-      const response = await axios.put(
+      const token = localStorage.getItem("token");
+
+      await axios.put(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/status/${userId}/${newStatus}`,
         {},
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc0NTgyODI2NiwiaXNzIjoiS2Fob290IiwiYXVkIjoiS2Fob290IEVuZCBVc2VycyJ9.d7bk3Q5T1jeaeytA96v91VUEG6ZC-cORzPhtpYf0auQ`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      message.success(`User status updated to ${newStatus} successfully!`);
 
+      message.success(`User status updated to ${newStatus}`);
       fetchUsers({
-        pageIndex: pagination.current,
-        pageSize: pagination.pageSize,
         search: searchText,
       });
     } catch (error) {
-      console.error("Error updating user status:", error.response?.data);
       message.error("Failed to update user status!");
     }
   };
 
   const showConfirm = (userId, currentStatus, newStatus) => {
     confirm({
-      title: `Are you sure you want to change this user's status to "${newStatus}"?`,
-      content: `User ID: ${userId}, Current Status: ${currentStatus}`,
+      title: `Change user status to "${newStatus}"?`,
+      content: `User ID: ${userId}, Current: ${currentStatus}`,
       onOk() {
         updateUserStatus(userId, newStatus);
       },
       onCancel() {
-        message.info("Action cancelled");
+        message.info("Cancelled");
       },
     });
   };
 
   useEffect(() => {
-    fetchUsers({
-      pageIndex: pagination.current,
-      pageSize: pagination.pageSize,
-      search: searchText,
-    });
+    fetchUsers({ search: searchText });
   }, [pagination.current, pagination.pageSize, searchText]);
 
   const handleTableChange = (pagination) => {
@@ -127,17 +124,15 @@ const UserManagement = () => {
       render: (_, record) => (
         <Space size="middle">
           {record.status === "Active" && (
-            <>
-              <Button
-                type="primary"
-                danger
-                onClick={() =>
-                  showConfirm(record.userId, record.status, "Deleted")
-                }
-              >
-                Block
-              </Button>
-            </>
+            <Button
+              type="primary"
+              danger
+              onClick={() =>
+                showConfirm(record.userId, record.status, "Deleted")
+              }
+            >
+              Block
+            </Button>
           )}
           {record.status === "Inactive" && (
             <Button
@@ -172,9 +167,8 @@ const UserManagement = () => {
           style={{
             margin: "24px 16px",
             padding: 24,
-            background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+            background: "#f0f2f5",
             borderRadius: "8px",
-            minHeight: "100vh",
             overflow: "auto",
             fontFamily: "'Roboto', sans-serif",
           }}
@@ -182,7 +176,6 @@ const UserManagement = () => {
           <Card
             bordered={false}
             style={{
-              width: "100%",
               maxWidth: "1100px",
               margin: "0 auto 24px",
               background: "#fff",
@@ -254,24 +247,25 @@ const UserManagement = () => {
             />
           </Card>
         </Content>
-      </Layout>
 
-      <style>
-        {`
-          .table-row-hover:hover {
-            background-color: #f9fafb !important;
-            transition: background-color 0.2s ease;
-          }
-          .ant-table-thead > tr > th {
-            background: #f3d4e5 !important;
-            color: #333 !important;
-            font-weight: 600 !important;
-          }
-          .ant-table-tbody > tr > td {
-            color: #333 !important;
-          }
-        `}
-      </style>
+        {/* Inline table style */}
+        <style>
+          {`
+            .table-row-hover:hover {
+              background-color: #f9fafb !important;
+              transition: background-color 0.2s ease;
+            }
+            .ant-table-thead > tr > th {
+              background: #e0f2fe !important;
+              color: #333 !important;
+              font-weight: 600 !important;
+            }
+            .ant-table-tbody > tr > td {
+              color: #333 !important;
+            }
+          `}
+        </style>
+      </Layout>
     </Layout>
   );
 };

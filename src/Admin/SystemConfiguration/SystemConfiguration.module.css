@@ -1,77 +1,69 @@
 .pageContainer {
-    width: 100vw;
-    min-height: 100vh;
-    background-color: #f7f9fc;
-  }
-  
-  .contentWrapper {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pageTitle {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    color: #333;
-  }
-  
-  .loadingText {
-    text-align: center;
-    font-size: 1.2rem;
-  }
-  
-  .tableWrapper {
-    overflow-x: auto;
-  }
-  
-  .configTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 1rem;
-  }
-  
-  .configTable thead {
-    background-color: #edf2f7;
-  }
-  
-  .configTable th, .configTable td {
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    text-align: left;
-  }
-  
-  .configTable th {
-    font-weight: 600;
-    color: #4a5568;
-  }
-  
-  .configTable tr:nth-child(even) {
-    background-color: #f9fafb;
-  }
-  
-  .configTable tr:hover {
-    background-color: #ebf8ff;
-    transition: background-color 0.3s ease;
-  }
-  
-  .editButton {
-    background-color: #4299e1;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .editButton:hover {
-    background-color: #3182ce;
-  }
-  
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+.loadingText {
+  text-align: center;
+  font-size: 16px;
+  color: #555;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+}
+
+.configTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.configTable thead {
+  background-color: #f1f5f9;
+}
+
+.configTable th,
+.configTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  color: #374151;
+}
+
+.configTable th {
+  font-weight: 600;
+}
+
+.configTable tr:hover {
+  background-color: #f0f9ff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.editButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: #2563eb;
+}

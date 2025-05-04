@@ -50,7 +50,7 @@ function Header() {
       } else if (userRole?.toLowerCase() === "user") {
         setShowAdvHost(true);
       } else {
-        alert("Your role does not have permission to create a Kahoot.");
+        alert("Your role does not have permission to create a Fhoot.");
       }
     }
   };
@@ -70,7 +70,7 @@ function Header() {
 
   const handleGoAdmin = (e) => {
     e.preventDefault();
-    navigate("/HomeAdmin");
+    navigate("/admin/dashboard");
   };
 
   const handleLogout = () => {
@@ -129,7 +129,7 @@ function Header() {
                 padding: "0.5rem 1rem",
               }}
             >
-              <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+              <i className="fa-regular fa-envelope"></i> Create a Fhoot !
             </a>
           </div>
 

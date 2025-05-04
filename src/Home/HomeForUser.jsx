@@ -72,16 +72,16 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
 
   return (
     <div className="home-for-user">
-      <h2 className="home-for-user__title">✨ Discover Kahoot! Features</h2>
+      <h2 className="home-for-user__title">✨ Discover Fhoot! Features</h2>
 
       <div className="home-for-user__banners">
         {/* Banner 1 */}
         <div className="banner-card">
-          <img src={Banner1} alt="About Kahoot" />
+          <img src={Banner1} alt="About Fhoot" />
           <div className="banner-content">
-            <h3>What is Kahoot?</h3>
+            <h3>What is Fhoot?</h3>
             <p>
-              Explore the basics of how Kahoot works in a fun and simple way for
+              Explore the basics of how Fhoot works in a fun and simple way for
               kids of all ages!
             </p>
             <button onClick={handleLearnMore}>Learn More</button>
@@ -92,7 +92,7 @@ function HomeForUser({ setShowLogin, setRedirectAfterLogin }) {
         <div className="banner-card">
           <img src={Banner2} alt="Live Games" />
           <div className="banner-content">
-            <h3>Play Live Kahoots</h3>
+            <h3>Play Live Fhoot !</h3>
             <p>
               Join exciting games in real-time and compete with friends or
               classmates!
