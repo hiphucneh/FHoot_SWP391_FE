@@ -9,7 +9,7 @@ function Footer() {
 
         {/* Column 1 - About */}
         <div className="footer-column">
-          <h3>Kahoot! Fun</h3>
+          <h3>Fhoot! Fun</h3>
           <p>We bring fun, creative, and accessible learning experiences for all ages.</p>
           <p>Join millions of students, teachers, and parents around the world!</p>
         </div>
@@ -18,7 +18,7 @@ function Footer() {
         <div className="footer-column">
           <h4>Products</h4>
           <ul>
-            <li><a href="#">Kahoot Live!</a></li>
+            <li><a href="#">Fhoot Live!</a></li>
             <li><a href="#">Quiz Builder</a></li>
             <li><a href="#">Flashcards</a></li>
             <li><a href="#">Game Library</a></li>
@@ -55,7 +55,7 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        © 2025 Kahoot! Fun. All rights reserved.
+        © 2025 Fhoot! Fun. All rights reserved.
       </div>
     </footer>
   );

@@ -1,572 +1,463 @@
-import React, { state, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { InputNumber, notification, Upload, Checkbox, Button, Popover } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import * as XLSX from 'xlsx';
-import Swal from 'sweetalert2';
-import { updateQuestion } from '../services/updateQuestion.js';
-import { useLocation } from "react-router-dom";
-import '../components/CreateQuestion.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Input, Upload, Checkbox, Button, Select, notification } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
+import { updateQuestion } from "../services/updateQuestion";
+import HeaderQ from "./HeaderQ";
+import styles from "./CreateQuestion.module.css";
+import bgImage from "../assets/bg-Q.jpg";
 
-const UpdateQuestion = () => {
-    const location = useLocation();
-    const quizId = location.state?.quizId
-    const quizTitle = location.state?.quizTitle
-    console.log("📌 location.state nhận được:", location.state);
-    console.log("📌 quizId:", quizId);
-    console.log("📌 quizTitle:", quizTitle);
-    useEffect(() => {
-        if (location.state?.questions) {
-            console.log("Questions nhận được từ trang trước:", location.state.questions);
+const { Option } = Select;
 
-            const convertedQuestions = location.state.questions.map(q => ({
-                id: q.questionId || Date.now(),
-                content: q.questionText,
-                file: q.imgUrl,
-                answers: q.answers.map(a => ({
-                    id: a.answerId || Date.now(),
-                    content: a.answerText,
-                    isAnswer: a.isCorrect
-                })),
-                timeLimitSec: q.timeLimitSec || 30
-            }));
+const UpdateQuestionScreen = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const quizId = location.state?.quizId;
+  const quizTitle = location.state?.quizTitle;
+  const initialQuestions = location.state?.questions || [];
 
-            setSavedQuestions(convertedQuestions);
-            console.log("Đã lưu questions vào savedQuestions:", convertedQuestions);
-        } else {
-            console.log("Không có questions được truyền từ trang trước");
-            // Load từ localStorage nếu cần
-            if (quizId) {
-                const saved = localStorage.getItem(`savedQuestions_${quizId}`);
-                if (saved) {
-                    setSavedQuestions(JSON.parse(saved));
-                }
-            }
+  const [question, setQuestion] = useState({});
+  const [answers, setAnswers] = useState([]);
+  const [savedQuestions, setSavedQuestions] = useState([]);
+  const [questionLengthConfig, setQuestionLengthConfig] = useState({ min: 1, max: 500 });
+  const [answerLimitConfig, setAnswerLimitConfig] = useState({ min: 2, max: 6 });
+  const [timeLimitConfig, setTimeLimitConfig] = useState({ min: 10, max: 300 })
+  async function getConfigData(configId) {
+
+    const url = `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/system-configuration/${configId}`;
+    try {
+      const token = localStorage.getItem("token")
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-    }, [location.state, quizId]);
+      });
+      const data = await response.json();
+      console.log(configId)
 
-    const [answers, setAnswers] = useState([{ id: '0', content: "", isAnswer: false }]);
-    const [question, setQuestion] = useState({
-        id: Date.now(),
-        content: "",
-        file: null,
-        answers: [],
-        timeLimitSec: 30,
-    });
-
-    const [savedQuestions, setSavedQuestions] = useState(() => {
-        if (!quizId) return [];
-        const saved = localStorage.getItem(`savedQuestions_${quizId}`);
-        return saved ? JSON.parse(saved) : [];
-    });
-    const navigate = useNavigate();
-    useEffect(() => {
-        if (quizId) {
-            localStorage.setItem(`savedQuestions_${quizId}`, JSON.stringify(savedQuestions));
-        }
-    }, [savedQuestions, quizId]);
-    const handleAddAnswer = () => {
-        console.log("LOG:", answers);
-        if (answers.length >= 4) {
-            notification.error({
-                message: 'Max question is 4 !',
-                description: 'Cant create more than 4 question',
-                placement: 'topRight'
-            });
-        } else {
-            const newAnswer = {
-                id: Date.now(),
-                content: '',
-                isAnswer: false
-            }
-            setAnswers([...answers, newAnswer]);
-        }
-
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-    const handleToggleCheckbox = (id, isChecked) => {
-        const updatedAnswers = answers.map(answer =>
-            answer.id === id ? { ...answer, isAnswer: isChecked } : answer
-        );
-        setAnswers(updatedAnswers);
-    };
+  }
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      const config11 = await getConfigData(11);
+      const config12 = await getConfigData(12);
+      const config10 = await getConfigData(10);
 
-
-
-    const headerStyle = {
-        textAlign: "left", color: "black", width: "600px", margin: "30px",
-
-
-    }
-
-    const handleDuplicateAnswer = (id) => {
-        if (answers.length >= 4) {
-            notification.error({
-                message: 'Max answer is 4',
-                description: 'You cant create more than 4 question',
-                placement: 'topRight',
-            });
-            return;
-        }
-
-        const answerToDuplicate = answers.find((answer) => answer.id === id);
-        if (!answerToDuplicate) {
-            notification.error({
-                message: 'Error',
-                description: 'Cant find question to duplicate',
-                placement: 'topRight',
-            });
-            return;
-        }
-
-        const newAnswer = { ...answerToDuplicate, id: Date.now() };
-        setAnswers([...answers, newAnswer]);
-
-
-
-        console.log(" Đã nhân bản câu trả lời:", newAnswer);
-    };
-    const handleSaveQuestion = () => {
-        const updatedQuestion = {
-            ...question,
-            answers: answers,
-        };
-
-        const isExist = savedQuestions.some(q => q.id === updatedQuestion.id);
-        if (updatedQuestion.content === "") {
-            notification.error({
-                message: 'Error save question!',
-                description: 'Enter question content',
-                placement: 'topRight'
-            });
-
-        } else if (updatedQuestion.answers.length < 2) {
-            notification.error({
-                message: 'Error save question !',
-                description: 'Enter at least 2 question.',
-                placement: 'topRight'
-            });
-        } else if (updatedQuestion.answers.some(answer => answer.isAnswer === true) === false) {
-            notification.error({
-                message: 'Error save question',
-                description: 'Enter at least 1 answer.',
-                placement: 'topRight'
-            });
-        }
-        if (isExist) {
-
-            setSavedQuestions(savedQuestions.map(q => q.id === updatedQuestion.id ? updatedQuestion : q));
-        } else {
-
-            setSavedQuestions([...savedQuestions, updatedQuestion]);
-        }
-
-        console.log("LOG:", updatedQuestion);
-    };
-    const handleDeleteAnswer = (id) => {
-        const newAnswers = answers.filter((answer) => answer.id !== id);
-        setAnswers(newAnswers);
-    };
-
-    const handleChangeAnswer = (id, value) => {
-
-
-
-        const updatedAnswers = answers.map(answer =>
-            answer.id === id ? { ...answer, content: value } : answer
-        );
-
-        setAnswers(updatedAnswers);
-
-        console.log("LOG:", updatedAnswers.find(a => a.id === id));
-    };
-    const handleChangeFile = (file) => {
-        setQuestion({ ...question, file: file });
-        console.log("LOG:", question.file);
-
-    }
-    const handleChangeQuestion = (id, value) => {
-        setQuestion({ ...question, content: value });
-        console.log("LOG:", question);
-    }
-    const handleSelectQuestion = (q) => {
-        setQuestion({
-            id: q.id,
-            content: q.content,
-            file: q.file,
-            answers: q.answers,
+      if (config11) {
+        setQuestionLengthConfig({
+          min: config11.minValue,
+          max: config11.maxValue,
         });
-        setAnswers(q.answers);
-    };
-    const handleAddQuestion = () => {
-        const newQuestion = {
-            id: Date.now(),
-            content: "",
-            file: null,
-            answers: [],
-        };
+      }
 
-        setSavedQuestions([...savedQuestions, newQuestion]);
-        console.log("LOG:", newQuestion);
-        console.log("LOG:", savedQuestions);
-    }
-    const handleDragEnd = (result) => {
-        if (!result.destination) return;
-        const items = Array.from(savedQuestions);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        setSavedQuestions(items);
-        console.log("LOG:", items);
-    }
-    const handleDeleteQuestion = (id) => {
-        const newSavedQuestions = savedQuestions.filter((question) => question.id !== id);
-        setSavedQuestions(newSavedQuestions);
-        console.log("LOG:", newSavedQuestions);
-    }
-    const handleChangeImport = (file) => {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: "array" });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-            const imported = rows.slice(1).map((r, i) => ({
-                id: Date.now() + i,
-                content: r[0] || "",
-                file: null,
-                answers: ["A", "B", "C", "D"].map((opt, j) => ({
-                    id: Date.now() + i + j,
-                    content: r[j + 1] || "",
-                    isAnswer: (r[5]?.toString().trim().toUpperCase() === opt),
-                })),
-            }));
-
-            setSavedQuestions(imported);
-        };
-
-        reader.readAsArrayBuffer(file);
-    };
-    const handleChangeTime = (value) => {
-        setQuestion({ ...question, timeLimitSec: value });
-        console.log("LOG:", question.timeLimitSec);
-    }
-
-
-    const handleSaveQuizz = async () => {
-        console.log("📌 Quiz ID:", quizId);
-
-        if (!quizId) {
-            notification.error({
-                message: 'Lỗi',
-                description: 'Không tìm thấy Quiz',
-                placement: 'topRight'
-            });
-            return;
-        }
-
-
-
-        if (!savedQuestions || savedQuestions.length === 0) {
-            notification.warning({
-                message: 'Cảnh báo',
-                description: 'Bạn chưa có câu hỏi nào!',
-                placement: 'topRight'
-            });
-            return;
-        }
-
-        const formattedQuestions = savedQuestions.map((q, index) => {
-            const formatted = {
-                questionText: q.content,
-                timeLimitSec: q.timeLimitSec === undefined ? 30 : q.timeLimitSec, // Sử dụng toán tử điều kiện
-                isRandomAnswer: true,
-                answers: q.answers.map((a) => ({
-                    answerText: a.content,
-                    isCorrect: a.isAnswer
-                })),
-            };
-
-
-            console.log(`Câu hỏi ${index + 1}:`, JSON.stringify(formatted, null, 2));
-            return formatted;
+      if (config12) {
+        setAnswerLimitConfig({
+          min: config12.minValue,
+          max: config12.maxValue,
         });
-
-        console.log("🚀 Sending full formattedQuestions to API:\n", JSON.stringify(formattedQuestions, null, 2));
-
-        try {
-            // Gọi API cập nhật câu hỏi
-            const res = await updateQuestion(quizId, formattedQuestions);
-            console.log("✅ API Response:", res);
-            await Swal.fire({
-                title: 'Success!',
-                text: 'Lưu Quizz thành công!',
-                icon: 'success',
-                confirmButtonColor: 'green',
-            });
-            navigate("/your-kahoots")
-        } catch (error) {
-            console.error("❌ Error saving questions:", error);
-            alert("Đã xảy ra lỗi khi lưu câu hỏi.");
-        }
+      }
+      setTimeLimitConfig({
+        min: config10.minValue,
+        max: config10.maxValue,
+      })
     };
 
+    fetchConfigs();
+  }, []);
+  useEffect(() => {
+    const parsed = initialQuestions.map((q) => ({
+      id: q.questionId,
+      content: q.questionText,
+      timeLimitSec: q.timeLimitSec || 30,
+      answers: q.answers.map((a) => ({
+        id: a.answerId,
+        content: a.answerText,
+        isAnswer: a.isCorrect,
+      })),
+    }));
+    setSavedQuestions(parsed);
+    if (parsed.length > 0) {
+      setQuestion(parsed[0]);
+      setAnswers(parsed[0].answers);
+    }
+  }, [initialQuestions]);
 
+  useEffect(() => {
+    const isValid =
+      question.content?.trim() &&
+      answers.length >= 2 &&
+      answers.every((a) => a.content?.trim()) &&
+      answers.some((a) => a.isAnswer);
 
+    const updated = { ...question, answers };
+    const exists = savedQuestions.find((q) => q.id === updated.id);
+    if (isValid) {
+      if (exists) {
+        setSavedQuestions((prev) =>
+          prev.map((q) => (q.id === updated.id ? updated : q))
+        );
+      } else {
+        setSavedQuestions((prev) => [...prev, updated]);
+      }
+    }
+  }, [answers, question]);
 
+  const handleAddQuestion = () => {
+    const newQ = {
+      id: Date.now(),
+      content: "",
+      file: null,
+      answers: [],
+      timeLimitSec: 30,
+    };
+    setSavedQuestions((prev) => [...prev, newQ]);
+    setQuestion(newQ);
+    setAnswers([
+      { id: Date.now(), content: "", isAnswer: false },
+      { id: Date.now() + 1, content: "", isAnswer: false },
+    ]);
+  };
 
+  const handleSelectQuestion = (q) => {
+    setQuestion(q);
+    setAnswers(q.answers.length ? q.answers : [
+      { id: Date.now(), content: "", isAnswer: false },
+      { id: Date.now() + 1, content: "", isAnswer: false },
+    ]);
+  };
 
-    return (
-        <div style={{ padding: "20px" }}>
-
-            <div style={{ display: "flex" }}>
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <Droppable droppableId="questions" type="group">
-                        {(provided) => (
-                            <div
-                                style={{
-                                    width: "300px",
-                                    backgroundColor: "#f7f7f7",
-                                    padding: "20px",
-                                    borderRadius: "20px",
-                                    marginTop: "100px",
-                                }}
-                            >
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.droppableProps}
-                                    style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-                                >
-                                    {savedQuestions.map((q, index) => (
-                                        <Draggable key={q.id.toString()} draggableId={q.id.toString()} index={index}>
-                                            {(dragProvided) => (
-                                                <div
-                                                    ref={dragProvided.innerRef}
-                                                    {...dragProvided.draggableProps}
-                                                    {...dragProvided.dragHandleProps}
-                                                    onClick={() => handleSelectQuestion(q)}
-                                                    className="custom-button"
-                                                    style={{
-                                                        backgroundColor: "#ffffff",
-                                                        padding: "10px",
-                                                        borderRadius: "10px",
-                                                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                                        cursor: "pointer",
-                                                        color: "black",
-                                                        transition: "all 0.3s ease",
-                                                        ...dragProvided.draggableProps.style,
-                                                    }}
-                                                >
-                                                    {`Question ${index + 1}: ${q.content}`}
-                                                    <br />
-                                                    <Button
-                                                        className="custom-button"
-                                                        size="small"
-                                                        style={{ backgroundColor: "red", color: "white", marginLeft: "10px" }}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDeleteQuestion(q.id);
-                                                        }}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-
-                                    {provided.placeholder}
-
-                                    <button className="custom-button" onClick={handleAddQuestion}>
-                                        + More Question
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-
-                < div style={{ margin: "100px", padding: "50px", borderRadius: "30px", backgroundColor: "#f0f2f5" }}>
-
-                    <form style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "50px" }}>
-                        <h1 style={{ color: 'brown' }}>Update Quizz </h1>
-                        <h1 style={{ color: 'Green', marginTop: "20px" }}>{quizTitle} </h1>
-                        <h3 style={headerStyle}>Question </h3>
-
-                        <input
-                            type="text" onChange={(e) => handleChangeQuestion(question.id, e.target.value)}
-                            placeholder="Question"
-                            required
-                            className="text-input"
-                            value={question.content}
-                        />
-                        <h3 style={headerStyle}>Upload File </h3>
-                        <Upload
-                            accept=".pdf, .doc, .png, .jpg, .jpeg"
-                            onChange={(info) => handleChangeFile(info.file)}
-                            maxCount={1}
-                            beforeUpload={() => false}  //
-                            style={{ width: "100%" }}
-                        >
-                            <Button
-
-                                icon={<UploadOutlined />}
-                                className="text-input"
-
-                            >
-                                Click to Upload
-                            </Button>
-
-                        </Upload>
-                        <Upload
-                            accept=".xls,.xlsx"
-                            onChange={(info) => {
-                                const file = info.fileList[0]?.originFileObj;
-                                if (file) {
-                                    handleChangeImport(file);
-                                }
-                            }}
-                            maxCount={1}
-                            beforeUpload={() => false}
-                        >
-                            <Button
-                                style={{ marginTop: "20px", backgroundColor: "black", color: "white" }}
-                                icon={<UploadOutlined />}
-                                className="text-input"
-                            >
-                                Import Question
-                            </Button>
-                        </Upload>
-                        <h3 style={headerStyle}>Time (second)</h3>
-                        <InputNumber
-                            min={5}
-                            max={120}
-                            defaultValue={30}
-                            value={question.timeLimitSec}
-                            onChange={(value) => handleChangeTime(value)}
-                            style={{
-                                width: '100%',
-                                marginBottom: '20px',
-                                border: '1px solid #d9d9d9',
-                                borderRadius: '5px',
-                                padding: '8px 12px',
-                                fontSize: '16px',
-                            }}
-                            addonAfter="giây" // Hiển thị đơn vị
-                        />
-
-
-
-
-                        <h3 style={headerStyle}>Answer </h3>
-
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center", width: "600px" }}>
-                            {answers.map((answer) => (
-                                <Popover
-                                    key={answer.id}
-                                    trigger="hover"
-                                    placement="topRight"
-                                    content={
-                                        <div style={{ display: "flex", flexDirection: "column", width: "auto", gap: "5px" }}>
-                                            <Button
-                                                size="small"
-                                                onClick={() => handleDeleteAnswer(answer.id)}
-                                                className="custom-button"
-                                                style={{ backgroundColor: "red", color: "white" }}>
-                                                Delete
-                                            </Button>
-                                            <Button
-                                                size="small"
-                                                onClick={() => handleDuplicateAnswer(answer.id)}
-                                                className="custom-button"
-                                                style={{ backgroundColor: "Blue", color: "white" }}>
-                                                Duplicate
-                                            </Button>
-                                        </div>
-                                    }
-                                >
-                                    <div className="answer-container">
-                                        <input
-                                            type="text"
-                                            placeholder={`  Answer`}
-                                            required
-                                            value={answer.content}
-                                            className="input-basic"
-                                            onChange={(e) => handleChangeAnswer(answer.id, e.target.value)}
-                                        />
-                                        <Checkbox
-                                            checked={answer.isAnswer}
-                                            onChange={(e) => handleToggleCheckbox(answer.id, e.target.checked)}
-                                            style={{ margin: '10px', fontSize: '10px' }}
-                                        />
-                                    </div>
-                                </Popover>
-                            ))}
-
-
-                        </div>
-                        <div style={{ display: "flex", gap: "20px", justifyContent: "center", width: "600px", marginTop: "20px", padding: "20px" }}>
-                            <button type="button" onClick={handleAddAnswer}
-                                className="custom-button"
-                                style={{
-                                    marginTop: "20px",
-                                    padding: "20px",
-                                    borderRadius: "10px",
-                                    backgroundColor: "#4CAF50",
-                                    color: "white",
-                                    width: "200px",
-                                    border: "none",
-                                    cursor: "pointer"
-
-                                }}>Add Answer</button>
-                            <button
-                                type="button"
-                                className="custom-button"
-                                style={{
-                                    marginTop: "20px",
-                                    padding: "10px 20px",
-                                    width: "200px",
-                                    borderRadius: "10px",
-                                    backgroundColor: "#1890ff",
-                                    color: "white",
-                                    border: "none",
-                                    cursor: "pointer"
-                                }}
-                                onClick={
-                                    handleSaveQuestion
-                                }
-                            >
-                                Save Question
-                            </button>
-                        </div>
-                        <button
-                            type="button"
-                            className="custom-button"
-                            style={{
-                                marginTop: "20px",
-                                padding: "10px 20px",
-                                borderRadius: "5px",
-                                width: "200px",
-                                height: "80px",
-                                backgroundColor: "#d35400",
-                                color: "white",
-                                border: "none",
-                                cursor: "pointer"
-                            }}
-                            onClick={
-                                handleSaveQuizz
-                            }
-                        >
-                            Save Quizz
-                        </button>
-
-                    </form >        </div >
-            </div >
-        </div >
-
+  const handleChangeAnswer = (id, value) => {
+    setAnswers((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, content: value } : a))
     );
+  };
 
-}
+  const handleToggleCheckbox = (id, checked) => {
+    setAnswers((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, isAnswer: checked } : a))
+    );
+  };
 
-export default UpdateQuestion;
+  const handleChangeAnswerCount = (val) => {
+    const updated = [...answers];
+    while (updated.length < val) {
+      updated.push({
+        id: Date.now() + updated.length,
+        content: "",
+        isAnswer: false,
+      });
+    }
+    setAnswers(updated.slice(0, val));
+  };
+
+  const handleImageUpload = (file) => {
+    setQuestion((prev) => ({ ...prev, file }));
+  };
+
+  const handleChangeImport = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: "array" });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        if (rows.length <= 1) {
+          return notification.error({ message: "Import failed: Empty file" });
+        }
+
+        const imported = rows.slice(1).map((r, i) => {
+          const aCount = [r[1], r[2], r[3], r[4]].filter(Boolean).length;
+          return {
+            id: Date.now() + i,
+            content: r[0] || "",
+            file: null,
+            timeLimitSec: 30,
+            answers: ["A", "B", "C", "D"].slice(0, aCount).map((opt, j) => ({
+              id: Date.now() + i + j,
+              content: r[j + 1] || "",
+              isAnswer: r[5]?.toUpperCase() === opt,
+            })),
+          };
+        });
+
+        setSavedQuestions(imported);
+        setQuestion(imported[0]);
+        setAnswers(imported[0].answers);
+      } catch {
+        notification.error({ message: "Invalid Excel format" });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleUpdateQuiz = async () => {
+    if (!quizId || savedQuestions.length === 0) {
+      return notification.warning({ message: "No questions to update" });
+    }
+
+    const payload = savedQuestions.map((q) => ({
+      questionText: q.content,
+      timeLimitSec: q.timeLimitSec,
+      isRandomAnswer: true,
+      answers: q.answers.map((a) => ({
+        answerText: a.content,
+        isCorrect: a.isAnswer,
+      })),
+    }));
+
+    try {
+      await updateQuestion(quizId, payload);
+      await Swal.fire({
+        title: "🎉 Quiz Updated!",
+        text: "Your updated quiz is ready!",
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: "▶️ Play the game!",
+        cancelButtonText: "🏠 Back to Home",
+        confirmButtonColor: "#8A2BE2",
+        cancelButtonColor: "#aaaaaa",
+        background: "#fff",
+        customClass: {
+          popup: "swal2-kahoot-popup",
+          title: "swal2-kahoot-title",
+          confirmButton: "swal2-kahoot-confirm",
+          cancelButton: "swal2-kahoot-cancel",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/create-session");
+        } else {
+          navigate("/");
+        }
+      });
+    } catch {
+      notification.error({ message: "Failed to update quiz" });
+    }
+  };
+
+  const renderAnswers = () => {
+    const layout = {
+      2: [["a1", "a2"]],
+      3: [["a1", "a2"], ["a3"]],
+      4: [["a1", "a2"], ["a3", "a4"]],
+    };
+    const rows = layout[answers.length] || [];
+    return (
+      <div className={styles.answerGrid}>
+        {rows.map((row, rowIdx) => (
+          <div key={rowIdx} className={styles.answerRow}>
+            {row.map((_, colIdx) => {
+              const idx = rowIdx * 2 + colIdx;
+              const answer = answers[idx];
+              if (!answer) return null;
+              return (
+                <div
+                  key={answer.id}
+                  className={`${styles.answerBox} ${[styles.red, styles.blue, styles.yellow, styles.green][idx]
+                    }`}
+                >
+                  <div className={styles.iconBox}>
+                    {["▲", "◆", "●", "■"][idx]}
+                  </div>
+                  <Input
+                    value={answer.content}
+                    placeholder={`Answer ${idx + 1}`}
+                    onChange={(e) =>
+                      handleChangeAnswer(answer.id, e.target.value)
+                    }
+                  />
+                  <Checkbox
+                    checked={answer.isAnswer}
+                    onChange={(e) =>
+                      handleToggleCheckbox(answer.id, e.target.checked)
+                    }
+                  >
+                    Correct
+                  </Checkbox>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <HeaderQ onSave={handleUpdateQuiz} />
+      <div
+        className={styles.container}
+        style={{
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className={styles.sidebarLeft}>
+          <h3>{quizTitle}</h3>
+          <DragDropContext
+            onDragEnd={({ source, destination }) => {
+              if (!destination) return;
+              const items = [...savedQuestions];
+              const [moved] = items.splice(source.index, 1);
+              items.splice(destination.index, 0, moved);
+              setSavedQuestions(items);
+            }}
+          >
+            <Droppable droppableId="questions">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {savedQuestions.map((q, index) => (
+                    <Draggable
+                      key={q.id}
+                      draggableId={q.id.toString()}
+                      index={index}
+                    >
+                      {(dragProvided) => (
+                        <div
+                          ref={dragProvided.innerRef}
+                          {...dragProvided.draggableProps}
+                          {...dragProvided.dragHandleProps}
+                          className={`${styles.questionItem} ${q.id === question.id ? styles.active : ""
+                            }`}
+                          onClick={() => handleSelectQuestion(q)}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            const menu = document.createElement("div");
+                            menu.className = styles.contextMenu;
+                            menu.style.top = `${e.clientY}px`;
+                            menu.style.left = `${e.clientX}px`;
+                            menu.innerHTML = `
+      <div class="${styles.menuItem}" id="dup">Duplicate</div>
+      <div class="${styles.menuItem}" id="del">Delete</div>
+    `;
+                            document.body.appendChild(menu);
+
+                            const remove = () =>
+                              document.body.contains(menu) && document.body.removeChild(menu);
+
+                            menu.querySelector("#dup").onclick = () => {
+                              setSavedQuestions((prev) => [
+                                ...prev,
+                                { ...q, id: Date.now() },
+                              ]);
+                              remove();
+                            };
+
+                            menu.querySelector("#del").onclick = () => {
+                              if (savedQuestions.length === 1) {
+                                notification.warning({
+                                  message: "Cannot delete last question",
+                                });
+                              } else {
+                                setSavedQuestions((prev) =>
+                                  prev.filter((i) => i.id !== q.id)
+                                );
+                              }
+                              remove();
+                            };
+
+                            document.addEventListener("click", remove, { once: true });
+                          }}
+
+                        >
+                          {`Q${index + 1}: ${q.content.slice(0, 20)}...`}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+
+          <Upload
+            accept=".xlsx"
+            beforeUpload={() => false}
+            onChange={(info) => {
+              const file = info.fileList[0]?.originFileObj;
+              if (file) handleChangeImport(file);
+            }}
+          >
+            <Button icon={<UploadOutlined />} block style={{ marginTop: 12 }}>
+              Import Questions
+            </Button>
+          </Upload>
+
+          <Button
+            type="primary"
+            block
+            onClick={handleAddQuestion}
+            style={{ marginTop: 12 }}
+          >
+            + Add Question
+          </Button>
+        </div>
+
+        <div className={styles.editor}>
+          <Input.TextArea
+            value={question.content}
+            onChange={(e) =>
+              setQuestion((prev) => ({ ...prev, content: e.target.value }))
+            }
+            minLength={questionLengthConfig.min}
+            maxLength={questionLengthConfig.max}
+            placeholder="Enter your question"
+            autoSize={{ minRows: 2 }}
+          />
+
+          {renderAnswers()}
+        </div>
+
+        <div className={styles.sidebarRight}>
+          <h4>Number of Answers</h4>
+          <Select
+            value={answers.length}
+            onChange={handleChangeAnswerCount}
+            style={{ width: "100%" }}
+          >
+            {[2, 3, 4].map((n) => (
+              <Option key={n} value={n}>
+                {n}
+              </Option>
+            ))}
+          </Select>
+
+          <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
+          <Select
+            value={question.timeLimitSec}
+            min={timeLimitConfig.min}
+            max={timeLimitConfig.max}
+            onChange={(val) =>
+              setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
+            }
+            style={{ width: "100%" }}
+          >
+            {Array.from(
+              { length: Math.floor((timeLimitConfig.max - timeLimitConfig.min) / 10) + 1 },
+              (_, i) => timeLimitConfig.min + i * 10
+            ).map((sec) => (
+              <Option key={sec} value={sec}>
+                {sec} giây
+              </Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default UpdateQuestionScreen;

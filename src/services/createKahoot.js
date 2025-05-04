@@ -17,10 +17,10 @@ export const createKahoot = async (kahootData) => {
         if (quizId) {
             localStorage.setItem("quizId", quizId.toString());
             localStorage.setItem("quizTitle", kahootData.get("Title"));
-            localStorage.setItem("token", token); // Lưu token vào localStorage nếu cần thiết
+            localStorage.setItem("token", token);
         }
 
-        return response.data; // vẫn trả về để component dùng nếu muốn
+        return response.data;
     } catch (error) {
         console.error("❌ Create Kahoot API error:", error);
         throw error;

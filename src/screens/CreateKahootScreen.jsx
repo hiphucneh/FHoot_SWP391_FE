@@ -1,192 +1,117 @@
-import { Button, Upload } from "antd";
-import { useState } from "react";
-import { UploadOutlined } from '@ant-design/icons';
-import { createKahoot } from '../services/createKahoot';
-// ✨ import API đã tách
-import Swal from 'sweetalert2'; // Thay alert bằng SweetAlert2
+import React, { useState } from "react";
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import '../components/CreateQuestion.css';
-import React from 'react';
+import Swal from "sweetalert2";
+import { createKahoot } from "../services/createKahoot";
+import styles from "./CreateKahoot.module.css";
 
 const CreateKahoot = () => {
+  const navigate = useNavigate();
+  const [kahoot, setKahoot] = useState({ Title: "", Description: "" });
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const handleChangeFile = (info) => {
 
-    const navigate = useNavigate();
-    const [kahoot, setKahoot] = useState({ Title: "", Description: "" });
-    const [file, setFile] = useState(null);
+    const selectedFile = info.file?.originFileObj;
 
-    const handleOnChangeTitle = (e) => {
-        setKahoot({ ...kahoot, Title: e.target.value });
-    };
+    console.log("📁 Raw info:", info);
+    console.log("📁 Selected file:", selectedFile);
 
-    const handleOnChangeDes = (e) => {
-        setKahoot({ ...kahoot, Description: e.target.value });
-    };
-
-    const handleChangeFile = (file) => {
-        setFile(file);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append("Title", kahoot.Title);
-        formData.append("Description", kahoot.Description);
-        if (file) {
-            formData.append("ImgUrl", file);
-        }
-
-        try {
-            const data = await createKahoot(formData);
-            const quizId = data.data?.quizId;
-
-            if (quizId) {
-                localStorage.setItem("quizId", quizId.toString());
-
-                await Swal.fire({
-                    title: 'Success!',
-                    text: 'Create Kahoot success, redirect to Create Question page',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#7266ef', // Màu tím
-                })
-                navigate(`/createq`);
-            } else {
-
-                await Swal.fire({
-                    title: 'Error!',
-                    text: 'Cant get id from server !',
-                    icon: 'error',
-                    confirmButtonColor: '#ff4d4f',
-                });
-            }
-        } catch (error) {
-
-            await Swal.fire({
-                title: 'Error',
-                text: 'Cant create Kahoot!',
-                icon: 'error',
-                confirmButtonColor: '#ff4d4f',
-            });
-        }
-    };
+    if (selectedFile) {
+      setFile(selectedFile);
+      const previewUrl = URL.createObjectURL(selectedFile);
+      setPreview(previewUrl);
+      console.log("🔍 Preview URL created:", previewUrl);
+    } else {
+      console.warn("⚠️ Không có originFileObj. File chưa được chọn đúng.");
+    }
+  };
 
 
-    return (
-        <div
-            className="create-kahoot-screen"
-            style={{
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("Title", kahoot.Title);
+    formData.append("Description", kahoot.Description);
+    if (file) formData.append("ImgUrl", file);
 
-                width: "100%",
-                height: "100vh",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 1,
-            }}>
+    console.log("📤 Submitting FormData:");
+    for (let pair of formData.entries()) {
+      console.log("→", pair[0], ":", pair[1]);
+    }
 
-            <div
-                className="create-kahoot-screen"
-                style={{
-                    textAlign: "center",
-                    display: "flex",
-                    justifyContent: 'center',
-                    flexDirection: "column",
-                    alignItems: "center",
-                    backgroundColor: " white",
-                    borderRadius: "20px",
-                    padding: "40px",
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)"
-                }}
-            >
-                <h1>Create Kahoot</h1>
-                <form
-                    onSubmit={handleSubmit}
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        padding: "50px",
-                    }}
-                >
-                    <input
-                        name="KahootTitle"
-                        style={{
-                            backgroundColor: "#f0f0f0",
-                            color: "black"
-                            , textAlign: 'left',
-                            padding: '10px',
-                            borderRadius: "15px",
-                            border: "2px solid #ccc",
-                            margin: "10px",
-                            width: "300px",
-                            height: "50px",
-                        }}
-                        type="text"
+    try {
+      const res = await createKahoot(formData);
+      console.log("✅ Response from createKahoot:", res);
 
-                        onChange={handleOnChangeTitle}
-                        placeholder="Kahoot Title"
-                        required
-                    />
-                    <Upload
-                        accept=".png, .jpg, .jpeg"
-                        beforeUpload={() => false}
-                        onChange={(info) => handleChangeFile(info.file)}
-                        maxCount={1}
-                        style={{ width: "200px" }}
-                    >
-                        <Button
-                            style={{
-                                width: "300px",
-                                height: "50px",
-                                backgroundColor: "#7d3c98 ",
-                                color: "white",
-                                borderRadius: "5px",
-                                margin: "10px",
-                            }}
-                            icon={<UploadOutlined />}
-                            className="text-input"
-                        >
-                            Click to Upload Kahoot Image
-                        </Button>
-                    </Upload>
-                    <textarea
-                        placeholder="Description"
-                        required
-                        name="KahootDescription"
-                        style={{
-                            width: "300px",
-                            height: "100px",
-                            color: "black",
-                            textAlign: 'left',
-                            padding: '10px',
-                            backgroundColor: "#f0f0f0",
-                            borderRadius: "15px",
-                            margin: "10px",
-                        }}
-                        onChange={handleOnChangeDes}
-                    ></textarea>
-                    <button
-                        type="submit"
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            backgroundColor: "#7d3c98",
-                            border: "none",
-                            borderRadius: "10px",
-                            marginTop: "10px",
-                            fontSize: "16px",
-                        }}
-                    >
-                        Create Kahoot
-                    </button>
-                </form>
-            </div>
-        </div >
-    );
+      const quizId = res.data?.quizId;
+      if (quizId) {
+        console.log("🎯 Quiz ID:", quizId);
+        localStorage.setItem("quizId", quizId.toString());
+        Swal.fire({
+          title: "🎉 Kahoot Created!",
+          html: `<p>Your Kahoot is ready to be edited or played!</p>`,
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "Go to Edit",
+          cancelButtonText: "Back",
+          confirmButtonColor: "#6f42c1",
+          cancelButtonColor: "#d9d9d9",
+        }).then((result) => {
+          if (result.isConfirmed) navigate("/createq");
+          else navigate(-1);
+        });
+      } else {
+        console.error("❌ No quiz ID returned.");
+        Swal.fire("Error", "No quiz ID returned from server.", "error");
+      }
+    } catch (err) {
+      console.error("❌ Error creating kahoot:", err);
+      Swal.fire("Error", "Failed to create Kahoot", "error");
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={`${styles.formCard} ${styles.fadeIn}`}>
+        <div className={`${styles.header} ${styles.fadeIn}`}>
+          <h2>Create a Kahoot</h2>
+        </div>
+
+
+
+        <form onSubmit={handleSubmit} className={`${styles.form} ${styles.fadeIn}`}>
+          <input
+            type="text"
+            placeholder="Kahoot Title"
+            value={kahoot.Title}
+            onChange={(e) => {
+              setKahoot({ ...kahoot, Title: e.target.value });
+              console.log("📝 Title changed:", e.target.value);
+            }}
+            className={styles.input}
+            required
+          />
+
+          <textarea
+            placeholder="Description"
+            value={kahoot.Description}
+            onChange={(e) => {
+              setKahoot({ ...kahoot, Description: e.target.value });
+              console.log("📝 Description changed:", e.target.value);
+            }}
+            className={styles.textarea}
+            required
+          ></textarea>
+
+          <button type="submit" className={styles.submitButton}>
+            Create Kahoot
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default CreateKahoot;

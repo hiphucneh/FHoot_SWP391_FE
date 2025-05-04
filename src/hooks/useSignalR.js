@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import axios from "axios";
 
-const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion, onCountAnswer }) => {
+const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion, onCountAnswer, onEndSession }) => {
     const connectionRef = useRef(null);
     const [connectionId, setConnectionId] = useState(null);
 
@@ -63,6 +63,10 @@ const useSignalR = ({ baseHubUrl, token, onUpdateGroups, onNextQuestion, onCount
 
         connection.on("PlayerAnswer", (data) => {
             onCountAnswer();
+        });
+
+        connection.on("sessionended", (data) => {
+            onEndSession(data);
         });
 
 

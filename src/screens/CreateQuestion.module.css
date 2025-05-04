@@ -1,0 +1,260 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px;
+    gap: 20px;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Sidebar Left */
+  .sidebarLeft {
+    width: 320px;
+    border-radius: 16px;
+    padding: 24px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    height: 100%;
+  }
+  
+  .sidebarLeft h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .questionItem {
+    font-size: 17px;
+    font-weight: 500;
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #f4f4f4;
+    border-left: 5px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+    word-break: break-word;
+  }
+  
+  .questionItem:hover {
+    background-color: #e2e2e2;
+  }
+  
+  .active {
+    background-color: #eae2ff;
+    border-left: 5px solid #8a2be2;
+  }
+  
+  /* Main Editor */
+  .editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+    padding-top: 8px;
+  }
+  
+  .editor textarea,
+  .editor input {
+    background-color: #fffdf6;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 14px;
+    font-size: 18px;
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .editorTop {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Upload Image Section */
+  .editorImage {
+    width: 260px;
+    height: 260px;
+    border: 2px dashed #ccc;
+    border-radius: 16px;
+    background-color: #fffdf6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    transition: all 0.3s ease;
+  }
+  
+  .editorImage:hover {
+    border-color: #7d3c98;
+    background-color: #fffaf0;
+  }
+  
+  .editorImage .ant-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+  }
+  
+  /* Answer Layout */
+  .answerGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .answerRow {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .answerBox {
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+    background-color: #fffdf6;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .answerBox input {
+    width: 100%;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #ffffff;
+  }
+  
+  .answerBox .ant-checkbox-wrapper {
+    font-size: 15px;
+  }
+  
+  .iconBox {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  /* Sidebar Right */
+  .sidebarRight {
+    width: 260px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .sidebarRight h4 {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  /* Context Menu */
+  .contextMenu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    z-index: 9999;
+  }
+  
+  .menuItem {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  
+  .menuItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Button Styling */
+  .ant-btn {
+    font-size: 16px;
+    height: 42px;
+    border-radius: 8px;
+  }
+  
+  /* Icon Styles */
+.iconBox {
+    font-size: 24px;
+    font-weight: bold;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 8px;
+  }
+  
+  /* Colored icons */
+  .red .iconBox {
+    background-color: #d70000;
+  }
+  
+  .blue .iconBox {
+    background-color: #005eff;
+  }
+  
+  .yellow .iconBox {
+    background-color: #e6b800;
+  }
+  
+  .green .iconBox {
+    background-color: #00a651;
+  }
+
+  .swal2-kahoot-popup {
+    border-radius: 16px;
+    font-size: 16px;
+    padding: 24px;
+  }
+  
+  .swal2-kahoot-title {
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #5227cc;
+  }
+  
+  .swal2-kahoot-confirm {
+    background-color: #8A2BE2 !important;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .swal2-kahoot-cancel {
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  

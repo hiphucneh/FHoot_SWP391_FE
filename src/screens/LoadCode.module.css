@@ -1,0 +1,25 @@
+.wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    position: relative;
+  }
+  
+  .spinner {
+    transform: scale(2);
+  }
+  
+  .modal :global(.ant-modal-content) {
+    border-radius: 16px;
+    text-align: center;
+    padding: 30px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .modalText {
+    margin: 0;
+  }
+  

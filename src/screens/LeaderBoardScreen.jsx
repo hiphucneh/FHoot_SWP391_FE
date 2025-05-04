@@ -13,9 +13,9 @@ const LeaderBoardScreen = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-
-  console.log(totalQuestions);
-  console.log(currentQuestionIndex);
+  console.log("currentQuestionIndex", currentQuestionIndex);
+  console.log("totalQuestions", totalQuestions);
+  console.log(currentQuestionIndex < totalQuestions);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -34,6 +34,11 @@ const LeaderBoardScreen = ({
           teamName: team.teamName,
           score: team.totalScore,
           rank: team.rank,
+          players: team.players.map((player) => ({
+            playerId: player.playerId,
+            playerName: player.name,
+            score: player.totalScore,
+          })),
         }));
 
         setData(teams);
@@ -141,6 +146,86 @@ const LeaderBoardScreen = ({
                   ? "bronze-row"
                   : ""
               }
+              expandable={{
+                expandedRowRender: (record) => {
+                  const players = record.players || [];
+
+                  return players.length > 0 ? (
+                    <div
+                      style={{
+                        padding: "12px 16px",
+                        background: "#fafafa",
+                        borderRadius: "8px",
+                        border: "1px solid #e0e0e0",
+                      }}
+                    >
+                      <Text
+                        strong
+                        style={{
+                          fontSize: 16,
+                          color: "#d81b60",
+                          display: "block",
+                          marginBottom: 12,
+                        }}
+                      >
+                        Players in {record.teamName}
+                      </Text>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns:
+                            "repeat(auto-fit, minmax(200px, 1fr))",
+                          gap: "12px",
+                        }}
+                      >
+                        {players.map((player) => (
+                          <div
+                            key={player.playerId || player.playerName}
+                            style={{
+                              background: "#ffffff",
+                              padding: "12px",
+                              borderRadius: "8px",
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              border: "1px solid #f0f0f0",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 14,
+                                color: "#333",
+                              }}
+                            >
+                              {player.playerName}
+                            </Text>
+                            <Tag
+                              color="pink"
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 12,
+                                padding: "4px 8px",
+                              }}
+                            >
+                              {player.score} pts
+                            </Tag>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <Text
+                      type="secondary"
+                      style={{ padding: "12px 16px", display: "block" }}
+                    >
+                      No players in this team.
+                    </Text>
+                  );
+                },
+                rowExpandable: (record) => (record.players || []).length > 0,
+              }}
             />
           )}
         </Card>

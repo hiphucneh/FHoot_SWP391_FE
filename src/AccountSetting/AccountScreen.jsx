@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import AdvHost from "../Host/AdvHost";
 import "./AccountScreen.css";
+import { useNavigate } from "react-router-dom";
 
 function AccountScreen({ show, onClose, setUser: setParentUser }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
@@ -18,12 +20,15 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "*/*",
-        },
-      })
+      fetch(
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*",
+          },
+        }
+      )
         .then((res) => res.json())
         .then((resData) => {
           const data = resData.data || resData;
@@ -64,11 +69,14 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
     try {
       setIsSaving(true); // 🔥 Start loading
 
-      const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user", {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      const res = await fetch(
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        }
+      );
 
       const result = await res.json();
       if (res.ok && result.statusCode === 200) {
@@ -121,9 +129,14 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
                 src={
                   avatarFile
                     ? URL.createObjectURL(avatarFile)
-                    : user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email || "guest"}`
+                    : user.avatar ||
+                      `https://api.dicebear.com/7.x/bottts/svg?seed=${
+                        user.email || "guest"
+                      }`
                 }
-                onError={(e) => (e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=guest`)}
+                onError={(e) =>
+                  (e.target.src = `https://api.dicebear.com/7.x/bottts/svg?seed=guest`)
+                }
                 alt="avatar"
                 className="account-avatar"
               />
@@ -131,7 +144,12 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
               {editMode && (
                 <label className="camera-icon">
                   <i className="ri-camera-line"></i>
-                  <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    hidden
+                  />
                 </label>
               )}
             </div>
@@ -141,19 +159,35 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
             <div className="account-info">
               <div className="info-item">
                 <label>Full Name:</label>
-                <input type="text" name="name" value={editData.name} onChange={handleChange} />
+                <input
+                  type="text"
+                  name="name"
+                  value={editData.name}
+                  onChange={handleChange}
+                />
               </div>
               <div className="info-item">
                 <label>Age:</label>
-                <input type="number" name="age" value={editData.age} onChange={handleChange} />
+                <input
+                  type="number"
+                  name="age"
+                  value={editData.age}
+                  onChange={handleChange}
+                />
               </div>
               <div className="update-buttons">
                 <button
-                  className={`login__button save-button ${isSaving ? "loading" : ""}`}
+                  className={`login__button save-button ${
+                    isSaving ? "loading" : ""
+                  }`}
                   onClick={handleUpdate}
                   disabled={isSaving}
                 >
-                  {isSaving ? <div className="spinner"></div> : "💾 Save Changes"}
+                  {isSaving ? (
+                    <div className="spinner"></div>
+                  ) : (
+                    "💾 Save Changes"
+                  )}
                 </button>
                 <button
                   className="login__button cancel-button"
@@ -168,7 +202,14 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
             <div className="account-info">
               <div className="info-item">
                 <label>Role:</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    flexWrap: "wrap",
+                  }}
+                >
                   <p style={{ margin: 0 }}>{user?.role}</p>
                   {user?.role?.toLowerCase() === "user" && (
                     <span
@@ -197,10 +238,25 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
                 <label>Age:</label>
                 <p>{user?.age}</p>
               </div>
-              <div className="update-button">
-                <button className="login__button" onClick={() => setEditMode(true)}>
+              <div
+                className="update-button"
+                style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}
+              >
+                <button
+                  className="login__button"
+                  onClick={() => setEditMode(true)}
+                >
                   ✏️ Edit Profile
                 </button>
+
+                {user?.role?.toLowerCase() === "user" && (
+                  <button
+                    className="login__button view-history-button"
+                    onClick={() => navigate("/my-game")}
+                  >
+                    📜 View History
+                  </button>
+                )}
               </div>
             </div>
           )}

@@ -1,0 +1,88 @@
+.wrapper {
+  min-height: 100vh;
+  background-image: url('../assets/bg-createsession.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 60px;
+}
+
+.card {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.quizTitle {
+  color: #6f42c1;
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.groupContainer {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  justify-items: center;
+  justify-content: center;
+}
+
+.groupBox {
+  background: #f0f0f0;
+  border-radius: 12px;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.groupBox:hover {
+  transform: scale(1.05);
+}
+
+.groupInput {
+  border-radius: 8px;
+  text-align: center;
+}
+
+.holdButton {
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.holdButton:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

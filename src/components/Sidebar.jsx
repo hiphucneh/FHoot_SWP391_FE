@@ -4,7 +4,7 @@ import {
   UserOutlined,
   FileTextOutlined,
   SettingOutlined,
-  LogoutOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -15,20 +15,26 @@ const Sidebar = ({ onMenuClick }) => {
   const location = useLocation();
 
   const pathToKey = {
-    "/admin/user-list": "user",
+    "/admin/dashboard": "dashboard",
     "/admin/session-list": "quiz",
     "/admin/settings": "settings",
-    "/login": "logout",
+    "/admin/system-configuration": "sys-conf",
+    "/admin/package-management": "package"
+
   };
 
   const keyToPath = {
+    dashboard: "/admin/dashboard",
+    sysConfig: "/admin/system-configuration",
     user: "/admin/user-list",
     quiz: "/admin/session-list",
     settings: "/admin/settings",
-    logout: "/login",
+    package: "/admin/package-management"
+
   };
 
-  const selectedKey = pathToKey[location.pathname] || "user";
+  const selectedKey = pathToKey[location.pathname] || "dashboard";
+
   return (
     <Sider
       width={220}
@@ -39,26 +45,11 @@ const Sidebar = ({ onMenuClick }) => {
         boxShadow: "4px 0 12px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <div
-        style={{
-          height: 64,
-          marginBottom: 24,
-          textAlign: "center",
-          color: "#fff",
-          fontSize: 24,
-          fontWeight: "bold",
-          fontFamily: "'Roboto', sans-serif",
-        }}
-      >
-        Admin
-      </div>
-
       <Menu
         mode="inline"
         selectedKeys={[selectedKey]}
         style={{
           background: "transparent",
-          color: "#d1d5db",
           fontWeight: "500",
           fontSize: "16px",
           borderRight: "none",
@@ -68,6 +59,22 @@ const Sidebar = ({ onMenuClick }) => {
           navigate(keyToPath[key]);
         }}
       >
+        <Menu.Item key="dashboard" icon={<UserOutlined />} className="menu-item-hover">
+          Dashboard
+        </Menu.Item>
+        <Menu.Item
+          key="sysConfig"
+          icon={<UserOutlined />}
+          style={{
+            color: "white",
+            marginBottom: "8px",
+            borderRadius: "6px",
+            transition: "0.3s",
+          }}
+          className="menu-item-hover"
+        >
+          System configuration
+        </Menu.Item>
         <Menu.Item
           key="user"
           icon={<UserOutlined />}
@@ -82,8 +89,8 @@ const Sidebar = ({ onMenuClick }) => {
           User Management
         </Menu.Item>
         <Menu.Item
-          key="quiz"
-          icon={<FileTextOutlined />}
+          key="package"
+          icon={<UserOutlined />}
           style={{
             color: "white",
             marginBottom: "8px",
@@ -92,20 +99,7 @@ const Sidebar = ({ onMenuClick }) => {
           }}
           className="menu-item-hover"
         >
-          Session Management
-        </Menu.Item>
-        <Menu.Item
-          key="settings"
-          icon={<SettingOutlined />}
-          style={{
-            color: "white",
-            marginBottom: "8px",
-            borderRadius: "6px",
-            transition: "0.3s",
-          }}
-          className="menu-item-hover"
-        >
-          Setting
+          Package Management
         </Menu.Item>
         <Menu.Item
           key="logout"
@@ -120,23 +114,36 @@ const Sidebar = ({ onMenuClick }) => {
         >
           Logout
         </Menu.Item>
+
+
       </Menu>
 
+      {/* Custom styles for colors */}
       <style>
         {`
+          .menu-item-hover {
+            color: white !important;
+          }
+
+          .menu-item-hover .anticon {
+            color: white !important;
+          }
+
           .menu-item-hover:hover {
             background-color: #0284c7 !important;
-            color: #fff !important;
           }
+
           .menu-item-hover:hover .anticon {
-            color: #fff !important;
+            color: white !important;
           }
+
           .ant-menu-item-selected {
             background-color: #38bdf8 !important;
-            color: #fff !important;
+            color: white !important;
           }
+
           .ant-menu-item-selected .anticon {
-            color: #fff !important;
+            color: white !important;
           }
         `}
       </style>

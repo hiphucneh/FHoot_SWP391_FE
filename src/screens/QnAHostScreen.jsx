@@ -3,7 +3,7 @@ import { Typography, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
-import LeaderboardScreen from "./LeaderboardScreen";
+import LeaderboardScreen from "./LeaderBoardScreen";
 
 const { Title } = Typography;
 
@@ -20,6 +20,7 @@ const QnAHostScreen = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
+  const [showTimeUp, setShowTimeUp] = useState(false);
 
   const [flagQuestion, setFlagQuestion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -85,7 +86,12 @@ const QnAHostScreen = () => {
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && sessionCode && flagQuestion) {
       console.log("⏰ Time up!");
-      fetchLeaderboard();
+      setShowTimeUp(true);
+
+      setTimeout(() => {
+        setShowTimeUp(false);
+        fetchLeaderboard();
+      }, 2000);
     }
   }, [timeLeft, sessionCode]);
 
@@ -199,6 +205,26 @@ const QnAHostScreen = () => {
         currentQuestionIndex={currentQuestionIndex}
         totalQuestions={totalQuestion}
       />
+    );
+  }
+
+  if (showTimeUp) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'Inter', 'Poppins', sans-serif",
+        }}
+      >
+        <Title level={1} style={{ color: "#ef4444", fontSize: "3rem" }}>
+          ⏰ Time’s up!
+        </Title>
+      </div>
     );
   }
 

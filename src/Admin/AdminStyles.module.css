@@ -3,486 +3,513 @@
 /* --- Container tổng cho Admin Page --- */
 /* Container tổng */
 .adminContainer {
-    min-height: 100vh;
-    width: 100vw;
-    background-color: #e0f7fa;
-    display: flex;
-    flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #e0f7fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wrapper giữa màn hình */
+.panelWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #e0f7fa;
+}
+
+/* Admin Panel Box */
+.adminPanel {
+  width: 100%;
+  max-width: 1000px;
+  background: white;
+  border: 4px solid #facc15;
+  /* Vàng đậm */
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s, box-shadow 0.4s;
+  animation: zoomIn 0.5s ease-out;
+}
+
+.adminPanel:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Title */
+.panelTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Mỗi nút tab */
+.tabButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #e5e7eb;
+  /* Gray */
+  color: #374151;
+  /* Gray text */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  position: relative;
+}
+
+.tabButton:hover {
+  background-color: #d1d5db;
+  transform: scale(1.05);
+}
+
+/* Tab đang active */
+.activeTab {
+  background-color: #2563eb;
+  /* Blue */
+  color: white;
+}
+
+/* Nội dung panel */
+.panelContent {
+  width: 100%;
+}
+
+/* Animation ZoomIn */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
   }
-  
-  /* Wrapper giữa màn hình */
-  .panelWrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 2rem;
-    background-color: #e0f7fa;
+
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  /* Admin Panel Box */
-  .adminPanel {
-    width: 100%;
-    max-width: 1000px;
-    background: white;
-    border: 4px solid #facc15; /* Vàng đậm */
-    border-radius: 1rem;
-    padding: 2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.4s, box-shadow 0.4s;
-    animation: zoomIn 0.5s ease-out;
-  }
-  
-  .adminPanel:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Title */
-  .panelTitle {
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    color: #333;
-    margin-bottom: 2rem;
-  }
-  
-  /* Tabs */
-  .tabs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  /* Mỗi nút tab */
-  .tabButton {
-    padding: 0.5rem 1.5rem;
-    border-radius: 9999px;
-    font-size: 1rem;
-    font-weight: 500;
-    background-color: #e5e7eb; /* Gray */
-    color: #374151; /* Gray text */
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    position: relative;
-  }
-  
-  .tabButton:hover {
-    background-color: #d1d5db;
-    transform: scale(1.05);
-  }
-  
-  /* Tab đang active */
-  .activeTab {
-    background-color: #2563eb; /* Blue */
-    color: white;
-  }
-  
-  /* Nội dung panel */
-  .panelContent {
-    width: 100%;
-  }
-  
-  /* Animation ZoomIn */
-  @keyframes zoomIn {
-    from {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  
+}
+
 /* Header Admin */
 .adminHeader {
-    background-color: hsl(230, 100%, 98%);
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    width: 100%;
-  }
-  
-  /* Bên trái */
-  .leftSection {
-    display: flex;
-    align-items: center;
-  }
-  
-  .backButton {
-    background: none;
-    border: none;
-    color: #0277bd;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
-  
-  .backButton:hover {
-    color: #01497c;
-  }
-  
-  /* Ở giữa */
-  .centerSection {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
-  
-  .adminLogo {
-    height: 40px;
-  }
-  
-  .logoText {
-    font-size: 22px;
-    font-weight: bold;
-    color: #5e35b1;
-  }
-  
-  /* Bên phải */
-  .rightSection {
-    position: relative;
-  }
-  
-  .userIconWrapper {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform 0.3s;
-  }
-  
-  .userIconWrapper:hover {
-    transform: scale(1.05);
-  }
-  
-  .userIcon {
-    width: 44px;
-    height: 44px;
-    object-fit: contain;
-  }
-  
-  /* --- Dropdown chỉnh mới --- */
-  .dropdownMenu {
-    position: absolute;
-    top: 70px; /* Cách icon */
-    right: 0;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    padding: 8px 0; /* Giảm padding 2 bên */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 👈 căn giữa */
-    min-width: 70px; /* 👈 set độ rộng tối thiểu */
-    animation: fadeIn 0.3s ease forwards;
-    z-index: 1000;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .dropdownItem {
-    font-size: 14px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #d32f2f;
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 6px;
-    white-space: nowrap; /* 👈 không cho xuống dòng */
-    transition: background-color 0.3s;
-  }
-  
-  .dropdownItem:hover {
-    background-color: #f8d7da;
-  }  
-
-  /* Dashboard Section */
-.dashboardContainer {
-    padding: 2rem;
-  }
-  
-  .dashboardTitle {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #1f2937;
-    text-align: center;
-  }
-  
-  .dashboardSubtitle {
-    text-align: center;
-    color: #6b7280;
-    margin-bottom: 2rem;
-  }
-  
-  /* List of metrics */
-  .dashboardList {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  /* 1 dòng */
-  .dashboardItem {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: #f9fafb;
-    padding: 1rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-  
-  /* Icon */
-  .icon {
-    font-size: 1.8rem;
-  }
-  
-  /* Label */
-  .label {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: #374151;
-    min-width: 120px;
-  }
-  
-  /* Count */
-  .count {
-    font-weight: bold;
-    color: #2563eb;
-    font-size: 1.2rem;
-  }
-  
-  /* View Button */
-  .viewButton {
-    margin-left: auto;
-    padding: 0.5rem 1rem;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .viewButton:hover {
-    background-color: #1e40af;
-  }
-  
-  /* Manage Button */
-  .manageButton {
-    margin-left: auto;
-    padding: 0.5rem 1rem;
-    background-color: #10b981;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
-  }
-  
-  .manageButton:hover {
-    background-color: #059669;
-  }
-  
-  /* Popup */
-  /* Thêm animation mới */
-@keyframes fadeInScale {
-    0% {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  
-  /* Sửa .popupOverlay */
-  .popupOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    animation: fadeIn 0.3s ease;
-  }
-  
-  /* Thêm animation popupContent */
-  .popupContent {
-    background: #fff;
-    padding: 30px 20px;
-    border-radius: 12px;
-    max-width: 600px;
-    width: 90%;
-    animation: fadeInScale 0.4s ease;
-  }
-  
-  .popupOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  
-  .popupContent {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    width: auto; /* 👈 tự động theo nội dung */
-    max-width: 90vw;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  background-color: hsl(230, 100%, 98%);
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
+
+/* Bên trái */
+.leftSection {
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #0277bd;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.backButton:hover {
+  color: #01497c;
+}
+
+/* Ở giữa */
+.centerSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.adminLogo {
+  height: 30%;
+  width: 40%;
+  margin-top: 25px;
+
+}
+
+.logoText {
+  font-size: 22px;
+  font-weight: bold;
+  color: #eb7535;
+  margin-top: 20px;
+}
+
+/* Bên phải */
+.rightSection {
+  position: relative;
+}
+
+.userIconWrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.userIconWrapper:hover {
+  transform: scale(1.05);
+}
+
+.userIcon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+/* --- Dropdown chỉnh mới --- */
+.dropdownMenu {
+  position: absolute;
+  top: 70px;
+  /* Cách icon */
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  /* Giảm padding 2 bên */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 👈 căn giữa */
+  min-width: 70px;
+  /* 👈 set độ rộng tối thiểu */
+  animation: fadeIn 0.3s ease forwards;
+  z-index: 1000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #d32f2f;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  white-space: nowrap;
+  /* 👈 không cho xuống dòng */
+  transition: background-color 0.3s;
+}
+
+.dropdownItem:hover {
+  background-color: #f8d7da;
+}
+
+/* Dashboard Section */
+.dashboardContainer {
+  padding: 2rem;
+}
+
+.dashboardTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  text-align: center;
+}
+
+.dashboardSubtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* List of metrics */
+.dashboardList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 1 dòng */
+.dashboardItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Icon */
+.icon {
+  font-size: 1.8rem;
+}
+
+/* Label */
+.label {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #374151;
+  min-width: 120px;
+}
+
+/* Count */
+.count {
+  font-weight: bold;
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+/* View Button */
+.viewButton {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.viewButton:hover {
+  background-color: #1e40af;
+}
+
+/* Manage Button */
+.manageButton {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  background-color: #10b981;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.manageButton:hover {
+  background-color: #059669;
+}
+
+/* Popup */
+/* Thêm animation mới */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Sửa .popupOverlay */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Thêm animation popupContent */
+.popupContent {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  animation: fadeInScale 0.4s ease;
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popupContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: auto;
+  /* 👈 tự động theo nội dung */
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 /* Bảng account */
 .accountTable {
-    width: 100%;
-    margin-top: 1rem;
-    border-collapse: collapse;
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
 }
 
 .accountTable th,
 .accountTable td {
-    padding: 0.75rem;
-    text-align: center;
-    font-size: 1rem;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 1rem;
 }
 
 .accountTable th {
-    font-weight: bold;
-    color: #374151;
+  font-weight: bold;
+  color: #374151;
 }
 
 .accountTable td {
-    color: #4b5563;
+  color: #4b5563;
 }
 
 /* Divider cho mỗi dòng */
 .accountTable tr:not(:last-child) {
-    border-bottom: 1px solid #e5e7eb; /* 👈 gạch chia dòng */
+  border-bottom: 1px solid #e5e7eb;
+  /* 👈 gạch chia dòng */
 }
 
-  
-  .closeButton {
-    margin-top: 1.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .closeButton:hover {
-    background-color: #dc2626;
-  }
-  
-  /* Textarea */
+
+.closeButton {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.closeButton:hover {
+  background-color: #dc2626;
+}
+
+/* Textarea */
 .reasonBox {
-    width: 100%;
-    min-height: 100px;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    resize: vertical;
-    font-size: 16px;
-  }
-  
-  /* Buttons nhóm */
-  .popupButtonGroup {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-  }
-  
-  /* Nút Block and Send */
-  .blockButton {
-    background-color: #d32f2f;
-    color: yellow;
-    padding: 10px 20px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .blockButton:hover {
-    background-color: #b71c1c;
-  }
-  
-  /* Nút Cancel */
-  .cancelButton {
-    background-color: #ccc;
-    color: #333;
-    padding: 10px 20px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .cancelButton:hover {
-    background-color: #bbb;
-  }
-  
-  /* Nút nhỏ Block */
-  .blockSmallButton {
-    background-color: #ef4444;
-    color: white;
-    padding: 5px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 16px;
+}
+
+/* Buttons nhóm */
+.popupButtonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Nút Block and Send */
+.blockButton {
+  background-color: #d32f2f;
+  color: yellow;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.blockButton:hover {
+  background-color: #b71c1c;
+}
+
+/* Nút Cancel */
+.cancelButton {
+  background-color: #ccc;
+  color: #333;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #bbb;
+}
+
+/* Nút nhỏ Block */
+.blockSmallButton {
+  background-color: #ef4444;
+  color: white;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .blockSmallButton:hover {
-    background-color: #dc2626;
+  background-color: #dc2626;
 }
 
 .configButton {
   display: inline-block;
-  background-color: #f3f4f6; /* xám nhạt */
-  color: #4b5563; /* chữ xám đậm */
+  background-color: #f3f4f6;
+  /* xám nhạt */
+  color: #4b5563;
+  /* chữ xám đậm */
   padding: 8px 16px;
   border: 2px solid transparent;
   border-radius: 9999px;
@@ -491,13 +518,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-left: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .configButton:hover {
-  background-color: #e0f2fe; /* xanh nhạt khi hover */
+  background-color: #e0f2fe;
+  /* xanh nhạt khi hover */
   color: #0369a1;
   border-color: #0284c7;
   transform: translateY(-1px) scale(1.03);
 }
-

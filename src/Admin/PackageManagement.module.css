@@ -1,0 +1,38 @@
+.pageContainer {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #f7f9fc;
+}
+
+.contentWrapper {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.configTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.configTable thead {
+  background-color: #edf2f7;
+}

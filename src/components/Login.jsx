@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useGoogleLogin } from "@react-oauth/google";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
 
@@ -11,7 +10,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Trạng thái để hiện mật khẩu
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,18 +19,22 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
   const fetchUserInfoAndRedirect = async (token) => {
     try {
-      const userRes = await fetch(
+      const res = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
         {
-          headers: { Authorization: `Bearer ${token}`, Accept: "*/*" }
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*",
+          },
         }
       );
-      const userData = await userRes.json();
-      localStorage.setItem("user", JSON.stringify(userData.data || userData));
 
+      const userData = await res.json();
+      localStorage.setItem("user", JSON.stringify(userData.data || userData));
       const role = (userData.data || userData).role;
+
       if (role === "Admin") {
-        window.location.href = "/admin/session-list";
+        window.location.href = "/admin/dashboard";
       } else {
         window.location.href = "/Home";
       }
@@ -43,16 +46,23 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
     setIsLoading(true);
+    setErrorMessage("");
 
     try {
       const res = await fetch(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "*/*" },
-          body: JSON.stringify({ email, password, fcmToken: "web-client-placeholder" }),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            fcmToken: "web-client-placeholder",
+          }),
         }
       );
 
@@ -74,56 +84,57 @@ function Login({ show, onClose, onSwitchToForgot }) {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setErrorMessage("");
-    setIsGoogleLoading(true);
-
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      console.log("Google login result:", result);
-
-      const idToken = await result.user.getIdToken();
-      console.log("Google idToken:", idToken);
-
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log("Google token response:", tokenResponse);
+      const idToken = tokenResponse.id_token;
       if (!idToken) {
-        setErrorMessage("Không lấy được idToken từ Google");
+        setErrorMessage("Unable to get idToken from Google.");
         return;
       }
 
-      const res = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-          },
-          body: JSON.stringify({
-            idToken: idToken,
-            fcmToken: "web-client-placeholder"
-          }),
+      setIsGoogleLoading(true);
+
+      try {
+        const res = await fetch(
+          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "*/*",
+            },
+            body: JSON.stringify({
+              idToken: idToken,
+              fcmToken: "web-client-placeholder",
+            }),
+          }
+        );
+
+        const data = await res.json();
+
+        if (res.ok && data.statusCode === 200) {
+          const token = data.data.accessToken || data.data.token;
+          if (!token) throw new Error("No token returned");
+
+          localStorage.setItem("token", token);
+          await fetchUserInfoAndRedirect(token);
+        } else {
+          setErrorMessage(data.message || "Google login failed.");
         }
-      );
-
-      const data = await res.json();
-      if (res.ok && data.statusCode === 200) {
-        const token = data.data.accessToken || data.data.token;
-        if (!token) throw new Error("No token returned");
-
-        localStorage.setItem("token", token);
-        await fetchUserInfoAndRedirect(token);
-      } else {
-        setErrorMessage(data.message || "Google login failed.");
+      } catch (err) {
+        console.error(err);
+        setErrorMessage("Google login error. Please try again.");
+      } finally {
+        setIsGoogleLoading(false);
       }
-    } catch (err) {
-      console.error(err);
-      setErrorMessage("Google login error. Please try again.");
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+    },
+    onError: () => {
+      setErrorMessage("Google login failed. Please try again.");
+    },
+    flow: "token",
+    scope: "openid email profile",
+  });
 
   return (
     <div className={`login ${show ? "show-login" : ""}`} id="login">
@@ -160,9 +171,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
           </div>
         </div>
 
-        {errorMessage && (
-          <p className="login__error">{errorMessage}</p>
-        )}
+        {errorMessage && <p className="login__error">{errorMessage}</p>}
 
         <div style={{ marginTop: "20px" }}>
           <button
@@ -176,7 +185,13 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
         <p className="login__signup">
           Don't have an account?{" "}
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate("/Register"); }}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/Register");
+            }}
+          >
             Sign up
           </a>
         </p>
@@ -184,7 +199,10 @@ function Login({ show, onClose, onSwitchToForgot }) {
         <a
           href="#"
           className="login__forgot"
-          onClick={(e) => { e.preventDefault(); onSwitchToForgot(); }}
+          onClick={(e) => {
+            e.preventDefault();
+            onSwitchToForgot();
+          }}
         >
           Forgot your password?
         </a>
@@ -193,7 +211,7 @@ function Login({ show, onClose, onSwitchToForgot }) {
           <button
             type="button"
             className="login__google-button"
-            onClick={handleGoogleLogin}
+            onClick={loginWithGoogle}
             disabled={isGoogleLoading}
           >
             <img

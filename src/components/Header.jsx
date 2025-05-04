@@ -5,7 +5,7 @@ import ForgotPass from "./ForgotPass";
 import AdvHost from "../Host/AdvHost";
 import BlockJoinGame from "../Host/blockjoingame"; // <== NEW
 import "./styles.css";
-import logo from "../assets/Kahoot_logo.png";
+import logo from "../assets/FhootLogo.png";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
@@ -50,7 +50,7 @@ function Header() {
       } else if (userRole?.toLowerCase() === "user") {
         setShowAdvHost(true);
       } else {
-        alert("Your role does not have permission to create a Kahoot.");
+        alert("Your role does not have permission to create a Fhoot.");
       }
     }
   };
@@ -70,7 +70,7 @@ function Header() {
 
   const handleGoAdmin = (e) => {
     e.preventDefault();
-    navigate("/admin/session-list");
+    navigate("/admin/dashboard");
   };
 
   const handleLogout = () => {
@@ -103,7 +103,7 @@ function Header() {
               gap: "8px",
             }}
           >
-            <img src={logo} alt="Kahoot Logo" className="logo-image" />
+            <img src={logo} alt="Kahoot Logo" className="logo-image" style={{ height: "30%", width: "30%" }} />
           </div>
 
           {/* Menu chính ở giữa */}
@@ -129,7 +129,7 @@ function Header() {
                 padding: "0.5rem 1rem",
               }}
             >
-              <i className="fa-regular fa-envelope"></i> Create a Kahoot!
+              <i className="fa-regular fa-envelope"></i> Create a Fhoot !
             </a>
           </div>
 

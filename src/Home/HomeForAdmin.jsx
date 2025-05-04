@@ -50,7 +50,7 @@ function HomeForAdmin({ role }) {
 
   return (
     <div className="home-for-admin">
-      <h2 className="admin-title">🆕 Latest Kahoot! Updates</h2>
+      <h2 className="admin-title">🆕 Latest Fhoot! Updates</h2>
 
       <ul className="admin-feature-list">
         {features.map((feature, index) => (
