@@ -22,7 +22,7 @@ const CreateQuestionScreen = () => {
   });
   const [answerLimitConfig, setAnswerLimitConfig] = useState({
     minValue: 2,
-    maxValue: 6,
+    maxValue: 20,
   });
   const [timeLimitConfig, setTimeLimitConfig] = useState({
     minValue: 10,
@@ -47,6 +47,7 @@ const CreateQuestionScreen = () => {
     }
     return parsed;
   });
+
   useEffect(() => {
     const fetchConfigs = async () => {
       const config11 = await getConfigData(11);
@@ -94,9 +95,6 @@ const CreateQuestionScreen = () => {
       console.error("Error fetching data:", error);
     }
   }
-
-  getConfigData(11);
-  console.log(getConfigData(11).minValue);
 
   useEffect(() => {
     if (savedQuestions.length > 0 && !question.id) {
@@ -280,6 +278,38 @@ const CreateQuestionScreen = () => {
     }
   };
 
+  const handleAIAnswer = async () => {
+    const url =
+      "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/generate-answer-ai";
+    try {
+      const formData = new FormData();
+      formData.append("content", question.content);
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.statusCode === 200) {
+        setAnswers(
+          data.data.options.map((option, index) => ({
+            id: Date.now() + index,
+            content: option,
+            isAnswer: option === data.data.correctAnswer,
+          }))
+        );
+      } else {
+        notification.error({ message: "Failed to generate AI answers" });
+      }
+    } catch (error) {
+      console.error("Error fetching AI answers:", error);
+      notification.error({ message: "Error generating AI answers" });
+    }
+  };
+
   const renderAnswers = () => {
     const layout = {
       2: [["a1", "a2"]],
@@ -453,16 +483,23 @@ const CreateQuestionScreen = () => {
 
         {/* Editor */}
         <div className={styles.editor}>
-          <Input.TextArea
-            value={question.content}
-            onChange={(e) =>
-              setQuestion((prev) => ({ ...prev, content: e.target.value }))
-            }
-            placeholder="Enter your question"
-            autoSize={{ minRows: 2 }}
-            minLength={questionLengthConfig.minValue}
-            maxLength={questionLengthConfig.maxValue}
-          />
+          <div
+            style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}
+          >
+            <Input.TextArea
+              value={question.content}
+              onChange={(e) =>
+                setQuestion((prev) => ({ ...prev, content: e.target.value }))
+              }
+              placeholder="Enter your question"
+              autoSize={{ minRows: 2 }}
+              minLength={questionLengthConfig.minValue}
+              maxLength={questionLengthConfig.maxValue}
+            />
+            <Button type="primary" onClick={handleAIAnswer}>
+              Answer With AI
+            </Button>
+          </div>
 
           <div className={styles.editorImage}>
             <Upload
