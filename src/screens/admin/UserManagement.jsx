@@ -115,6 +115,10 @@ const UserManagement = () => {
     { title: "Full Name", dataIndex: "fullName" },
     { title: "Email", dataIndex: "email" },
     { title: "Age", dataIndex: "age", render: (age) => age ?? "-" },
+
+    // ✅ Role column (hiển thị role hiện tại của user)
+    { title: "Role", dataIndex: "role" },
+
     {
       title: "Subscription",
       key: "package",
@@ -133,9 +137,7 @@ const UserManagement = () => {
       title: "Status",
       dataIndex: "status",
       render: (status) => (
-        <Text type={status === "Active" ? "success" : "danger"}>
-          {status}
-        </Text>
+        <Text type={status === "Active" ? "success" : "danger"}>{status}</Text>
       ),
     },
     {
@@ -164,6 +166,8 @@ const UserManagement = () => {
               {record.status === "Inactive" ? "Activate" : "Restore"}
             </Button>
           )}
+
+          {/* ✅ Button để chọn role bằng dropdown */}
           <Button
             type="default"
             onClick={() => {
