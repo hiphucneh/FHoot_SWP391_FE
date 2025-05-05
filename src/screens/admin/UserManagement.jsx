@@ -13,6 +13,7 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
+import styles from "./UserManagement.module.css";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -37,9 +38,7 @@ const UserManagement = () => {
       const response = await axios.get(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setUsers(response.data.data);
@@ -59,9 +58,7 @@ const UserManagement = () => {
       const response = await axios.get(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/package/user-package",
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setUserPackages(response.data.data || []);
@@ -91,11 +88,7 @@ const UserManagement = () => {
       const response = await axios.put(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/role/${userId}/${newRole}`,
         {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success(response.data.message || "Role updated successfully");
       fetchUsers();
@@ -104,9 +97,8 @@ const UserManagement = () => {
     }
   };
 
-  const getPackageByUserId = (userId) => {
-    return userPackages.find((p) => p.userId === userId);
-  };
+  const getPackageByUserId = (userId) =>
+    userPackages.find((p) => p.userId === userId);
 
   const showConfirm = (userId, currentStatus, newStatus) => {
     confirm({
@@ -123,9 +115,8 @@ const UserManagement = () => {
     { title: "Full Name", dataIndex: "fullName" },
     { title: "Email", dataIndex: "email" },
     { title: "Age", dataIndex: "age", render: (age) => age ?? "-" },
-    { title: "Role", dataIndex: "role" },
     {
-      title: "Package",
+      title: "Subscription",
       key: "package",
       render: (_, record) => {
         const pkg = getPackageByUserId(record.userId);
@@ -156,36 +147,41 @@ const UserManagement = () => {
             <Button
               type="primary"
               danger
-              onClick={() => showConfirm(record.userId, record.status, "Deleted")}
+              onClick={() =>
+                showConfirm(record.userId, record.status, "Deleted")
+              }
             >
               Block
             </Button>
           )}
-          {record.status === "Inactive" && (
+          {["Inactive", "Deleted"].includes(record.status) && (
             <Button
               type="primary"
-              onClick={() => showConfirm(record.userId, record.status, "Active")}
+              onClick={() =>
+                showConfirm(record.userId, record.status, "Active")
+              }
             >
-              Activate
-            </Button>
-          )}
-          {record.status === "Deleted" && (
-            <Button
-              type="primary"
-              onClick={() => showConfirm(record.userId, record.status, "Active")}
-            >
-              Restore
+              {record.status === "Inactive" ? "Activate" : "Restore"}
             </Button>
           )}
           <Button
             type="default"
             onClick={() => {
-              const newRole = record.role === "User" ? "Teacher" : "User";
-              confirm({
-                title: `Change role to "${newRole}"?`,
-                content: `User ID: ${record.userId}, Current role: ${record.role}`,
+              let selectedRole = record.role === "User" ? "Teacher" : "User";
+              Modal.confirm({
+                title: "Choose the target role",
+                content: (
+                  <select
+                    defaultValue={selectedRole}
+                    onChange={(e) => (selectedRole = e.target.value)}
+                    style={{ width: "100%", marginTop: 10 }}
+                  >
+                    <option value="User">User</option>
+                    <option value="Teacher">Teacher</option>
+                  </select>
+                ),
                 onOk() {
-                  updateUserRole(record.userId, newRole);
+                  return updateUserRole(record.userId, selectedRole);
                 },
               });
             }}
@@ -207,20 +203,12 @@ const UserManagement = () => {
   }, []);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className={styles.layout}>
       <Sidebar />
       <Layout>
-        <Content style={{ padding: 24 }}>
-          <Card
-            bordered={false}
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto 24px",
-              borderRadius: 8,
-              background: "#fff",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Content className={styles.content}>
+          <Card bordered={false} className={styles.headerCard}>
+            <div className={styles.header}>
               <div>
                 <Title level={3}>User Management</Title>
                 <Text type="secondary">
@@ -233,20 +221,12 @@ const UserManagement = () => {
                 allowClear
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                style={{ width: 300 }}
+                className={styles.searchInput}
               />
             </div>
           </Card>
 
-          <Card
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              background: "#fff",
-              borderRadius: "8px",
-              padding: "24px",
-            }}
-          >
+          <Card className={styles.tableCard}>
             <Table
               dataSource={users.filter((u) =>
                 u.fullName.toLowerCase().includes(searchText.toLowerCase())
@@ -267,10 +247,20 @@ const UserManagement = () => {
           >
             {selectedPackage && (
               <>
-                <p><b>Gói:</b> {selectedPackage.packageName}</p>
-                <p><b>Bắt đầu:</b> {new Date(selectedPackage.startDate).toLocaleString()}</p>
-                <p><b>Hết hạn:</b> {new Date(selectedPackage.expiryDate).toLocaleString()}</p>
-                <p><b>Trạng thái:</b> {selectedPackage.status}</p>
+                <p>
+                  <b>Package:</b> {selectedPackage.packageName}
+                </p>
+                <p>
+                  <b>Start Date:</b>{" "}
+                  {new Date(selectedPackage.startDate).toLocaleString()}
+                </p>
+                <p>
+                  <b>Expiry Date:</b>{" "}
+                  {new Date(selectedPackage.expiryDate).toLocaleString()}
+                </p>
+                <p>
+                  <b>Status:</b> {selectedPackage.status}
+                </p>
               </>
             )}
           </Modal>
