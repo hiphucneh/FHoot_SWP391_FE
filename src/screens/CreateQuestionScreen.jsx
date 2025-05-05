@@ -40,7 +40,7 @@ const CreateQuestionScreen = () => {
                 content: "",
                 file: null,
                 answers: [],
-                timeLimitSec: 30,
+                timeLimitSec: 10,
             };
             localStorage.setItem(`savedQuestions_${quizId}`, JSON.stringify([newQ]));
             return [newQ];
@@ -231,6 +231,12 @@ const CreateQuestionScreen = () => {
     const handleSaveQuiz = async () => {
         if (!quizId || savedQuestions.length === 0) {
             return notification.warning({ message: "No questions to save" });
+        } else if (savedQuestions.some(q =>
+            !q.content?.trim())) {
+            return notification.error({
+                message: "Can't update yet!",
+                description: "Still have null question."
+            })
         }
 
         const payload = savedQuestions.map((q) => ({

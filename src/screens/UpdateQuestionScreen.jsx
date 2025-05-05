@@ -42,16 +42,16 @@ const UpdateQuestionScreen = () => {
   const [answers, setAnswers] = useState([]);
   const [savedQuestions, setSavedQuestions] = useState([]);
   const [questionLengthConfig, setQuestionLengthConfig] = useState({
-    minValue: 1,
-    maxValue: 500,
+    min: 1,
+    max: 500,
   });
   const [answerLimitConfig, setAnswerLimitConfig] = useState({
-    minValue: 2,
-    maxValue: 6,
+    min: 2,
+    max: 6,
   });
   const [timeLimitConfig, setTimeLimitConfig] = useState({
-    minValue: 10,
-    maxValue: 300,
+    min: 10,
+    max: 300,
   });
   async function getConfigData(configId) {
     const url = `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/system-configuration/${configId}`;
@@ -74,27 +74,27 @@ const UpdateQuestionScreen = () => {
 
   useEffect(() => {
     const fetchConfigs = async () => {
-      const config11 = await getConfigData(11);
-      const config12 = await getConfigData(12);
-      const config10 = await getConfigData(10);
+      const config3 = await getConfigData(3);
+      const config4 = await getConfigData(4);
+      const config2 = await getConfigData(2);
 
-      if (config11) {
+      if (config3) {
         setQuestionLengthConfig({
-          minValue: config11.minValue,
-          maxValue: config11.maxValue,
+          min: config3.minValue,
+          max: config3.maxValue,
         });
       }
 
-      if (config12) {
+      if (config4) {
         setAnswerLimitConfig({
-          minValue: config12.minValue,
-          maxValue: config12.maxValue,
+          min: config4.minValue,
+          max: config4.maxValue,
         });
       }
-      if (config10)
+      if (config2)
         setTimeLimitConfig({
-          minValue: config10.minValue,
-          maxValue: config10.maxValue,
+          min: config2.minValue,
+          max: config2.maxValue,
         });
     };
 
@@ -200,9 +200,7 @@ const UpdateQuestionScreen = () => {
     setAnswers(updated.slice(0, val));
   };
 
-  const handleImageUpload = (file) => {
-    setQuestion((prev) => ({ ...prev, file }));
-  };
+
 
   const handleChangeImport = (file) => {
     const reader = new FileReader();
@@ -283,6 +281,13 @@ const UpdateQuestionScreen = () => {
   const handleUpdateQuiz = async () => {
     if (!quizId || savedQuestions.length === 0) {
       return notification.warning({ message: "No questions to update" });
+    } else if (savedQuestions.some(q =>
+      !q.content?.trim())) {
+      return notification.error({
+        message: "Can't update yet!",
+        description: "Still have null question."
+      })
+
     }
 
     const payload = savedQuestions.map((q) => ({
@@ -543,10 +548,10 @@ const UpdateQuestionScreen = () => {
                   });
                   console.log(data);
 
-                  // Transform API response to match component's expected format
+
                   const transformedQuestions = data.data.map((q, idx) => ({
                     questionText: q.question,
-                    timeLimitSec: 30,
+                    timeLimitSec: 10,
                     answers: q.options.map((opt, j) => ({
                       answerText: opt,
                       isCorrect: opt === q.correctAnswer,
@@ -672,7 +677,7 @@ const UpdateQuestionScreen = () => {
                         id: Date.now() + idx,
                         content: q.questionText,
                         file: null,
-                        timeLimitSec: q.timeLimitSec || 30,
+                        timeLimitSec: q.timeLimitSec || 10,
                         answers: q.answers.map((a, j) => ({
                           id: Date.now() + idx * 10 + j,
                           content: a.answerText,
@@ -704,8 +709,8 @@ const UpdateQuestionScreen = () => {
               onChange={(e) =>
                 setQuestion((prev) => ({ ...prev, content: e.target.value }))
               }
-              minLength={questionLengthConfig.minValue}
-              maxLength={questionLengthConfig.maxValue}
+              minLength={questionLengthConfig.min}
+              maxLength={questionLengthConfig.max}
               placeholder="Enter your question"
               autoSize={{ minRows: 2 }}
               className={styles.questionInput}
@@ -741,8 +746,8 @@ const UpdateQuestionScreen = () => {
           <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
           <Select
             value={question.timeLimitSec}
-            minValue={timeLimitConfig.minValue}
-            maxValue={timeLimitConfig.maxValue}
+            min={timeLimitConfig.min}
+            max={timeLimitConfig.max}
             onChange={(val) =>
               setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
             }
@@ -752,10 +757,10 @@ const UpdateQuestionScreen = () => {
               {
                 length:
                   Math.floor(
-                    (timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10
+                    (timeLimitConfig.max - timeLimitConfig.min) / 10
                   ) + 1,
               },
-              (_, i) => timeLimitConfig.minValue + i * 10
+              (_, i) => timeLimitConfig.min + i * 10
             ).map((sec) => (
               <Option key={sec} value={sec}>
                 {sec} giây

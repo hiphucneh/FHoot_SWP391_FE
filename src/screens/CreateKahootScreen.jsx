@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createKahoot } from "../services/createKahoot";
