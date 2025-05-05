@@ -16,21 +16,20 @@ const QnAHostScreen = () => {
   const [answerCount, setAnswerCount] = useState(0);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [flagFirstTimeQuestion, setFlagFirstTimeQuestion] = useState(false);
-  const [flagShowLeaderBoard, setFlagShowLeaderBoard] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
   const [showTimeUp, setShowTimeUp] = useState(false);
-
   const [flagQuestion, setFlagQuestion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [flagChangeFistTime, setfFlagChangeFistTime] = useState(false);
-
   const timeLimitSec = currentQuestion?.timeLimitSec || 10;
-
   const [answers, setAnswers] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const [questionText, setQuestionText] = useState("");
+  const [totalPlayers, setTotalPlayers] = useState(
+    parseInt(localStorage.getItem("totalPlayers") || "0", 10)
+  );
 
   const shuffledAnswers = currentQuestion?.isRandomAnswer
     ? [...answers].sort(() => Math.random() - 0.5)
@@ -48,6 +47,24 @@ const QnAHostScreen = () => {
   const handleCountAnswer = () => {
     setCountAnswer((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (
+      countAnswer > 0 &&
+      totalPlayers > 0 &&
+      countAnswer === totalPlayers &&
+      timeLeft > 0
+    ) {
+      console.log("✅ All players answered early!");
+      setShowTimeUp(true);
+      setTimeLeft(0);
+
+      setTimeout(() => {
+        setShowTimeUp(false);
+        fetchLeaderboard();
+      }, 2000);
+    }
+  }, [countAnswer, totalPlayers, timeLeft]);
 
   useEffect(() => {
     setTimeLeft(timeLimitSec);
