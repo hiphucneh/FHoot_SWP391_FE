@@ -95,8 +95,8 @@ const UpdateKahootScreen = () => {
       localStorage.setItem("quizId", kahoot.quizId.toString());
 
       Swal.fire({
-        title: "✅ Kahoot Updated!",
-        text: "Your kahoot was updated successfully.",
+        title: "✅ Fhoot Updated!",
+        text: "Your Fhoot was updated successfully.",
         icon: "success",
         showCancelButton: true,
         confirmButtonText: "Go to Edit Questions",
@@ -118,7 +118,7 @@ const UpdateKahootScreen = () => {
       });
     } catch (error) {
       console.error(error);
-      Swal.fire("Error", "Failed to update Kahoot", "error");
+      Swal.fire("Error", "Failed to update Fhoot", "error");
     }
   };
 
@@ -126,14 +126,14 @@ const UpdateKahootScreen = () => {
     <div className={styles.container}>
       <div className={`${styles.formCard} ${styles.fadeIn}`}>
         <div className={`${styles.header} ${styles.fadeIn}`}>
-          <h2>Update Kahoot</h2>
+          <h2>Update Fhoot</h2>
         </div>
 
 
         <form onSubmit={handleSubmit} className={`${styles.form} ${styles.fadeIn}`}>
           <input
             type="text"
-            placeholder="Kahoot Title"
+            placeholder="Fhoot Title"
             value={kahoot.title}
             onChange={(e) => setKahoot((prev) => ({ ...prev, title: e.target.value }))}
             className={styles.input}
@@ -149,7 +149,7 @@ const UpdateKahootScreen = () => {
           ></textarea>
 
           <button type="submit" className={styles.submitButton}>
-            Update Kahoot
+            Update Fhoot
           </button>
         </form>
       </div >

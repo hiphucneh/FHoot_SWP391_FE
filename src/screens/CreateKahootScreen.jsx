@@ -50,8 +50,8 @@ const CreateKahoot = () => {
         console.log("🎯 Quiz ID:", quizId);
         localStorage.setItem("quizId", quizId.toString());
         Swal.fire({
-          title: "🎉 Kahoot Created!",
-          html: `<p>Your Kahoot is ready to be edited or played!</p>`,
+          title: "🎉 Fhoot Created!",
+          html: `<p>Your Fhoot is ready to be edited or played!</p>`,
           icon: "success",
           showCancelButton: true,
           confirmButtonText: "Go to Edit",
@@ -67,8 +67,8 @@ const CreateKahoot = () => {
         Swal.fire("Error", "No quiz ID returned from server.", "error");
       }
     } catch (err) {
-      console.error("❌ Error creating kahoot:", err);
-      Swal.fire("Error", "Failed to create Kahoot", "error");
+      console.error("❌ Error creating Fhoot:", err);
+      Swal.fire("Error", "Failed to create Fhoot", "error");
     }
   };
 
@@ -76,14 +76,14 @@ const CreateKahoot = () => {
     <div className={styles.container}>
       <div className={`${styles.formCard} ${styles.fadeIn}`}>
         <div className={`${styles.header} ${styles.fadeIn}`}>
-          <h2>Create a Kahoot</h2>
+          <h2>Create a Fhoot</h2>
         </div>
 
 
         <form onSubmit={handleSubmit} className={`${styles.form} ${styles.fadeIn}`}>
           <input
             type="text"
-            placeholder="Kahoot Title"
+            placeholder="Fhoot Title"
             value={kahoot.Title}
             onChange={(e) => {
               setKahoot({ ...kahoot, Title: e.target.value });
@@ -105,7 +105,7 @@ const CreateKahoot = () => {
           ></textarea>
 
           <button type="submit" className={styles.submitButton}>
-            Create Kahoot
+            Create Fhoot
           </button>
         </form>
       </div>
