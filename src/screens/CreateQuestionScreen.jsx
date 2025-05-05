@@ -17,16 +17,16 @@ const CreateQuestionScreen = () => {
     const navigate = useNavigate();
 
     const [questionLengthConfig, setQuestionLengthConfig] = useState({
-        minValue: 1,
-        maxValue: 500,
+        min: 1,
+        max: 500,
     });
     const [answerLimitConfig, setAnswerLimitConfig] = useState({
-        minValue: 2,
-        maxValue: 150,
+        min: 2,
+        max: 150,
     });
     const [timeLimitConfig, setTimeLimitConfig] = useState({
-        minValue: 10,
-        maxValue: 300,
+        min: 10,
+        max: 300,
     });
     const [question, setQuestion] = useState({});
     const [answers, setAnswers] = useState([]);
@@ -50,27 +50,27 @@ const CreateQuestionScreen = () => {
 
     useEffect(() => {
         const fetchConfigs = async () => {
-            const config11 = await getConfigData(11);
-            const config12 = await getConfigData(12);
-            const config10 = await getConfigData(10);
+            const config2 = await getConfigData(2);
+            const config3 = await getConfigData(3);
+            const config4 = await getConfigData(4);
 
-            if (config11) {
+            if (config3) {
                 setQuestionLengthConfig({
-                    minValue: config11.minValue,
-                    maxValue: config11.maxValue,
+                    min: config3.minValue,
+                    max: config3.maxValue,
                 });
             }
 
-            if (config12) {
+            if (config4) {
                 setAnswerLimitConfig({
-                    minValue: config12.minValue,
-                    maxValue: config12.maxValue,
+                    min: config4.minValue,
+                    max: config4.maxValue,
                 });
             }
-            if (config10)
+            if (config2)
                 setTimeLimitConfig({
-                    minValue: config10.minValue,
-                    maxValue: config10.maxValue,
+                    min: config2.minValue,
+                    max: config2.maxValue,
                 });
         };
 
@@ -143,7 +143,7 @@ const CreateQuestionScreen = () => {
             content: "",
             file: null,
             answers: [],
-            timeLimitSec: 30,
+            timeLimitSec: 10,
         };
 
         setSavedQuestions((prev) => [...prev, newQ]);
@@ -209,7 +209,7 @@ const CreateQuestionScreen = () => {
                         id: Date.now() + i,
                         content: r[0] || "",
                         file: null,
-                        timeLimitSec: 30,
+                        timeLimitSec: 10,
                         answers: ["A", "B", "C", "D"].slice(0, aCount).map((opt, j) => ({
                             id: Date.now() + i + j,
                             content: r[j + 1] || "",
@@ -337,8 +337,8 @@ const CreateQuestionScreen = () => {
                                     <Input
                                         value={answer.content}
                                         placeholder={`Answer ${idx + 1}`}
-                                        minLength={answerLimitConfig.minValue}
-                                        maxLength={answerLimitConfig.maxValue}
+                                        minLength={answerLimitConfig.min}
+                                        maxLength={answerLimitConfig.max}
                                         onChange={(e) =>
                                             handleChangeAnswer(answer.id, e.target.value)
                                         }
@@ -359,6 +359,7 @@ const CreateQuestionScreen = () => {
             </div>
         );
     };
+    console.log("config2 ", timeLimitConfig)
 
     return (
         <>
@@ -486,8 +487,8 @@ const CreateQuestionScreen = () => {
                             }
                             placeholder="Enter your question"
                             autoSize={{ minRows: 2 }}
-                            minLength={questionLengthConfig.minValue}
-                            maxLength={questionLengthConfig.maxValue}
+                            minLength={questionLengthConfig.min}
+                            maxLength={questionLengthConfig.max}
                         />
                         <Button
                             type="default"
@@ -518,8 +519,8 @@ const CreateQuestionScreen = () => {
                     <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
                     <Select
                         value={question.timeLimitSec}
-                        minValue={timeLimitConfig.minValue}
-                        maxValue={timeLimitConfig.maxValue}
+                        min={timeLimitConfig.min}
+                        max={timeLimitConfig.max}
                         onChange={(val) =>
                             setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
                         }
@@ -529,10 +530,10 @@ const CreateQuestionScreen = () => {
                             {
                                 length:
                                     Math.floor(
-                                        (timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10
+                                        (timeLimitConfig.max - timeLimitConfig.min) / 10
                                     ) + 1,
                             },
-                            (_, i) => timeLimitConfig.minValue + i * 10
+                            (_, i) => timeLimitConfig.min + i * 10
                         ).map((sec) => (
                             <Option key={sec} value={sec}>
                                 {sec} giây

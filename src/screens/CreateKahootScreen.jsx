@@ -9,24 +9,8 @@ import styles from "./CreateKahoot.module.css";
 const CreateKahoot = () => {
   const navigate = useNavigate();
   const [kahoot, setKahoot] = useState({ Title: "", Description: "" });
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const handleChangeFile = (info) => {
 
-    const selectedFile = info.file?.originFileObj;
 
-    console.log("📁 Raw info:", info);
-    console.log("📁 Selected file:", selectedFile);
-
-    if (selectedFile) {
-      setFile(selectedFile);
-      const previewUrl = URL.createObjectURL(selectedFile);
-      setPreview(previewUrl);
-      console.log("🔍 Preview URL created:", previewUrl);
-    } else {
-      console.warn("⚠️ Không có originFileObj. File chưa được chọn đúng.");
-    }
-  };
 
 
   const handleSubmit = async (e) => {
@@ -34,7 +18,7 @@ const CreateKahoot = () => {
     const formData = new FormData();
     formData.append("Title", kahoot.Title);
     formData.append("Description", kahoot.Description);
-    if (file) formData.append("ImgUrl", file);
+
 
     console.log("📤 Submitting FormData:");
     for (let pair of formData.entries()) {
