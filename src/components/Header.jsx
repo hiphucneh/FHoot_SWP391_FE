@@ -47,10 +47,8 @@ function Header() {
     } else {
       if (userRole?.toLowerCase() === "teacher") {
         navigate("/createK");
-      } else if (userRole?.toLowerCase() === "user") {
-        setShowAdvHost(true);
       } else {
-        alert("Your role does not have permission to create a Fhoot.");
+        setShowAdvHost(true);
       }
     }
   };

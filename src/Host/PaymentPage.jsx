@@ -15,6 +15,7 @@ function PaymentPage() {
   const [showCodePopup, setShowCodePopup] = useState(false);
   const [codeApplied, setCodeApplied] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("wallet");
+  const [fullName, setFullName] = useState("");
 
   const price = selectedPlan?.price || 0;
   const label = selectedPlan?.packageName || "No plan selected";
@@ -36,6 +37,7 @@ function PaymentPage() {
         if (!res.ok) throw new Error("Failed to get user info");
         const data = await res.json();
         if (data.email) setUserEmail(data.email);
+        if (data.name) setFullName(data.name);
       } catch (err) {
         console.error("❌ Failed to load user info:", err);
       }
@@ -100,10 +102,13 @@ function PaymentPage() {
           {/* LEFT */}
           <div className="payment-left">
             <form className="payment-form">
-              <div className="input-row">
-                <input type="text" placeholder="First name *" required />
-                <input type="text" placeholder="Last name *" required />
-              </div>
+              <input
+                type="text"
+                placeholder="Full name *"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
               <input
                 type="email"
                 placeholder="Email address *"
@@ -112,7 +117,9 @@ function PaymentPage() {
                 required
               />
 
-              <label className="section-label">Select your payment method</label>
+              <label className="section-label">
+                Select your payment method
+              </label>
               <div className="payment-methods">
                 <button
                   type="button"
@@ -133,7 +140,9 @@ function PaymentPage() {
           <div className="payment-right">
             <div className="summary-box">
               <h4>Your chosen plan</h4>
-              <p><strong>{label}</strong></p>
+              <p>
+                <strong>{label}</strong>
+              </p>
               <p>Billed once</p>
               <hr />
               <div className="summary-row">
@@ -180,7 +189,7 @@ function PaymentPage() {
               </div>
 
               <p className="agree-text">
-                I hereby confirm I have read and agree to Kahoot!{" "}
+                I hereby confirm I have read and agree to Fhoot!{" "}
                 <span className="link" onClick={() => navigate("/Information")}>
                   Terms and Conditions.
                 </span>
