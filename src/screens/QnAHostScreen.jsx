@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Typography, message } from "antd";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import {
+  Typography,
+  message,
+} from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSignalR from "../hooks/useSignalR";
 import LeaderboardScreen from "./LeaderBoardScreen";
+import styles from "./QnAHostScreen.module.css";
+import bgMusic from "../assets/sound/bg-answer.mp3";
 
 const { Title } = Typography;
 
@@ -11,48 +16,45 @@ const QnAHostScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { sessionCode, totalQuestion } = location.state || {};
+
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerCount, setAnswerCount] = useState(0);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [flagFirstTimeQuestion, setFlagFirstTimeQuestion] = useState(false);
-  const [flagShowLeaderBoard, setFlagShowLeaderBoard] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
   const [showTimeUp, setShowTimeUp] = useState(false);
-
   const [flagQuestion, setFlagQuestion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [flagChangeFistTime, setfFlagChangeFistTime] = useState(false);
-
-  const timeLimitSec = currentQuestion?.timeLimitSec || 10;
-
-  const [answers, setAnswers] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
+  const [answers, setAnswers] = useState([]);
   const [questionText, setQuestionText] = useState("");
 
+  const timeLimitSec = currentQuestion?.timeLimitSec || 10;
   const shuffledAnswers = currentQuestion?.isRandomAnswer
     ? [...answers].sort(() => Math.random() - 0.5)
     : answers;
 
-  const answerColors = ["#60a5fa", "#f472b6", "#fcd34d", "#93c5fd"];
+  const bgAudioRef = useRef(null);
+
+  // ✅ Autoplay-safe music init
+  useEffect(() => {
+    if (bgAudioRef.current) {
+      bgAudioRef.current.volume = 0.4;
+      bgAudioRef.current.loop = true;
+      bgAudioRef.current.play().catch(() => {});
+    }
+  }, []);
 
   const handleChangeQuestion = () => {
     setAnswers(currentQuestion?.answers || []);
-    setImgUrl(currentQuestion?.imgUrl);
-    setQuestionText(currentQuestion?.questionText || "Don't have question");
-    console.log(currentQuestion);
-  };
-
-  const handleCountAnswer = () => {
-    setCountAnswer((prev) => prev + 1);
+    setQuestionText(currentQuestion?.questionText || "No question available");
   };
 
   useEffect(() => {
     setTimeLeft(timeLimitSec);
     handleChangeQuestion();
-  }, [currentQuestionIndex, flagChangeFistTime]);
+  }, [currentQuestionIndex]);
 
   useEffect(() => {
     if (sessionCode && questions.length === 0) {
@@ -62,7 +64,7 @@ const QnAHostScreen = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/leaderboard`,
         {
           headers: {
@@ -70,13 +72,12 @@ const QnAHostScreen = () => {
           },
         }
       );
-      if (response.data.statusCode === 200) {
-        setLeaderboardData(response.data.data);
+      if (res.data.statusCode === 200) {
+        setLeaderboardData(res.data.data);
         setShowLeaderboard(true);
       }
-    } catch (error) {
-      console.error("Fail to fetch leader board", error);
-      message.error("Fail to fetch leader board");
+    } catch {
+      message.error("Failed to fetch leaderboard");
     }
   };
 
@@ -85,9 +86,7 @@ const QnAHostScreen = () => {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && sessionCode && flagQuestion) {
-      console.log("⏰ Time up!");
       setShowTimeUp(true);
-
       setTimeout(() => {
         setShowTimeUp(false);
         fetchLeaderboard();
@@ -97,7 +96,7 @@ const QnAHostScreen = () => {
 
   const handleNextQuestion = async (sortOrder) => {
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionCode}/next-question?sortOrder=${sortOrder}&timeLimitSec=${timeLimitSec}`,
         {},
         {
@@ -107,90 +106,52 @@ const QnAHostScreen = () => {
         }
       );
 
-      if (response.data.statusCode === 200) {
-        if (response.data.data) {
-          setQuestions((prev) => [...prev, response.data.data]);
-
-          setCurrentQuestionIndex((prev) => prev + 1);
-
-          console.log("currentQuestionIndex", currentQuestionIndex);
-
-          setFlagFirstTimeQuestion(true);
-          setShowLeaderboard(false);
-          setFlagQuestion(true);
-          setCurrentQuestion(response.data.data.question);
-          setCountAnswer(0);
-
-          setfFlagChangeFistTime(true);
-        } else {
-          fetchLeaderboard();
-        }
+      if (res.data.statusCode === 200 && res.data.data) {
+        setQuestions((prev) => [...prev, res.data.data]);
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setCurrentQuestion(res.data.data.question);
+        setFlagQuestion(true);
+        setCountAnswer(0);
+        setShowLeaderboard(false);
+      } else {
+        fetchLeaderboard();
       }
-    } catch (error) {
-      console.error("Fail to next question", error);
-      message.error("Cannot next question. Please try again.");
+    } catch {
+      message.error("Cannot load next question.");
     }
-  };
-
-  const handleAnswerReceived = (data) => {
-    setAnswerCount((prev) => prev + 1);
-  };
-
-  const handleNextQuestionSignalR = (data) => {
-    setQuestions((prev) => [...prev, data]);
-
-    setShowLeaderboard(false);
-    setTimeLeft(timeLimitSec);
-  };
-
-  const handleShowLeaderboard = () => {
-    fetchLeaderboard();
   };
 
   const connectionRef = useSignalR({
     baseHubUrl:
       "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/gamehubs",
     token: localStorage.getItem("token"),
-    onNextQuestion: handleNextQuestionSignalR,
-    onShowLeaderboard: handleShowLeaderboard,
-    onAnswerReceived: handleAnswerReceived,
-    onCountAnswer: handleCountAnswer,
+    onNextQuestion: () => {},
+    onShowLeaderboard: fetchLeaderboard,
+    onAnswerReceived: () => setAnswerCount((prev) => prev + 1),
+    onCountAnswer: () => setCountAnswer((prev) => prev + 1),
   });
 
   useEffect(() => {
-    const joinSessionIfConnected = async () => {
+    const joinSession = async () => {
       const connection = connectionRef?.current;
       if (connection && connection.state === "Connected") {
         try {
           await connection.invoke("JoinSession", sessionCode);
-          console.log("📥 Joined session:", sessionCode);
-        } catch (err) {
-          console.error("❌ Failed to join session:", err);
-          message.error("Không thể tham gia phiên. Vui lòng thử lại.");
+        } catch {
+          message.error("Failed to join session");
         }
       }
     };
 
-    const timer = setTimeout(joinSessionIfConnected, 1000);
+    const timer = setTimeout(joinSession, 1000);
     return () => clearTimeout(timer);
   }, [connectionRef, sessionCode]);
 
-  if (!questions || questions.length === 0) {
+  if (!questions.length) {
     return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "'Inter', 'Poppins', sans-serif",
-        }}
-      >
-        <Title level={2} style={{ color: "#1e3a8a" }}>
-          Don't have any question yet.
+      <div className={styles.centered}>
+        <Title level={2} className={styles.noQuestionText}>
+          No question loaded.
         </Title>
       </div>
     );
@@ -210,164 +171,48 @@ const QnAHostScreen = () => {
 
   if (showTimeUp) {
     return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "'Inter', 'Poppins', sans-serif",
-        }}
-      >
-        <Title level={1} style={{ color: "#ef4444", fontSize: "3rem" }}>
-          ⏰ Time’s up!
-        </Title>
+      <div className={styles.centered}>
+        <Title level={1} className={styles.timeUp}>⏰ Time’s up!</Title>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
-        padding: "1rem",
-        fontFamily: "'Inter', 'Poppins', sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        boxSizing: "border-box",
-        overflow: "auto",
-      }}
-    >
-      <Title
-        level={2}
-        style={{
-          textAlign: "center",
-          color: "#1e3a8a",
-          margin: "0 0 1.5rem",
-          fontWeight: 700,
-          fontSize: "clamp(1.5rem, 4vw, 2.2rem)",
-          lineHeight: 1.2,
-        }}
-      >
-        {questionText}
-      </Title>
+    <div className={styles.wrapper}>
+      <audio ref={bgAudioRef} src={bgMusic} hidden />
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          maxWidth: "1400px",
-          marginBottom: "2rem",
-          gap: "1rem",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            background: "#3b82f6",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "1.8rem",
-            fontWeight: 600,
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            flexShrink: 0,
-          }}
-        >
-          {timeLeft}
-        </div>
-
-        {imgUrl && (
-          <div
-            style={{
-              minWidth: "300px",
-              width: "400px",
-              height: "250px",
-              borderRadius: "0.75rem",
-              overflow: "hidden",
-              background: "#fff",
-              border: "2px solid #60a5fa",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              flexShrink: 0,
-            }}
-          >
-            <img
-              src={imgUrl}
-              alt="Question visual"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-        )}
-
-        <div
-          style={{
-            minWidth: "120px",
-            padding: "0.75rem",
-            background: "#ec4899",
-            color: "#fff",
-            textAlign: "center",
-            borderRadius: "0.75rem",
-            fontWeight: 600,
-            fontSize: "1.2rem",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            flexShrink: 0,
-          }}
-        >
+      <div className={styles.infoRow}>
+        <div className={styles.timerBox}>{timeLeft}</div>
+        <div className={styles.answerBox}>
           {countAnswer}
           <br />
           Answers
         </div>
       </div>
 
+      <div className={styles.questionBox}>
+        <Title level={2} className={styles.questionText}>
+          {questionText}
+        </Title>
+      </div>
+
       <div
+        className={styles.answerGrid}
         style={{
-          display: "grid",
           gridTemplateColumns: `repeat(${Math.ceil(
             shuffledAnswers.length / 2
           )}, minmax(250px, 1fr))`,
-          gridTemplateRows: `repeat(${Math.ceil(
-            shuffledAnswers.length / 2
-          )}, auto)`,
-          gap: "1rem",
-          width: "100%",
-          maxWidth: "1400px",
         }}
       >
         {shuffledAnswers.map((answer, index) => (
           <div
             key={answer.answerId}
+            className={styles.answerItem}
             style={{
-              backgroundColor: answerColors[index % answerColors.length],
-              padding: "1.5rem 2rem",
-              borderRadius: "0.75rem",
-              color: "#1e293b",
-              fontWeight: 600,
-              fontSize: "1.5rem",
-              textAlign: "center",
-              cursor: "default",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              transition: "transform 0.2s ease, box-shadow 0.2s ease",
-              minHeight: "80px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-4px)";
-              e.currentTarget.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.2)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.1)";
+              backgroundColor: ["#60a5fa", "#f472b6", "#fcd34d", "#34d399"][
+                index % 4
+              ],
+              color: index === 2 ? "#333" : "#fff",
             }}
           >
             {answer.answerText}

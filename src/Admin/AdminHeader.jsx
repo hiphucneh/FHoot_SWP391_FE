@@ -1,7 +1,8 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminStyles.module.css";
-import logo from "../assets/FhootLogo.png";
+import logo from "../assets/Kahoot_logo.png";
 import userIcon from "../assets/user-icon.png";
 
 function AdminHeader() {
@@ -40,16 +41,6 @@ function AdminHeader() {
         <button className={styles.backButton} onClick={handleBack}>
           ← Back to Home
         </button>
-
-        {/* Hiện nút System Configuration nếu KHÔNG ở trang đó */}
-        {location.pathname !== "/system-configuration" && (
-          <button
-            className={styles.configButton}
-            onClick={handleGoToSystemConfig}
-          >
-            ⚙ System Configuration
-          </button>
-        )}
       </div>
 
       <div className={styles.centerSection} onClick={handleReloadAdmin}>

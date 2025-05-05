@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Menu } from "antd";
 import {
   UserOutlined,
+  LogoutOutlined,
   FileTextOutlined,
   SettingOutlined,
   TeamOutlined,
@@ -18,8 +19,9 @@ const Sidebar = ({ onMenuClick }) => {
     "/admin/dashboard": "dashboard",
     "/admin/session-list": "quiz",
     "/admin/settings": "settings",
-    "/admin/system-configuration": "sys-conf",
-    "/admin/package-management": "package"
+    "/admin/system-configuration": "sysConfig",
+    "/admin/package-management": "package",
+    "/admin/user-list": "user"
 
   };
 
@@ -101,19 +103,7 @@ const Sidebar = ({ onMenuClick }) => {
         >
           Package Management
         </Menu.Item>
-        <Menu.Item
-          key="logout"
-          icon={<LogoutOutlined />}
-          style={{
-            color: "white",
-            marginBottom: "8px",
-            borderRadius: "6px",
-            transition: "0.3s",
-          }}
-          className="menu-item-hover"
-        >
-          Logout
-        </Menu.Item>
+
 
 
       </Menu>

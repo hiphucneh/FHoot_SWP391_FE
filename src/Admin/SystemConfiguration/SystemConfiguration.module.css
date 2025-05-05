@@ -1,7 +1,9 @@
 .pageContainer {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background-color: #f7f9fc;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .contentWrapper {
@@ -11,6 +13,8 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .pageTitle {
@@ -24,16 +28,20 @@
 .loadingText {
   text-align: center;
   font-size: 1.2rem;
+  color: #555;
 }
 
 .tableWrapper {
   overflow-x: auto;
+  width: 100%;
 }
 
 .configTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
+  min-width: 768px;
+  /* tránh vỡ bảng khi quá nhỏ */
 }
 
 .configTable thead {
@@ -45,6 +53,7 @@
   padding: 12px 16px;
   border: 1px solid #e2e8f0;
   text-align: left;
+  white-space: nowrap;
 }
 
 .configTable th {
@@ -74,4 +83,25 @@
 
 .editButton:hover {
   background-color: #3182ce;
+}
+
+/* Responsive nhỏ hơn tablet */
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 1rem;
+  }
+
+  .pageTitle {
+    font-size: 1.5rem;
+  }
+
+  .configTable {
+    font-size: 0.85rem;
+    min-width: unset;
+  }
+
+  .editButton {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
 }

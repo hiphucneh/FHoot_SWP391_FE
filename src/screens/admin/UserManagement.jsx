@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import Sidebar from "../../components/SideBar";
+import Sidebar from "../../components/Sidebar";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -20,6 +20,8 @@ const { confirm } = Modal;
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [userPackages, setUserPackages] = useState([]);
+  const [selectedPackage, setSelectedPackage] = useState(null);
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     current: 1,
@@ -28,94 +30,91 @@ const UserManagement = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async (params = {}) => {
+  const fetchUsers = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-
       const response = await axios.get(
         "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
-            search: params.search,
-          },
         }
       );
-
-      const { data } = response.data;
-      setUsers(data);
+      setUsers(response.data.data);
       setPagination((prev) => ({
         ...prev,
-        total: data.length,
+        total: response.data.data.length,
       }));
-    } catch (error) {
+    } catch {
       message.error("Failed to fetch users!");
     }
     setLoading(false);
   };
 
-  const updateUserStatus = async (userId, newStatus) => {
+  const fetchUserPackages = async () => {
     try {
       const token = localStorage.getItem("token");
-
-      await axios.put(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/status/${userId}/${newStatus}`,
-        {},
+      const response = await axios.get(
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/package/user-package",
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+      setUserPackages(response.data.data || []);
+    } catch {
+      message.warning("Failed to fetch user packages.");
+    }
+  };
 
+  const updateUserStatus = async (userId, newStatus) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/status/${userId}/${newStatus}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       message.success(`User status updated to ${newStatus}`);
-      fetchUsers({
-        search: searchText,
-      });
-    } catch (error) {
+      fetchUsers();
+    } catch {
       message.error("Failed to update user status!");
     }
   };
 
-  const showConfirm = (userId, currentStatus, newStatus) => {
-    confirm({
-      title: `Change user status to "${newStatus}"?`,
-      content: `User ID: ${userId}, Current: ${currentStatus}`,
-      onOk() {
-        updateUserStatus(userId, newStatus);
-      },
-      onCancel() {
-        message.info("Cancelled");
-      },
-    });
-  };
-
-  useEffect(() => {
-    fetchUsers({ search: searchText });
-  }, [pagination.current, pagination.pageSize, searchText]);
-
-  const handleTableChange = (pagination) => {
-    setPagination({
-      ...pagination,
-      pageSize: pagination.pageSize,
-      current: pagination.current,
-    });
+  const getPackageByUserId = (userId) => {
+    return userPackages.find((p) => p.userId === userId);
   };
 
   const columns = [
-    { title: "ID", dataIndex: "userId", key: "userId" },
-    { title: "Full Name", dataIndex: "fullName", key: "fullName" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Age", dataIndex: "age", key: "age", render: (age) => age ?? "-" },
+    { title: "ID", dataIndex: "userId" },
+    { title: "Full Name", dataIndex: "fullName" },
+    { title: "Email", dataIndex: "email" },
+    { title: "Age", dataIndex: "age", render: (age) => age ?? "-" },
+    {
+      title: "Package",
+      key: "package",
+      render: (_, record) => {
+        const pkg = getPackageByUserId(record.userId);
+        return pkg ? (
+          <Button type="link" onClick={() => setSelectedPackage(pkg)}>
+            {pkg.packageName}
+          </Button>
+        ) : (
+          "-"
+        );
+      },
+    },
     {
       title: "Status",
       dataIndex: "status",
-      key: "status",
       render: (status) => (
-        <Text type={status === "Active" ? "success" : "danger"}>{status}</Text>
+        <Text type={status === "Active" ? "success" : "danger"}>
+          {status}
+        </Text>
       ),
     },
     {
@@ -127,9 +126,7 @@ const UserManagement = () => {
             <Button
               type="primary"
               danger
-              onClick={() =>
-                showConfirm(record.userId, record.status, "Deleted")
-              }
+              onClick={() => showConfirm(record.userId, record.status, "Deleted")}
             >
               Block
             </Button>
@@ -137,9 +134,7 @@ const UserManagement = () => {
           {record.status === "Inactive" && (
             <Button
               type="primary"
-              onClick={() =>
-                showConfirm(record.userId, record.status, "Active")
-              }
+              onClick={() => showConfirm(record.userId, record.status, "Active")}
             >
               Activate
             </Button>
@@ -147,9 +142,7 @@ const UserManagement = () => {
           {record.status === "Deleted" && (
             <Button
               type="primary"
-              onClick={() =>
-                showConfirm(record.userId, record.status, "Active")
-              }
+              onClick={() => showConfirm(record.userId, record.status, "Active")}
             >
               Restore
             </Button>
@@ -159,63 +152,53 @@ const UserManagement = () => {
     },
   ];
 
+  const showConfirm = (userId, currentStatus, newStatus) => {
+    confirm({
+      title: `Change user status to "${newStatus}"?`,
+      content: `User ID: ${userId}, Current: ${currentStatus}`,
+      onOk() {
+        updateUserStatus(userId, newStatus);
+      },
+    });
+  };
+
+  const handleTableChange = (pagination) => {
+    setPagination({ ...pagination });
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchUserPackages();
+  }, []);
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            background: "#f0f2f5",
-            borderRadius: "8px",
-            overflow: "auto",
-            fontFamily: "'Roboto', sans-serif",
-          }}
-        >
+        <Content style={{ padding: 24 }}>
           <Card
             bordered={false}
             style={{
               maxWidth: "1100px",
               margin: "0 auto 24px",
+              borderRadius: 8,
               background: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-              padding: "24px 32px",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-              }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
-                <Title level={3} style={{ margin: 0, color: "#333" }}>
-                  User Management
-                </Title>
-                <Text type="secondary" style={{ fontSize: 14 }}>
+                <Title level={3}>User Management</Title>
+                <Text type="secondary">
                   Total: <b>{pagination.total}</b> users
                 </Text>
               </div>
               <Input
                 placeholder="Search user..."
                 prefix={<SearchOutlined />}
-                value={searchText}
-                onChange={(e) => {
-                  setPagination((prev) => ({ ...prev, current: 1 }));
-                  setSearchText(e.target.value);
-                }}
                 allowClear
-                style={{
-                  width: 300,
-                  borderRadius: "8px",
-                  borderColor: "#d1d5db",
-                  background: "#f9fafb",
-                  color: "#333",
-                }}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 300 }}
               />
             </div>
           </Card>
@@ -226,7 +209,6 @@ const UserManagement = () => {
               margin: "0 auto",
               background: "#fff",
               borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
               padding: "24px",
             }}
           >
@@ -235,36 +217,27 @@ const UserManagement = () => {
               columns={columns}
               rowKey="userId"
               loading={loading}
-              pagination={{
-                current: pagination.current,
-                pageSize: pagination.pageSize,
-                total: pagination.total,
-                showSizeChanger: true,
-                pageSizeOptions: ["5", "10", "20"],
-              }}
+              pagination={pagination}
               onChange={handleTableChange}
-              rowClassName={() => "table-row-hover"}
             />
           </Card>
-        </Content>
 
-        {/* Inline table style */}
-        <style>
-          {`
-            .table-row-hover:hover {
-              background-color: #f9fafb !important;
-              transition: background-color 0.2s ease;
-            }
-            .ant-table-thead > tr > th {
-              background: #e0f2fe !important;
-              color: #333 !important;
-              font-weight: 600 !important;
-            }
-            .ant-table-tbody > tr > td {
-              color: #333 !important;
-            }
-          `}
-        </style>
+          <Modal
+            title="Package Details"
+            open={!!selectedPackage}
+            onCancel={() => setSelectedPackage(null)}
+            footer={null}
+          >
+            {selectedPackage && (
+              <>
+                <p><b>Gói:</b> {selectedPackage.packageName}</p>
+                <p><b>Bắt đầu:</b> {new Date(selectedPackage.startDate).toLocaleString()}</p>
+                <p><b>Hết hạn:</b> {new Date(selectedPackage.expiryDate).toLocaleString()}</p>
+                <p><b>Trạng thái:</b> {selectedPackage.status}</p>
+              </>
+            )}
+          </Modal>
+        </Content>
       </Layout>
     </Layout>
   );

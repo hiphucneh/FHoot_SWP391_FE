@@ -22,33 +22,33 @@ function PackageManagement() {
 
   const columns = [
     {
-      title: 'Package Name',
-      dataIndex: 'packageName',
-      key: 'packageName',
+      title: "Package Name",
+      dataIndex: "packageName",
+      key: "packageName",
     },
     {
-      title: 'Price ($)',
-      dataIndex: 'price',
-      key: 'price',
-
+      title: "Price ($)",
+      dataIndex: "price",
+      key: "price",
     },
     {
-      title: 'Duration (days)',
-      dataIndex: 'duration',
-      key: 'duration',
-
+      title: "Duration (days)",
+      dataIndex: "duration",
+      key: "duration",
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => showUpdateModal(record)}>Edit</Button>
+          <Button type="primary" onClick={() => showUpdateModal(record)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this package?"
             onConfirm={() => handleDelete(record.packageId)}
@@ -139,17 +139,9 @@ function PackageManagement() {
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
-        <div className={styles.pageContainer} style={{
-          margin: "24px 16px",
-          padding: "24px",
-          background: "linear-gradient(135deg, rgb(186, 230, 253), rgb(243, 212, 229), rgb(254, 243, 199))",
-          borderRadius: "8px",
-          minHeight: "100vh",
-          overflow: "auto",
-          fontFamily: "Roboto, sans-serif"
-        }}>
-          <div className={styles.contentWrapper} style={{ margin: "60px 0 0 220px" }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className={styles.pageContainer}>
+          <div className={styles.contentWrapper}>
+            <div className={styles.topBar}>
               <h2 className={styles.pageTitle}>Package Management</h2>
               <Button type="primary" onClick={showCreateModal}>
                 Create Package
@@ -162,22 +154,14 @@ function PackageManagement() {
               rowKey="packageId"
               loading={loading}
               className={styles.packageTable}
-              rowClassName="table-row-hover"
               bordered
-              style={{
-                background: "#fff",
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                marginTop: "20px"
-              }}
             />
           </div>
         </div>
 
-        {/* Modal for Create Package */}
         <Modal
           title="Create New Package"
-          visible={isCreateVisible}
+          open={isCreateVisible}
           onCancel={handleCancel}
           footer={null}
           destroyOnClose
@@ -194,7 +178,7 @@ function PackageManagement() {
             <Form.Item
               label="Package Name"
               name="packageName"
-              rules={[{ required: true, message: 'Please input package name!' }]}
+              rules={[{ required: true, message: "Please input package name!" }]}
             >
               <Input placeholder="Enter package name" />
             </Form.Item>
@@ -202,7 +186,7 @@ function PackageManagement() {
             <Form.Item
               label="Price ($)"
               name="price"
-              rules={[{ required: true, message: 'Please input price!' }]}
+              rules={[{ required: true, message: "Please input price!" }]}
             >
               <Input type="number" step="0.01" min="0" />
             </Form.Item>
@@ -210,7 +194,7 @@ function PackageManagement() {
             <Form.Item
               label="Duration (seconds)"
               name="duration"
-              rules={[{ required: true, message: 'Please input duration!' }]}
+              rules={[{ required: true, message: "Please input duration!" }]}
             >
               <Input type="number" min="1" />
             </Form.Item>
@@ -218,7 +202,7 @@ function PackageManagement() {
             <Form.Item
               label="Description"
               name="description"
-              rules={[{ required: true, message: 'Please input description!' }]}
+              rules={[{ required: true, message: "Please input description!" }]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
@@ -231,23 +215,18 @@ function PackageManagement() {
           </Form>
         </Modal>
 
-        {/* Modal for Update Package */}
         <Modal
-          title={`Update Package: ${selectedPackage?.packageName || ''}`}
-          visible={isUpdateVisible}
+          title={`Update Package: ${selectedPackage?.packageName || ""}`}
+          open={isUpdateVisible}
           onCancel={handleCancel}
           footer={null}
           destroyOnClose
         >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={onUpdateFinish}
-          >
+          <Form form={form} layout="vertical" onFinish={onUpdateFinish}>
             <Form.Item
               label="Package Name"
               name="packageName"
-              rules={[{ required: true, message: 'Please input package name!' }]}
+              rules={[{ required: true, message: "Please input package name!" }]}
             >
               <Input placeholder="Enter package name" />
             </Form.Item>
@@ -255,7 +234,7 @@ function PackageManagement() {
             <Form.Item
               label="Price ($)"
               name="price"
-              rules={[{ required: true, message: 'Please input price!' }]}
+              rules={[{ required: true, message: "Please input price!" }]}
             >
               <Input type="number" step="0.01" min="0" />
             </Form.Item>
@@ -263,7 +242,7 @@ function PackageManagement() {
             <Form.Item
               label="Duration (seconds)"
               name="duration"
-              rules={[{ required: true, message: 'Please input duration!' }]}
+              rules={[{ required: true, message: "Please input duration!" }]}
             >
               <Input type="number" min="1" />
             </Form.Item>
@@ -271,7 +250,7 @@ function PackageManagement() {
             <Form.Item
               label="Description"
               name="description"
-              rules={[{ required: true, message: 'Please input description!' }]}
+              rules={[{ required: true, message: "Please input description!" }]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>

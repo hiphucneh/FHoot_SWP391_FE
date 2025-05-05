@@ -1,38 +1,72 @@
 .pageContainer {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
-  background-color: #f7f9fc;
+  background: linear-gradient(135deg, rgb(186, 230, 253), rgb(243, 212, 229), rgb(254, 243, 199));
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  justify-content: center;
+
+  align-items: center;
+
 }
 
 .contentWrapper {
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 2rem;
+  width: 100%;
+
+  padding: 24px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+
 }
 
 .pageTitle {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  text-align: center;
   color: #333;
+  margin: 0;
+  text-align: center;
+
+  flex: 1;
 }
 
-
-
-.tableWrapper {
-  overflow-x: auto;
-}
-
-.configTable {
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   width: 100%;
-  border-collapse: collapse;
-  font-size: 1rem;
 }
 
-.configTable thead {
-  background-color: #edf2f7;
+.packageTable {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    margin: 60px auto;
+    padding: 16px;
+  }
+
+  .topBar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .pageTitle {
+    text-align: left;
+    font-size: 1.5rem;
+  }
 }

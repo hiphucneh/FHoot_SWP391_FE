@@ -4,8 +4,8 @@ import Login from "./Login";
 import ForgotPass from "./ForgotPass";
 import AdvHost from "../Host/AdvHost";
 import BlockJoinGame from "../Host/blockjoingame"; // <== NEW
-import "./styles.css";
-import logo from "../assets/FhootLogo.png";
+
+import logo from "../assets/Kahoot_logo.png";
 
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
@@ -94,7 +94,7 @@ function Header() {
           <div
             className="nav__logo"
             onClick={() => {
-              window.location.href = "/HomeAdmin";
+              window.location.href = "/Home";
             }}
             style={{
               cursor: "pointer",
@@ -103,7 +103,7 @@ function Header() {
               gap: "8px",
             }}
           >
-            <img src={logo} alt="Kahoot Logo" className="logo-image" style={{ height: "30%", width: "30%" }} />
+            <img src={logo} alt="Kahoot Logo" className="logo-image" />
           </div>
 
           {/* Menu chính ở giữa */}

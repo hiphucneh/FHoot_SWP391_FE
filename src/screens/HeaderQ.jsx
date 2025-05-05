@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button, Modal, Input, Select, notification } from "antd";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import styles from "./HeaderQ.module.css";
-import logo from "../assets/FhootLogo.png";
+import logo from "../assets/Kahoot_logo.png";
+import geminiLogo from "../assets/gemini.png"; // logo AI mới
 
 const { Option } = Select;
 
@@ -19,13 +20,8 @@ const HeaderQ = ({ onSave, setFlag }) => {
   const [generatedQuiz, setGeneratedQuiz] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
-  const handleExit = () => {
-    navigate("/");
-  };
-
-  const handleCreateWithAI = () => {
-    setIsModalVisible(true);
-  };
+  const handleExit = () => navigate("/your-kahoots");
+  const handleLogoClick = () => navigate("/Home");
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -39,11 +35,9 @@ const HeaderQ = ({ onSave, setFlag }) => {
   const handleToggleQuestion = (question) => {
     setSelectedQuestions((prev) => {
       const exists = prev.find((q) => q.question === question.question);
-      if (exists) {
-        return prev.filter((q) => q.question !== question.question);
-      } else {
-        return [...prev, question];
-      }
+      return exists
+        ? prev.filter((q) => q.question !== question.question)
+        : [...prev, question];
     });
   };
 
@@ -77,51 +71,45 @@ const HeaderQ = ({ onSave, setFlag }) => {
       );
 
       if (response.data.statusCode === 200) {
-        notification.success({
-          message: "AI Quiz Created!",
-        });
-        console.log("Generated Quiz:", response.data.data);
+        notification.success({ message: "AI Quiz Created!" });
         setGeneratedQuiz(response.data.data);
       } else {
         notification.error({
           message: "Error creating quiz",
-          description:
-            response.data.message ||
-            "An error occurred while creating the quiz.",
+          description: response.data.message || "Something went wrong.",
         });
       }
     } catch (error) {
-      console.error("Error calling API:", error);
       notification.error({
         message: "API Error",
-        description:
-          "An error occurred while calling the API. Please try again.",
+        description: "Failed to generate quiz.",
       });
     }
   };
 
   return (
-
-    <header className={styles.header} style={{ height: "80px" }}>
-      <div className={styles.left}>
-        <img src={logo} alt="Kahoot Logo" className={styles.logo} />
+    <header className={styles.header}>
+      <div className={styles.left} onClick={handleLogoClick}>
+        <img src={logo} alt="Logo" className={styles.logo} />
         <h2 className={styles.title}>{quizTitle}</h2>
       </div>
+
       <div className={styles.right}>
-        <Button onClick={handleCreateWithAI} className={styles.aiButton}>
+        <Button className={styles.aiButton} onClick={() => setIsModalVisible(true)}>
+          <img src={geminiLogo} alt="AI" className={styles.aiIcon} />
           Create with AI
         </Button>
-        <Button onClick={handleExit} className={styles.button}>
+        <Button className={styles.button} onClick={handleExit}>
           Exit
         </Button>
-        <Button type="primary" onClick={onSave} className={styles.button}>
+        <Button type="primary" className={styles.button} onClick={onSave}>
           Save
         </Button>
       </div>
 
       <Modal
         title="Create Quiz with AI"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
         className={styles.aiModal}
@@ -129,18 +117,14 @@ const HeaderQ = ({ onSave, setFlag }) => {
         <div className={styles.modalContent}>
           <div className={styles.formField}>
             <label>Topic</label>
-            <Input
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="Enter quiz topic"
-            />
+            <Input value={topic} onChange={(e) => setTopic(e.target.value)} />
           </div>
 
           <div className={styles.formField}>
             <label>Difficulty Level</label>
             <Select
               value={difficultyLevel}
-              onChange={(value) => setDifficultyLevel(value)}
+              onChange={(val) => setDifficultyLevel(val)}
               style={{ width: "100%" }}
             >
               <Option value="VeryEasy">Very Easy</Option>
@@ -165,12 +149,12 @@ const HeaderQ = ({ onSave, setFlag }) => {
             <label>Number of Answers</label>
             <Select
               value={numberOfAnswers}
-              onChange={(value) => setNumberOfAnswers(value)}
+              onChange={(val) => setNumberOfAnswers(val)}
               style={{ width: "100%" }}
             >
-              <Option value="2">2</Option>
-              <Option value="3">3</Option>
-              <Option value="4">4</Option>
+              <Option value={2}>2</Option>
+              <Option value={3}>3</Option>
+              <Option value={4}>4</Option>
             </Select>
           </div>
 
@@ -180,94 +164,60 @@ const HeaderQ = ({ onSave, setFlag }) => {
               Create Quiz
             </Button>
           </div>
+
           {generatedQuiz.length > 0 && (
             <div className={styles.generatedQuiz}>
-              <h3>Generated Quiz</h3>
+              <h3>Generated Questions</h3>
               <div className={styles.modalActions}>
-                <Button
-                  onClick={handleRegenerate}
-                  type="default"
-                  style={{ marginRight: 8 }}
-                >
-                  🔄 Generate Again
-                </Button>
+                <Button onClick={handleRegenerate}>🔄 Regenerate</Button>
                 <Button
                   type="primary"
+                  disabled={selectedQuestions.length === 0}
                   onClick={() => {
-                    const formattedQuestions = selectedQuestions.map(
-                      (q, index) => ({
-                        id: Date.now() + index,
-                        content: q.question,
-                        file: null,
-                        timeLimitSec: 30,
-                        answers: q.options.map((opt, idx) => ({
-                          id: Date.now() + index + idx,
-                          content: opt,
-                          isAnswer: opt === q.correctAnswer,
-                        })),
-                      })
-                    );
+                    const formatted = selectedQuestions.map((q, i) => ({
+                      id: Date.now() + i,
+                      content: q.question,
+                      file: null,
+                      timeLimitSec: 30,
+                      answers: q.options.map((opt, j) => ({
+                        id: Date.now() + i + j,
+                        content: opt,
+                        isAnswer: opt === q.correctAnswer,
+                      })),
+                    }));
 
-                    const existingQuestions =
-                      JSON.parse(
-                        localStorage.getItem(
-                          `savedQuestions_${localStorage.getItem("quizId")}`
-                        )
-                      ) || [];
-                    const updatedQuestions = [
-                      ...existingQuestions,
-                      ...formattedQuestions,
-                    ];
-                    localStorage.setItem(
-                      `savedQuestions_${localStorage.getItem("quizId")}`,
-                      JSON.stringify(updatedQuestions)
-                    );
-                    console.log(existingQuestions);
-
-                    notification.success({
-                      message: "Questions Added",
-                      description:
-                        "Selected questions have been added to the quiz.",
-                    });
-                    setIsModalVisible(false);
-                    setGeneratedQuiz([]);
-                    setSelectedQuestions([]);
                     const quizId = localStorage.getItem("quizId");
-                    const saved = localStorage.getItem(
-                      `savedQuestions_${quizId}`
+                    const existing =
+                      JSON.parse(localStorage.getItem(`savedQuestions_${quizId}`)) || [];
+                    const updated = [...existing, ...formatted];
+                    localStorage.setItem(
+                      `savedQuestions_${quizId}`,
+                      JSON.stringify(updated)
                     );
-                    console.log(saved + "saved");
-                    console.log(updatedQuestions + "updated");
-
+                    notification.success({ message: "Questions added" });
+                    setIsModalVisible(false);
+                    setSelectedQuestions([]);
+                    setGeneratedQuiz([]);
                     setFlag((prev) => !prev);
                   }}
-                  disabled={selectedQuestions.length === 0}
                 >
                   Add Selected Questions
                 </Button>
               </div>
 
-              {generatedQuiz.map((q, index) => (
-                <div key={index} className={styles.questionCard}>
+              {generatedQuiz.map((q, i) => (
+                <div key={i} className={styles.questionCard}>
                   <label>
                     <input
                       type="checkbox"
-                      checked={selectedQuestions.some(
-                        (selected) => selected.question === q.question
-                      )}
+                      checked={selectedQuestions.some((sel) => sel.question === q.question)}
                       onChange={() => handleToggleQuestion(q)}
-                      style={{ marginRight: 8 }}
                     />
-                    <strong>Question {index + 1}:</strong> {q.question}
+                    <strong>Q{i + 1}:</strong> {q.question}
                   </label>
                   <ul>
-                    {q.options.map((opt, idx) => (
-                      <li
-                        key={idx}
-                        style={{
-                          color: opt === q.correctAnswer ? "green" : "black",
-                        }}
-                      >
+                    {q.options.map((opt, j) => (
+                      <li key={j} style={{ color: opt === q.correctAnswer ? "green" : "black" }}>
                         {opt}
                       </li>
                     ))}

@@ -125,7 +125,7 @@ function KahootLists() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.sidebar}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>← Back</button>
+        <button className={styles.backButton} onClick={() => navigate("/Home")}>← Back to Home</button>
 
         {userInfo && (
           <div className={styles.profile}>

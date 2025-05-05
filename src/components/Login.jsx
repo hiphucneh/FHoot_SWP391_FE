@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 function Login({ show, onClose, onSwitchToForgot }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -84,58 +83,6 @@ function Login({ show, onClose, onSwitchToForgot }) {
     }
   };
 
-  const loginWithGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      console.log("Google token response:", tokenResponse);
-      const idToken = tokenResponse.id_token;
-      if (!idToken) {
-        setErrorMessage("Unable to get idToken from Google.");
-        return;
-      }
-
-      setIsGoogleLoading(true);
-
-      try {
-        const res = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "*/*",
-            },
-            body: JSON.stringify({
-              idToken: idToken,
-              fcmToken: "web-client-placeholder",
-            }),
-          }
-        );
-
-        const data = await res.json();
-
-        if (res.ok && data.statusCode === 200) {
-          const token = data.data.accessToken || data.data.token;
-          if (!token) throw new Error("No token returned");
-
-          localStorage.setItem("token", token);
-          await fetchUserInfoAndRedirect(token);
-        } else {
-          setErrorMessage(data.message || "Google login failed.");
-        }
-      } catch (err) {
-        console.error(err);
-        setErrorMessage("Google login error. Please try again.");
-      } finally {
-        setIsGoogleLoading(false);
-      }
-    },
-    onError: () => {
-      setErrorMessage("Google login failed. Please try again.");
-    },
-    flow: "token",
-    scope: "openid email profile",
-  });
-
   return (
     <div className={`login ${show ? "show-login" : ""}`} id="login">
       <form className="login__form" onSubmit={handleSubmit}>
@@ -207,20 +154,13 @@ function Login({ show, onClose, onSwitchToForgot }) {
           Forgot your password?
         </a>
 
-        <div className="login__google">
-          <button
-            type="button"
-            className="login__google-button"
-            onClick={loginWithGoogle}
-            disabled={isGoogleLoading}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google logo"
-              className="google-icon"
-            />
-            {isGoogleLoading ? "Connecting..." : "Continue with Google"}
-          </button>
+        <div className="login__google" style={{ marginTop: "1rem" }}>
+          <GoogleLoginButton
+            onLoginSuccess={(token) => {
+              console.log("🎉 Google login success with token:", token);
+              window.location.href = "/Home";
+            }}
+          />
         </div>
       </form>
 
