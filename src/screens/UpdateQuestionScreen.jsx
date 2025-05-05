@@ -679,7 +679,7 @@ const UpdateQuestionScreen = () => {
         </div>
 
         <div className={styles.editor}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div className={styles.editorTop}>
             <Input.TextArea
               value={question.content}
               onChange={(e) =>
@@ -689,29 +689,19 @@ const UpdateQuestionScreen = () => {
               maxLength={questionLengthConfig.maxValue}
               placeholder="Enter your question"
               autoSize={{ minRows: 2 }}
-              style={{ flex: 1 }}
+              className={styles.questionInput}
             />
             <Button
               type="dashed"
+              size="small"
+              className={styles.aiButton}
               onClick={handleGenerateAIAnswers}
               disabled={!question.content?.trim()}
             >
-              🤖 Answer with AI
+              Answer with AI
             </Button>
           </div>
-          <div className={styles.editorImage}>
-            <Upload
-              accept=".png,.jpg,.jpeg"
-              beforeUpload={() => false}
-              maxCount={1}
-              onChange={(info) => {
-                const file = info.fileList[0]?.originFileObj;
-                if (file) handleImageUpload(file);
-              }}
-            >
-              <Button icon={<UploadOutlined />}>Upload Image</Button>
-            </Upload>
-          </div>
+
           {renderAnswers()}
         </div>
 
