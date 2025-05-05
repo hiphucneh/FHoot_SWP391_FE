@@ -79,7 +79,7 @@ const MyHistorySession = () => {
                   style={{ width: "100%" }}
                 >
                   <Text strong style={{ fontSize: 16 }}>
-                    📝 Question #{index + 1}: {item.questionText}
+                    📝 Question {index + 1}: {item.questionText}
                   </Text>
                   <Text>
                     👉 Your Answer:{" "}
