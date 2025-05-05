@@ -10,11 +10,7 @@ import {
   message,
   Spin,
 } from "antd";
-import {
-  TeamOutlined,
-  UserOutlined,
-  SoundOutlined,
-} from "@ant-design/icons";
+import { TeamOutlined, UserOutlined, SoundOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useSignalR from "../hooks/useSignalR";
@@ -90,12 +86,15 @@ const ListOfGroups = () => {
       startAudioRef.current?.play().catch(() => {});
       fadeOutAudio(bgAudioRef.current, 1000);
 
+      const playerCount = groups.reduce((acc, g) => acc + g.members.length, 0);
+
       // Wait 1s to let the sound play
       setTimeout(() => {
         message.success("Game Started!");
+        localStorage.setItem("totalPlayer", playerCount);
         navigate("/load", {
           state: { sessionCode, totalQuestion: data.length },
-        });        
+        });
       }, 1000);
     } catch (err) {
       message.error("Cannot start game.");
