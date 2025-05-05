@@ -16,20 +16,22 @@ const QnAHostScreen = () => {
   const [answerCount, setAnswerCount] = useState(0);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [flagFirstTimeQuestion, setFlagFirstTimeQuestion] = useState(false);
+  const [flagShowLeaderBoard, setFlagShowLeaderBoard] = useState(false);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [countAnswer, setCountAnswer] = useState(0);
   const [showTimeUp, setShowTimeUp] = useState(false);
+  const [showAllPlayerAnswer, setShowAllPlayerAnswer] = useState(false);
+
   const [flagQuestion, setFlagQuestion] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [flagChangeFistTime, setfFlagChangeFistTime] = useState(false);
+
   const timeLimitSec = currentQuestion?.timeLimitSec || 10;
+
   const [answers, setAnswers] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const [questionText, setQuestionText] = useState("");
-  const [totalPlayers, setTotalPlayers] = useState(
-    parseInt(localStorage.getItem("totalPlayers") || "0", 10)
-  );
 
   const shuffledAnswers = currentQuestion?.isRandomAnswer
     ? [...answers].sort(() => Math.random() - 0.5)
@@ -47,24 +49,6 @@ const QnAHostScreen = () => {
   const handleCountAnswer = () => {
     setCountAnswer((prev) => prev + 1);
   };
-
-  useEffect(() => {
-    if (
-      countAnswer > 0 &&
-      totalPlayers > 0 &&
-      countAnswer === totalPlayers &&
-      timeLeft > 0
-    ) {
-      console.log("✅ All players answered early!");
-      setShowTimeUp(true);
-      setTimeLeft(0);
-
-      setTimeout(() => {
-        setShowTimeUp(false);
-        fetchLeaderboard();
-      }, 2000);
-    }
-  }, [countAnswer, totalPlayers, timeLeft]);
 
   useEffect(() => {
     setTimeLeft(timeLimitSec);
@@ -98,19 +82,44 @@ const QnAHostScreen = () => {
   };
 
   useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && sessionCode && flagQuestion) {
-      console.log("⏰ Time up!");
-      setShowTimeUp(true);
+    const totalPlayer = Number(localStorage.getItem("totalPlayer"));
+    console.log("total player" + totalPlayer);
+    console.log("count answer" + countAnswer);
 
+    if (
+      totalPlayer > 0 &&
+      totalPlayer === countAnswer &&
+      sessionCode &&
+      flagQuestion
+    ) {
+      console.log("Condition: All players answered");
+      setShowAllPlayerAnswer(true);
       setTimeout(() => {
-        setShowTimeUp(false);
+        setShowAllPlayerAnswer(false);
         fetchLeaderboard();
       }, 2000);
+      setTimeLeft(0);
+      setCountAnswer(0);
+      return;
+    } else {
+      if (timeLeft > 0) {
+        const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
+        return () => clearTimeout(timer);
+      } else if (
+        timeLeft === 0 &&
+        sessionCode &&
+        flagQuestion &&
+        showAllPlayerAnswer == false
+      ) {
+        setShowTimeUp(true);
+
+        setTimeout(() => {
+          setShowTimeUp(false);
+          fetchLeaderboard();
+        }, 2000);
+      }
     }
-  }, [timeLeft, sessionCode]);
+  }, [timeLeft, sessionCode, countAnswer]);
 
   const handleNextQuestion = async (sortOrder) => {
     try {
@@ -240,6 +249,26 @@ const QnAHostScreen = () => {
       >
         <Title level={1} style={{ color: "#ef4444", fontSize: "3rem" }}>
           ⏰ Time’s up!
+        </Title>
+      </div>
+    );
+  }
+
+  if (showAllPlayerAnswer) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'Inter', 'Poppins', sans-serif",
+        }}
+      >
+        <Title level={1} style={{ color: "#ef4444", fontSize: "3rem" }}>
+          Everybody Had Answed!!!
         </Title>
       </div>
     );

@@ -23,6 +23,7 @@ const QnAPlayerScreen = () => {
   const [pendingResults, setPendingResults] = useState(null);
   const [displayResults, setDisplayResults] = useState(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [flagShowLeaderBoard, setFlagShowLeaderBoard] = useState(false);
   const [showWatingAnswer, setShowWatingAnswer] = useState(false);
   const [tempPoint, setTempPoint] = useState(0);
 
@@ -52,6 +53,12 @@ const QnAPlayerScreen = () => {
   }, [currentQuestionIndex, timeLimitSec]);
 
   useEffect(() => {
+    if (flagShowLeaderBoard) {
+      setDisplayResults(pendingResults);
+      setShowLeaderboard(true);
+      setFlagShowLeaderBoard(false);
+      setScore((prev) => prev + tempPoint);
+    }
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
@@ -129,6 +136,7 @@ const QnAPlayerScreen = () => {
     token: localStorage.getItem("token"),
     onNextQuestion: handleNextQuestionSignalR,
     onEndSession: endSession,
+    onShowLeaderBoard: setFlagShowLeaderBoard,
   });
 
   useEffect(() => {
