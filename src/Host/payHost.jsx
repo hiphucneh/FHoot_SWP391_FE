@@ -56,7 +56,7 @@ function PayHost() {
       {showPopup && <PayPopup onClose={() => setShowPopup(false)} />}
 
       <div className="payhost-header">
-        <h1>🚀 Upgrade to Kahoot! Host</h1>
+        <h1>🚀 Upgrade to Fhoot! Host</h1>
         <p>Unlock premium features and start hosting today!</p>
       </div>
 

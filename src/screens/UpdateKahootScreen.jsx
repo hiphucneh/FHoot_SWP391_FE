@@ -9,7 +9,7 @@ import styles from "./CreateKahoot.module.css";
 const UpdateKahootScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const token = localStorage.getItem("token");
   const [kahoot, setKahoot] = useState({
     title: "",
     description: "",

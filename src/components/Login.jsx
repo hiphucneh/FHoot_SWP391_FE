@@ -155,12 +155,12 @@ function Login({ show, onClose, onSwitchToForgot }) {
         </a>
 
         <div className="login__google" style={{ marginTop: "1rem" }}>
-          <GoogleLoginButton
-            onLoginSuccess={(token) => {
-              console.log("🎉 Google login success with token:", token);
-              window.location.href = "/Home";
-            }}
-          />
+        <GoogleLoginButton
+  onLoginSuccess={(token) => {
+    console.log("🎉 Google login success with token:", token);
+    window.location.href = "/Home";
+    }}
+/>
         </div>
       </form>
 

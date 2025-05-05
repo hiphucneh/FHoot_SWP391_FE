@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal, Input, Select, notification } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import styles from "./HeaderQ.module.css";
 import logo from "../assets/Kahoot_logo.png";
@@ -11,6 +11,9 @@ const { Option } = Select;
 const HeaderQ = ({ onSave, setFlag }) => {
   const navigate = useNavigate();
   const quizTitle = localStorage.getItem("quizTitle") || "Untitled Quiz";
+
+  const location = useLocation();
+  const isCreatePage = location.pathname === "/createq";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [topic, setTopic] = useState("");
@@ -95,10 +98,16 @@ const HeaderQ = ({ onSave, setFlag }) => {
       </div>
 
       <div className={styles.right}>
-        <Button className={styles.aiButton} onClick={() => setIsModalVisible(true)}>
-          <img src={geminiLogo} alt="AI" className={styles.aiIcon} />
-          Create with AI
-        </Button>
+        {isCreatePage && (
+          <Button
+            className={styles.aiButton}
+            onClick={() => setIsModalVisible(true)}
+          >
+            <img src={geminiLogo} alt="AI" className={styles.aiIcon} />
+            Create with AI
+          </Button>
+        )}
+
         <Button className={styles.button} onClick={handleExit}>
           Exit
         </Button>
@@ -188,7 +197,9 @@ const HeaderQ = ({ onSave, setFlag }) => {
 
                     const quizId = localStorage.getItem("quizId");
                     const existing =
-                      JSON.parse(localStorage.getItem(`savedQuestions_${quizId}`)) || [];
+                      JSON.parse(
+                        localStorage.getItem(`savedQuestions_${quizId}`)
+                      ) || [];
                     const updated = [...existing, ...formatted];
                     localStorage.setItem(
                       `savedQuestions_${quizId}`,
@@ -210,14 +221,21 @@ const HeaderQ = ({ onSave, setFlag }) => {
                   <label>
                     <input
                       type="checkbox"
-                      checked={selectedQuestions.some((sel) => sel.question === q.question)}
+                      checked={selectedQuestions.some(
+                        (sel) => sel.question === q.question
+                      )}
                       onChange={() => handleToggleQuestion(q)}
                     />
                     <strong>Q{i + 1}:</strong> {q.question}
                   </label>
                   <ul>
                     {q.options.map((opt, j) => (
-                      <li key={j} style={{ color: opt === q.correctAnswer ? "green" : "black" }}>
+                      <li
+                        key={j}
+                        style={{
+                          color: opt === q.correctAnswer ? "green" : "black",
+                        }}
+                      >
                         {opt}
                       </li>
                     ))}

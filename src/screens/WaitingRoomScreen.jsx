@@ -1,13 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, Typography, Spin, Tag } from "antd";
-import {
-  LoadingOutlined,
-  UserOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
 import useSignalR from "../hooks/useSignalR";
 import { useNavigate, useLocation } from "react-router-dom";
-import styles from "./WaitingRoomScreen.module.css";
 
 const { Title, Text } = Typography;
 
@@ -18,10 +13,12 @@ const WaitingRoomScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { teamId } = location.state || {};
+  // const teamId = "165";
   const sessionCode = localStorage.getItem("sessionCode");
   const [firstQuestion, setFirstQuestion] = useState(null);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
 
+  // Fetch team data
   const fetchTeamScore = async () => {
     const token = localStorage.getItem("token");
     if (!teamId || !sessionCode) {
@@ -61,12 +58,25 @@ const WaitingRoomScreen = () => {
   };
 
   const handleUpdateGroups = useCallback(() => {
+    console.log("✅ Session started: waiting for question...");
     setIsSessionStarted(true);
   }, []);
 
+  useEffect(() => {
+    if (isSessionStarted && firstQuestion) {
+      console.log("🚀 Navigating to QnA screen with first question");
+      navigate("/answer", { state: { teamId, sessionCode, firstQuestion } });
+    }
+  }, [isSessionStarted, firstQuestion, navigate, teamId, sessionCode]);
+
   const handleNextQuestionSignalR = (newQuestion) => {
     setFirstQuestion(newQuestion);
+    setTimeLeft(timeLimitSec);
   };
+
+  const handleSessionStarted = useCallback(() => {
+    navigate("/answer", { state: { teamId, sessionCode, firstQuestion } });
+  }, [navigate, teamId, sessionCode]);
 
   const connectionRef = useSignalR({
     baseHubUrl:
@@ -76,21 +86,17 @@ const WaitingRoomScreen = () => {
     onNextQuestion: handleNextQuestionSignalR,
   });
 
-  useEffect(() => {
-    if (isSessionStarted && firstQuestion) {
-      navigate("/answer", { state: { teamId, sessionCode, firstQuestion } });
-    }
-  }, [isSessionStarted, firstQuestion, navigate, teamId, sessionCode]);
-
+  // Join session via SignalR
   useEffect(() => {
     const joinSessionIfConnected = async () => {
       const connection = connectionRef?.current;
       if (connection && connection.state === "Connected") {
         try {
           await connection.invoke("JoinSession", sessionCode);
+          console.log("📥 Joined session:", sessionCode);
         } catch (err) {
           console.error("❌ Failed to join session:", err);
-          setError("Could not join session.");
+          setError("Không thể tham gia phiên. Vui lòng thử lại.");
         }
       }
     };
@@ -101,76 +107,180 @@ const WaitingRoomScreen = () => {
     }
   }, [connectionRef, sessionCode]);
 
+  // Fetch team data on mount
   useEffect(() => {
     fetchTeamScore();
   }, [teamId]);
 
   if (loading) {
     return (
-      <div className={styles.wrapper}>
+      <div
+        style={{
+          height: "100vh",
+          background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Spin
           indicator={
             <LoadingOutlined style={{ fontSize: 32, color: "white" }} spin />
           }
         />
-        <Text className={styles.loadingText}>Loading team data...</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#ffffff",
+            fontWeight: "bold",
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
+            display: "block",
+            marginTop: 16,
+          }}
+        >
+          Loading team data...
+        </Text>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.wrapper}>
-        <Text className={styles.loadingText}>Error: {error}</Text>
+      <div
+        style={{
+          height: "100vh",
+          background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#ffffff",
+            fontWeight: "bold",
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          Error: {error}
+        </Text>
       </div>
     );
   }
 
   return (
-    <div className={styles.wrapper}>
-      <Title level={2} className={styles.title}>👋 Welcome Kahoot!</Title>
-      <Text className={styles.subtext}>
-        You're in <span className={styles.teamName}>{teamData.teamName}</span>
+    <div
+      style={{
+        height: "100vh",
+        background: "linear-gradient(135deg, #00f2fe, #ff6ec4, #f9cb28)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Roboto', sans-serif",
+        textAlign: "center",
+        padding: "24px",
+      }}
+    >
+      <Title
+        level={2}
+        style={{
+          color: "#fff",
+          textShadow: "1px 1px 6px rgba(0,0,0,0.3)",
+          marginBottom: "8px",
+        }}
+      >
+        👋 Welcome Kahoot!
+      </Title>
+
+      <Text
+        style={{
+          fontSize: 18,
+          color: "#ffffff",
+          fontWeight: "bold",
+          marginBottom: "24px",
+          textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        You're in <span style={{ color: "#ffd6e0" }}>{teamData.teamName}</span>
       </Text>
 
       <Card
         title={
-          <span className={styles.cardTitle}>
-            <TeamOutlined /> {teamData.teamName}
+          <span style={{ color: "#d81b60", fontWeight: "bold" }}>
+            <TeamOutlined style={{ marginRight: 8 }} />
+            {teamData.teamName}
           </span>
         }
-        className={styles.card}
+        style={{
+          background: "rgba(255, 255, 255, 0.95)",
+          borderRadius: 16,
+          boxShadow: "0 6px 18px rgba(0, 0, 0, 0.1)",
+          width: "100%",
+          maxWidth: 400,
+        }}
       >
-        <div className={styles.tagList}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            justifyContent: "center",
+          }}
+        >
           {teamData.players.map((player, index) => (
             <Tag
               key={index}
-              className={styles.playerTag}
-              icon={
-                player.imageUrl ? (
-                  <img
-                    src={player.imageUrl}
-                    alt={player.name}
-                    className={styles.avatar}
-                  />
-                ) : (
-                  <UserOutlined />
-                )
-              }
+              color="pink"
+              style={{
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "#d81b60",
+                background: "#fff0f6",
+                border: "1px solid #ff85a1",
+              }}
             >
+              {player.imageUrl ? (
+                <img
+                  src={player.imageUrl}
+                  alt={player.name}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    marginRight: 6,
+                  }}
+                />
+              ) : (
+                <UserOutlined style={{ marginRight: 6 }} />
+              )}
               {player.name}
             </Tag>
           ))}
         </div>
       </Card>
 
-      <div className={styles.waitingBox}>
+      <div style={{ marginTop: 32 }}>
         <Spin
           indicator={
             <LoadingOutlined style={{ fontSize: 32, color: "white" }} spin />
           }
         />
-        <Text className={styles.waitingText}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#ffffff",
+            fontWeight: "bold",
+            textShadow: "1px 1px 3px rgba(0, 0, 0, 0.3)",
+            display: "block",
+            marginTop: 16,
+          }}
+        >
           Waiting for the host to start the game...
         </Text>
       </div>

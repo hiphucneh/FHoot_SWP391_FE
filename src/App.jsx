@@ -7,10 +7,10 @@ import WaitingRoomScreen from "./screens/WaitingRoomScreen";
 import Dashboard from "./screens/admin/Dashboard";
 
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Navigate,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import MyHistorySession from "./screens/MyHistorySession";
@@ -49,151 +49,210 @@ import LoadGame from "./screens/LoadGame";
 import MyGame from "./screens/MyGame";
 
 function App() {
-    return (
-        <GoogleOAuthProvider clientId="872792915542-tdot930v32243olj0gbkidj4lpscc2cc.apps.googleusercontent.com">
-            <Router>
-                <Routes>
-                    {/*Host*/}
-                    <Route path="/leaderboard" element={<LeaderBoard />} />
+  return (
+    <GoogleOAuthProvider clientId="872792915542-tdot930v32243olj0gbkidj4lpscc2cc.apps.googleusercontent.com">
+      <Router>
+        <Routes>
+          {/*Host*/}
+          <Route path="/leaderboard" element={<LeaderBoard />} />
 
-                    <Route path="/createQ" element={<CreateQuestion />} />
-                    <Route path="/createK" element={<><HeaderK /> <CreateKahoot /> </>} />
-                    <Route path="/updateK" element={<><HeaderK /> <UpdateKahoot /> </>} />
-                    <Route path="/updateQ" element={<UpdateQuestion />} />
-                    <Route path="/group-list" element={<ListOfGroups />} />
-                    <Route path="/create-session" element={<><HeaderK /><CreateSession /> </>} />
-                    <Route path="/answer-screen" element={<QnAHostScreen />} />
-                    <Route path="/loadcode" element={<LoadCode />} />
-                    <Route path="/load" element={<LoadGame />} />
+          <Route path="/createQ" element={<CreateQuestion />} />
+          <Route
+            path="/createK"
+            element={
+              <>
+                <HeaderK /> <CreateKahoot />{" "}
+              </>
+            }
+          />
+          <Route
+            path="/updateK"
+            element={
+              <>
+                <HeaderK /> <UpdateKahoot />{" "}
+              </>
+            }
+          />
+          <Route path="/updateQ" element={<UpdateQuestion />} />
+          <Route path="/group-list" element={<ListOfGroups />} />
+          <Route
+            path="/create-session"
+            element={
+              <>
+                <HeaderK />
+                <CreateSession />{" "}
+              </>
+            }
+          />
+          <Route path="/answer-screen" element={<QnAHostScreen />} />
+          <Route path="/loadcode" element={<LoadCode />} />
+          <Route path="/load" element={<LoadGame />} />
 
-                    {/* Home */}
-                    <Route
-                        path="/Home"
-                        element={
-                            <>
-                                <Header />
-                                <HomeMenu />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/admin/session-list"
-                        element={
-                            <>
+          {/* Home */}
+          <Route
+            path="/Home"
+            element={
+              <>
+                <Header />
+                <HomeMenu />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader></AdminHeader>
+                <SessionManagement />
+              </>
+            }
+          />
 
-                                <AdminHeader></AdminHeader><SessionManagement />
-                            </>
-                        }
-                    />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
+          <Route path="/UserSetupPage" element={<UserSetupPage />} />
+          <Route
+            path="/Information"
+            element={
+              <>
+                <Header />
+                <Information />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/PayHost"
+            element={
+              <>
+                <Header />
+                <PayHost />
+                <Footer />
+              </>
+            }
+          />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
 
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
-                    <Route path="/UserSetupPage" element={<UserSetupPage />} />
-                    <Route
-                        path="/Information"
-                        element={
-                            <>
-                                <Header />
-                                <Information />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/PayHost"
-                        element={
-                            <>
-                                <Header />
-                                <PayHost />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/payment-success" element={<PaymentSuccess />} />
-                    <Route path="/payment-cancel" element={<PaymentCancel />} />
+          {/* Home */}
+          <Route
+            path="/Home"
+            element={
+              <>
+                <Header />
+                <HomeMenu />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader></AdminHeader>
+                <SessionManagement />
+              </>
+            }
+          />
 
-                    {/* Home */}
-                    <Route
-                        path="/Home"
-                        element={
-                            <>
-                                <Header />
-                                <HomeMenu />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/admin/session-list"
-                        element={
-                            <>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
+          <Route path="/UserSetupPage" element={<UserSetupPage />} />
+          <Route
+            path="/Information"
+            element={
+              <>
+                <Header />
+                <Information />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/PayHost"
+            element={
+              <>
+                <Header />
+                <PayHost />
+                <Footer />
+              </>
+            }
+          />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
 
-                                <AdminHeader></AdminHeader><SessionManagement />
-                            </>
-                        }
-                    />
-
-
-
-
-
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/RegisterSuccess" element={<RegisterSuccess />} />
-                    <Route path="/UserSetupPage" element={<UserSetupPage />} />
-                    <Route
-                        path="/Information"
-                        element={
-                            <>
-                                <Header />
-                                <Information />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/PayHost"
-                        element={
-                            <>
-                                <Header />
-                                <PayHost />
-                                <Footer />
-                            </>
-                        }
-                    />
-                    <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/payment-success" element={<PaymentSuccess />} />
-                    <Route path="/payment-cancel" element={<PaymentCancel />} />
-
-                    <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
-                    <Route path="/your-kahoots" element={<KahootLists />} />
-                    <Route path="/my-game" element={<MyGame />} />
-                    {/* Admin */}
-                    <Route path="/admin/user-list" element={<><AdminHeader /> <UserManagement /></>} />
-                    <Route path="/admin/session-list" element={<><AdminHeader /><SessionManagement /></>} />
-                    <Route path="/admin/setting" element={<HomeForAdmin />} />
-                    <Route path="/admin/system-configuration" element={<><AdminHeader /><SystemConfiguration /></>} />
-                    <Route path="/choose-group" element={<ChooseGroupScreen />} />
-                    <Route path="/admin/session-list" element={
-                        <>
-
-                            <AdminHeader /><SessionManagement />
-                        </>
-                    }
-                    />
-                    <Route path="/waiting-room" element={<WaitingRoomScreen />} />
-                    <Route path="/admin/package-management" element={<><AdminHeader /><PackageManagement /></>} />
-                    <Route path="/answer" element={<QnAPlayerScreen />} />
-                    <Route path="/admin/dashboard" element={<><AdminHeader /><Dashboard /></>} />
-                    <Route path="/bingo" element={<PlayerResultScreen />} />
-                    <Route path="/result" element={<MyHistorySession />} />
-                    {/* Default */}
-                    <Route path="/" element={<Navigate to="/Home" />} />
-                </Routes>
-            </Router>
-        </GoogleOAuthProvider>
-    );
+          <Route path="/enter-pin" element={<EnterPinCodeScreen />} />
+          <Route path="/your-kahoots" element={<KahootLists />} />
+          <Route path="/my-game" element={<><HeaderK /> <MyGame /></>} />
+          {/* Admin */}
+          <Route
+            path="/admin/user-list"
+            element={
+              <>
+                <AdminHeader /> <UserManagement />
+              </>
+            }
+          />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader />
+                <SessionManagement />
+              </>
+            }
+          />
+          <Route path="/admin/setting" element={<HomeForAdmin />} />
+          <Route
+            path="/admin/system-configuration"
+            element={
+              <>
+                <AdminHeader />
+                <SystemConfiguration />
+              </>
+            }
+          />
+          <Route path="/choose-group" element={<ChooseGroupScreen />} />
+          <Route
+            path="/admin/session-list"
+            element={
+              <>
+                <AdminHeader />
+                <SessionManagement />
+              </>
+            }
+          />
+          <Route path="/waiting-room" element={<WaitingRoomScreen />} />
+          <Route
+            path="/admin/package-management"
+            element={
+              <>
+                <AdminHeader />
+                <PackageManagement />
+              </>
+            }
+          />
+          <Route path="/answer" element={<QnAPlayerScreen />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <>
+                <AdminHeader />
+                <Dashboard />
+              </>
+            }
+          />
+          <Route path="/bingo" element={<PlayerResultScreen />} />
+          <Route path="/result" element={<MyHistorySession />} />
+          {/* Default */}
+          <Route path="/" element={<Navigate to="/Home" />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
+  );
 }
 
 export default App;
