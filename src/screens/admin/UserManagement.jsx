@@ -85,8 +85,37 @@ const UserManagement = () => {
     }
   };
 
+  const updateUserRole = async (userId, newRole) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/role/${userId}/${newRole}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      message.success(response.data.message || "Role updated successfully");
+      fetchUsers();
+    } catch {
+      message.error("Failed to update user role!");
+    }
+  };
+
   const getPackageByUserId = (userId) => {
     return userPackages.find((p) => p.userId === userId);
+  };
+
+  const showConfirm = (userId, currentStatus, newStatus) => {
+    confirm({
+      title: `Change user status to "${newStatus}"?`,
+      content: `User ID: ${userId}, Current: ${currentStatus}`,
+      onOk() {
+        updateUserStatus(userId, newStatus);
+      },
+    });
   };
 
   const columns = [
@@ -94,6 +123,7 @@ const UserManagement = () => {
     { title: "Full Name", dataIndex: "fullName" },
     { title: "Email", dataIndex: "email" },
     { title: "Age", dataIndex: "age", render: (age) => age ?? "-" },
+    { title: "Role", dataIndex: "role" },
     {
       title: "Package",
       key: "package",
@@ -147,20 +177,25 @@ const UserManagement = () => {
               Restore
             </Button>
           )}
+          <Button
+            type="default"
+            onClick={() => {
+              const newRole = record.role === "User" ? "Teacher" : "User";
+              confirm({
+                title: `Change role to "${newRole}"?`,
+                content: `User ID: ${record.userId}, Current role: ${record.role}`,
+                onOk() {
+                  updateUserRole(record.userId, newRole);
+                },
+              });
+            }}
+          >
+            Change Role
+          </Button>
         </Space>
       ),
     },
   ];
-
-  const showConfirm = (userId, currentStatus, newStatus) => {
-    confirm({
-      title: `Change user status to "${newStatus}"?`,
-      content: `User ID: ${userId}, Current: ${currentStatus}`,
-      onOk() {
-        updateUserStatus(userId, newStatus);
-      },
-    });
-  };
 
   const handleTableChange = (pagination) => {
     setPagination({ ...pagination });
@@ -213,7 +248,9 @@ const UserManagement = () => {
             }}
           >
             <Table
-              dataSource={users}
+              dataSource={users.filter((u) =>
+                u.fullName.toLowerCase().includes(searchText.toLowerCase())
+              )}
               columns={columns}
               rowKey="userId"
               loading={loading}

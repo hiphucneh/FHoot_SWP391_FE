@@ -11,23 +11,26 @@ import styles from "./CreateQuestion.module.css";
 import bgImage from "../assets/bg-Q.jpg";
 
 const { Option } = Select;
-
 const token = localStorage.getItem("token");
 const CreateQuestionScreen = () => {
   const quizId = localStorage.getItem("quizId");
   const navigate = useNavigate();
 
   const [questionLengthConfig, setQuestionLengthConfig] = useState({
-    min: 1,
-    max: 500,
+    minValue: 1,
+    maxValue: 500,
   });
   const [answerLimitConfig, setAnswerLimitConfig] = useState({
-    min: 2,
-    max: 6,
+    minValue: 2,
+    maxValue: 150,
   });
-  const [timeLimitConfig, setTimeLimitConfig] = useState({ min: 10, max: 300 });
+  const [timeLimitConfig, setTimeLimitConfig] = useState({
+    minValue: 10,
+    maxValue: 300,
+  });
   const [question, setQuestion] = useState({});
   const [answers, setAnswers] = useState([]);
+  const [flagAIQuestion, setFlagAIQuestion] = useState(false);
   const [savedQuestions, setSavedQuestions] = useState(() => {
     const saved = localStorage.getItem(`savedQuestions_${quizId}`);
     const parsed = saved ? JSON.parse(saved) : [];
@@ -44,6 +47,36 @@ const CreateQuestionScreen = () => {
     }
     return parsed;
   });
+
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      const config11 = await getConfigData(11);
+      const config12 = await getConfigData(12);
+      const config13 = await getConfigData(13);
+
+      if (config11) {
+        setQuestionLengthConfig({
+          minValue: config11.minValue,
+          maxValue: config11.maxValue,
+        });
+      }
+
+      if (config12) {
+        setAnswerLimitConfig({
+          minValue: config12.minValue,
+          maxValue: config12.maxValue,
+        });
+      }
+      if (config13)
+        setTimeLimitConfig({
+          minValue: config13.minValue,
+          maxValue: config13.maxValue,
+        });
+    };
+
+    fetchConfigs();
+  }, []);
+
   async function getConfigData(configId) {
     const url = `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/system-configuration/${configId}`;
     try {
@@ -56,40 +89,12 @@ const CreateQuestionScreen = () => {
       });
       const data = await response.json();
       console.log(configId);
-      console.log("53", data.data.maxValue);
-      return data.data;
+      console.log(data);
+      return data.id;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
-  useEffect(() => {
-    const fetchConfigs = async () => {
-      const config11 = await getConfigData(11);
-      const config12 = await getConfigData(12);
-      const config10 = await getConfigData(10);
-
-      if (config11) {
-        setQuestionLengthConfig({
-          min: config11.minValue,
-          max: config11.maxValue,
-        });
-      }
-
-      if (config12) {
-        setAnswerLimitConfig({
-          min: config12.minValue,
-          max: config12.maxValue,
-        });
-      }
-      if (config10)
-        setTimeLimitConfig({
-          min: config10.minValue,
-          max: config10.maxValue,
-        });
-    };
-
-    fetchConfigs();
-  }, []);
 
   useEffect(() => {
     if (savedQuestions.length > 0 && !question.id) {
@@ -115,7 +120,8 @@ const CreateQuestionScreen = () => {
         setSavedQuestions((prev) => [...prev, updated]);
       }
     }
-  }, [answers, question]);
+    console.log(flagAIQuestion);
+  }, [answers, question, flagAIQuestion]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -123,6 +129,13 @@ const CreateQuestionScreen = () => {
       JSON.stringify(savedQuestions)
     );
   }, [savedQuestions, quizId]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`savedQuestions_${quizId}`);
+    if (saved) {
+      setSavedQuestions(JSON.parse(saved));
+    }
+  }, [flagAIQuestion]);
 
   const handleAddQuestion = () => {
     const newQ = {
@@ -132,6 +145,7 @@ const CreateQuestionScreen = () => {
       answers: [],
       timeLimitSec: 30,
     };
+
     setSavedQuestions((prev) => [...prev, newQ]);
     setQuestion(newQ);
     setAnswers([
@@ -174,10 +188,6 @@ const CreateQuestionScreen = () => {
       });
     }
     setAnswers(updated.slice(0, val));
-  };
-
-  const handleImageUpload = (file) => {
-    setQuestion((prev) => ({ ...prev, file }));
   };
 
   const handleChangeImport = (file) => {
@@ -264,6 +274,38 @@ const CreateQuestionScreen = () => {
     }
   };
 
+  const handleAIAnswer = async () => {
+    const url =
+      "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/generate-answer-ai";
+    try {
+      const formData = new FormData();
+      formData.append("content", question.content);
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.statusCode === 200) {
+        setAnswers(
+          data.data.options.map((option, index) => ({
+            id: Date.now() + index,
+            content: option,
+            isAnswer: option === data.data.correctAnswer,
+          }))
+        );
+      } else {
+        notification.error({ message: "Failed to generate AI answers" });
+      }
+    } catch (error) {
+      console.error("Error fetching AI answers:", error);
+      notification.error({ message: "Error generating AI answers" });
+    }
+  };
+
   const renderAnswers = () => {
     const layout = {
       2: [["a1", "a2"]],
@@ -296,8 +338,8 @@ const CreateQuestionScreen = () => {
                   <Input
                     value={answer.content}
                     placeholder={`Answer ${idx + 1}`}
-                    minLength={answerLimitConfig.min}
-                    maxLength={answerLimitConfig.max}
+                    minLength={answerLimitConfig.minValue}
+                    maxLength={answerLimitConfig.maxValue}
                     onChange={(e) =>
                       handleChangeAnswer(answer.id, e.target.value)
                     }
@@ -321,7 +363,7 @@ const CreateQuestionScreen = () => {
 
   return (
     <>
-      <HeaderQ onSave={handleSaveQuiz} />
+      <HeaderQ onSave={handleSaveQuiz} setFlag={setFlagAIQuestion} />
       <div
         className={styles.container}
         style={{
@@ -437,17 +479,27 @@ const CreateQuestionScreen = () => {
 
         {/* Editor */}
         <div className={styles.editor}>
-          <Input.TextArea
-            value={question.content}
-            onChange={(e) =>
-              setQuestion((prev) => ({ ...prev, content: e.target.value }))
-            }
-            placeholder="Enter your question"
-            autoSize={{ minRows: 2 }}
-            minLength={questionLengthConfig.min}
-            maxLength={questionLengthConfig.max}
-          />
-
+          <div className={styles.editorTop}>
+            <Input.TextArea
+              className={styles.questionInput}
+              value={question.content}
+              onChange={(e) =>
+                setQuestion((prev) => ({ ...prev, content: e.target.value }))
+              }
+              placeholder="Enter your question"
+              autoSize={{ minRows: 2 }}
+              minLength={questionLengthConfig.minValue}
+              maxLength={questionLengthConfig.maxValue}
+            />
+            <Button
+              type="default"
+              size="small"
+              onClick={handleAIAnswer}
+              className={styles.aiButton}
+            >
+              Answer With AI
+            </Button>
+          </div>
           {renderAnswers()}
         </div>
 
@@ -468,8 +520,8 @@ const CreateQuestionScreen = () => {
           <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
           <Select
             value={question.timeLimitSec}
-            minvalue={timeLimitConfig.min}
-            maxvalue={timeLimitConfig.max}
+            minValue={timeLimitConfig.minValue}
+            maxValue={timeLimitConfig.maxValue}
             onChange={(val) =>
               setQuestion((prev) => ({ ...prev, timeLimitSec: val }))
             }
@@ -478,10 +530,11 @@ const CreateQuestionScreen = () => {
             {Array.from(
               {
                 length:
-                  Math.floor((timeLimitConfig.max - timeLimitConfig.min) / 10) +
-                  1,
+                  Math.floor(
+                    (timeLimitConfig.maxValue - timeLimitConfig.minValue) / 10
+                  ) + 1,
               },
-              (_, i) => timeLimitConfig.min + i * 10
+              (_, i) => timeLimitConfig.minValue + i * 10
             ).map((sec) => (
               <Option key={sec} value={sec}>
                 {sec} giây

@@ -22,7 +22,7 @@ const HeaderK = () => {
       }}
     >
       <button
-        onClick={() => navigate(-1)}
+        onClick={() =>  navigate("/Home")}
         style={{
           background: "none",
           border: "none",
@@ -34,7 +34,7 @@ const HeaderK = () => {
           gap: "8px",
         }}
       >
-        <ArrowLeftOutlined /> Back
+        <ArrowLeftOutlined /> Back to Home
       </button>
     </div>
   );
