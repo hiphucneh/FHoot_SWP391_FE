@@ -417,7 +417,6 @@ const UpdateQuestionScreen = () => {
             placeholder="Enter your question"
             autoSize={{ minRows: 2 }}
           />
-
           {renderAnswers()}
         </div>
 

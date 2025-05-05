@@ -130,7 +130,6 @@ const UpdateKahootScreen = () => {
         </div>
 
 
-
         <form onSubmit={handleSubmit} className={`${styles.form} ${styles.fadeIn}`}>
           <input
             type="text"
@@ -153,8 +152,8 @@ const UpdateKahootScreen = () => {
             Update Kahoot
           </button>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

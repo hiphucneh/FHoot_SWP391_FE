@@ -11,6 +11,7 @@ import styles from "./CreateQuestion.module.css";
 import bgImage from "../assets/bg-Q.jpg";
 
 const { Option } = Select;
+
 const token = localStorage.getItem("token")
 const CreateQuestionScreen = () => {
     const quizId = localStorage.getItem("quizId");
@@ -327,7 +328,7 @@ const CreateQuestionScreen = () => {
                     backgroundPosition: "center",
                 }}
             >
-                {/* Sidebar Left */}
+
                 <div className={styles.sidebarLeft}>
                     <h3>Questions</h3>
                     <DragDropContext

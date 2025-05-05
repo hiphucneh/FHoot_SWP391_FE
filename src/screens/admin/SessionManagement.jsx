@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import Sidebar from "../../components/Sidebar.jsx";
+import Sidebar from "../../components/SideBar";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -143,7 +143,6 @@ const SessionManagement = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-
       <Sidebar />
       <Layout>
         <Content

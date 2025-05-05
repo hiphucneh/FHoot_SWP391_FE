@@ -141,10 +141,10 @@ const LeaderBoardScreen = ({
                 record.rank === 1
                   ? "gold-row"
                   : record.rank === 2
-                  ? "silver-row"
-                  : record.rank === 3
-                  ? "bronze-row"
-                  : ""
+                    ? "silver-row"
+                    : record.rank === 3
+                      ? "bronze-row"
+                      : ""
               }
               expandable={{
                 expandedRowRender: (record) => {

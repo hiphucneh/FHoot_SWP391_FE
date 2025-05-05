@@ -91,6 +91,19 @@ const Sidebar = ({ onMenuClick }) => {
           User Management
         </Menu.Item>
         <Menu.Item
+          key="quiz"
+          icon={<UserOutlined />}
+          style={{
+            color: "white",
+            marginBottom: "8px",
+            borderRadius: "6px",
+            transition: "0.3s",
+          }}
+          className="menu-item-hover"
+        >
+          Session Management
+        </Menu.Item>
+        <Menu.Item
           key="package"
           icon={<UserOutlined />}
           style={{
