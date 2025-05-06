@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import styles from "./MyGame.module.css";
+import { useNavigate } from "react-router-dom";
+import styles from ".//MyGame.module.css";
 
 export default function MyGame() {
   const [sessions, setSessions] = useState([]);
@@ -12,20 +13,19 @@ export default function MyGame() {
 
   useEffect(() => {
     const fetchSessions = async () => {
-
       try {
         const res = await fetch(
           "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/player/my-sessions",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
               Accept: "*/*",
             },
           }
         );
         const data = await res.json();
         if (data.statusCode === 200) {
-          setSessions(data.data);
+          setSessions(data.data.reverse()); // Newest sessions first
         }
       } catch (err) {
         console.error("Error fetching sessions:", err);
@@ -109,10 +109,42 @@ export default function MyGame() {
             <button className={styles.closeButton} onClick={closeModal}>
               ✖
             </button>
-            <h2 className={styles.modalTitle}>Session: {selectedSession?.sessionName}</h2>
+            <h2 className={styles.modalTitle}>
+              Session: {selectedSession?.sessionName}
+            </h2>
             <p><strong>Session Code:</strong> {selectedSession?.sessionCode}</p>
             <p><strong>Total Score:</strong> {resultDetail.totalScore}</p>
             <p><strong>Answers:</strong> {resultDetail.answers?.length || 0}</p>
+
+            <div className={styles.answerList}>
+              {resultDetail.answers.map((item, index) => (
+                <div
+                  key={index}
+                  className={styles.answerItem}
+                  style={{
+                    backgroundColor: item.isCorrect ? "#e8f5e9" : "#ffebee",
+                    border: "1px solid #ccc",
+                    borderRadius: "6px",
+                    padding: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <p><strong>📝 Question {index + 1}:</strong> {item.questionText}</p>
+                  <p>
+                    👉 Your Answer:{" "}
+                    <span style={{ color: item.isCorrect ? "green" : "red", fontWeight: "bold" }}>
+                      {item.answerText}
+                    </span>
+                  </p>
+                  <p>
+                    🧮 Score:{" "}
+                    <span style={{ color: item.isCorrect ? "green" : "red" }}>
+                      {item.isCorrect ? `+${item.score}` : "Incorrect"}
+                    </span>
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

@@ -20,13 +20,15 @@ const { Content } = Layout;
 const { confirm } = Modal;
 
 const UserManagement = () => {
+  const [allUsers, setAllUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [userPackages, setUserPackages] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [sorter, setSorter] = useState({});
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5,
+    pageSize: 6,
     total: 0,
   });
   const [loading, setLoading] = useState(false);
@@ -36,16 +38,14 @@ const UserManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
+        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user?pageIndex=1&pageSize=1000",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setUsers(response.data.data);
-      setPagination((prev) => ({
-        ...prev,
-        total: response.data.data.length,
-      }));
+      const all = response.data.data || [];
+      setAllUsers(all);
+      paginateData(all, 1, pagination.pageSize); // reset về trang 1
     } catch {
       message.error("Failed to fetch users!");
     }
@@ -65,6 +65,37 @@ const UserManagement = () => {
     } catch {
       message.warning("Failed to fetch user packages.");
     }
+  };
+
+  const paginateData = (data, page, size, currentSorter = sorter) => {
+    let filtered = data.filter((u) =>
+      u.fullName.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    // Apply sorting
+    if (currentSorter?.field && currentSorter?.order) {
+      filtered = [...filtered].sort((a, b) => {
+        const aValue = a[currentSorter.field];
+        const bValue = b[currentSorter.field];
+        if (typeof aValue === "number") {
+          return currentSorter.order === "ascend" ? aValue - bValue : bValue - aValue;
+        } else {
+          return currentSorter.order === "ascend"
+            ? String(aValue).localeCompare(String(bValue))
+            : String(bValue).localeCompare(String(aValue));
+        }
+      });
+    }
+
+    const start = (page - 1) * size;
+    const end = start + size;
+
+    setUsers(filtered.slice(start, end));
+    setPagination({
+      current: page,
+      pageSize: size,
+      total: filtered.length,
+    });
   };
 
   const updateUserStatus = async (userId, newStatus) => {
@@ -111,14 +142,16 @@ const UserManagement = () => {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "userId" },
-    { title: "Full Name", dataIndex: "fullName" },
-    { title: "Email", dataIndex: "email" },
-    { title: "Age", dataIndex: "age", render: (age) => age ?? "-" },
-
-    // ✅ Role column (hiển thị role hiện tại của user)
-    { title: "Role", dataIndex: "role" },
-
+    { title: "ID", dataIndex: "userId", sorter: true },
+    { title: "Full Name", dataIndex: "fullName", sorter: true },
+    { title: "Email", dataIndex: "email", sorter: true },
+    {
+      title: "Age",
+      dataIndex: "age",
+      render: (age) => age ?? "-",
+      sorter: true,
+    },
+    { title: "Role", dataIndex: "role", sorter: true },
     {
       title: "Subscription",
       key: "package",
@@ -139,6 +172,7 @@ const UserManagement = () => {
       render: (status) => (
         <Text type={status === "Active" ? "success" : "danger"}>{status}</Text>
       ),
+      sorter: true,
     },
     {
       title: "Action",
@@ -166,8 +200,6 @@ const UserManagement = () => {
               {record.status === "Inactive" ? "Activate" : "Restore"}
             </Button>
           )}
-
-          {/* ✅ Button để chọn role bằng dropdown */}
           <Button
             type="default"
             onClick={() => {
@@ -197,14 +229,19 @@ const UserManagement = () => {
     },
   ];
 
-  const handleTableChange = (pagination) => {
-    setPagination({ ...pagination });
+  const handleTableChange = (pagination, filters, sorterArg) => {
+    setSorter(sorterArg);
+    paginateData(allUsers, pagination.current, pagination.pageSize, sorterArg);
   };
 
   useEffect(() => {
     fetchUsers();
     fetchUserPackages();
   }, []);
+
+  useEffect(() => {
+    paginateData(allUsers, 1, pagination.pageSize, sorter);
+  }, [searchText]);
 
   return (
     <Layout className={styles.layout}>
@@ -232,13 +269,17 @@ const UserManagement = () => {
 
           <Card className={styles.tableCard}>
             <Table
-              dataSource={users.filter((u) =>
-                u.fullName.toLowerCase().includes(searchText.toLowerCase())
-              )}
+              dataSource={users}
               columns={columns}
               rowKey="userId"
               loading={loading}
-              pagination={pagination}
+              pagination={{
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+                showSizeChanger: true,
+                pageSizeOptions: ["6", "10", "20", "50"],
+              }}
               onChange={handleTableChange}
             />
           </Card>

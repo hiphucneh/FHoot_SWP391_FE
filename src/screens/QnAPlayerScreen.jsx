@@ -58,6 +58,7 @@ const QnAPlayerScreen = () => {
       setShowLeaderboard(true);
       setFlagShowLeaderBoard(false);
       setScore((prev) => prev + tempPoint);
+      setTempPoint(0);
     }
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
