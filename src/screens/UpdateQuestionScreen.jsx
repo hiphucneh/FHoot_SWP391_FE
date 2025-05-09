@@ -25,6 +25,7 @@ import { useForm } from "antd/es/form/Form";
 const { Option } = Select;
 
 const UpdateQuestionScreen = () => {
+  const [questionType, setQuestionType] = useState("single");
   const navigate = useNavigate();
   const location = useLocation();
   const quizId = location.state?.quizId;
@@ -107,6 +108,7 @@ const UpdateQuestionScreen = () => {
       content: q.questionText,
       file: q.imgUrl,
       timeLimitSec: q.timeLimitSec || 30,
+      questionType: q.questionType || "single",
       answers: q.answers.map((a) => ({
         id: a.answerId,
         content: a.answerText,
@@ -166,13 +168,14 @@ const UpdateQuestionScreen = () => {
 
   const handleSelectQuestion = (q) => {
     setQuestion(q);
+    setQuestionType(q.questionType || "single");
     setAnswers(
       q.answers.length
         ? q.answers
         : [
-          { id: Date.now(), content: "", isAnswer: false },
-          { id: Date.now() + 1, content: "", isAnswer: false },
-        ]
+            { id: Date.now(), content: "", isAnswer: false },
+            { id: Date.now() + 1, content: "", isAnswer: false },
+          ]
     );
   };
 
@@ -199,8 +202,6 @@ const UpdateQuestionScreen = () => {
     }
     setAnswers(updated.slice(0, val));
   };
-
-
 
   const handleChangeImport = (file) => {
     const reader = new FileReader();
@@ -247,7 +248,6 @@ const UpdateQuestionScreen = () => {
     }
 
     try {
-
       const formData = new FormData();
       formData.append("content", question.content);
 
@@ -281,13 +281,11 @@ const UpdateQuestionScreen = () => {
   const handleUpdateQuiz = async () => {
     if (!quizId || savedQuestions.length === 0) {
       return notification.warning({ message: "No questions to update" });
-    } else if (savedQuestions.some(q =>
-      !q.content?.trim())) {
+    } else if (savedQuestions.some((q) => !q.content?.trim())) {
       return notification.error({
         message: "Can't update yet!",
-        description: "Still have null question."
-      })
-
+        description: "Still have null question.",
+      });
     }
 
     const payload = savedQuestions.map((q) => ({
@@ -351,24 +349,38 @@ const UpdateQuestionScreen = () => {
               return (
                 <div
                   key={answer.id}
-                  className={`${styles.answerBox} ${[styles.red, styles.blue, styles.yellow, styles.green][idx]
-                    }`}
+                  className={`${styles.answerBox} ${
+                    [styles.red, styles.blue, styles.yellow, styles.green][idx]
+                  }`}
                 >
                   <div className={styles.iconBox}>
                     {["▲", "◆", "●", "■"][idx]}
                   </div>
                   <Input
                     value={answer.content}
-                    placeholder={`Answer ${idx + 1}`}
+                    disabled={questionType === "truefalse"}
                     onChange={(e) =>
                       handleChangeAnswer(answer.id, e.target.value)
                     }
                   />
                   <Checkbox
                     checked={answer.isAnswer}
-                    onChange={(e) =>
-                      handleToggleCheckbox(answer.id, e.target.checked)
-                    }
+                    onChange={(e) => {
+                      if (
+                        questionType === "single" ||
+                        questionType === "truefalse"
+                      ) {
+                        setAnswers((prev) =>
+                          prev.map((a) =>
+                            a.id === answer.id
+                              ? { ...a, isAnswer: true }
+                              : { ...a, isAnswer: false }
+                          )
+                        );
+                      } else {
+                        handleToggleCheckbox(answer.id, e.target.checked);
+                      }
+                    }}
                   >
                     Correct
                   </Checkbox>
@@ -417,8 +429,9 @@ const UpdateQuestionScreen = () => {
                           ref={dragProvided.innerRef}
                           {...dragProvided.draggableProps}
                           {...dragProvided.dragHandleProps}
-                          className={`${styles.questionItem} ${q.id === question.id ? styles.active : ""
-                            }`}
+                          className={`${styles.questionItem} ${
+                            q.id === question.id ? styles.active : ""
+                          }`}
                           onClick={() => handleSelectQuestion(q)}
                           onContextMenu={(e) => {
                             e.preventDefault();
@@ -519,7 +532,6 @@ const UpdateQuestionScreen = () => {
               layout="vertical"
               onFinish={async (values) => {
                 try {
-
                   const formData = new FormData();
                   formData.append("Topic", values.Topic);
                   formData.append(
@@ -527,7 +539,7 @@ const UpdateQuestionScreen = () => {
                     values.NumberOfQuestions
                   );
                   formData.append("DifficultyLevel", values.DifficultyLevel);
-                  formData.append("NumberOfAnswers", values.NumberOfAnswers);
+                  formData.append("NumberOfAnswers", 4);
 
                   const res = await axios.post(
                     "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/quiz/generate-ai",
@@ -548,10 +560,10 @@ const UpdateQuestionScreen = () => {
                   });
                   console.log(data);
 
-
                   const transformedQuestions = data.data.map((q, idx) => ({
                     questionText: q.question,
                     timeLimitSec: 10,
+                    questionType: "single",
                     answers: q.options.map((opt, j) => ({
                       answerText: opt,
                       isCorrect: opt === q.correctAnswer,
@@ -594,17 +606,6 @@ const UpdateQuestionScreen = () => {
                   <Option value="medium">Medium</Option>
                   <Option value="hard">Hard</Option>
                   <Option value="veryHard">Very Hard</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="NumberOfAnswers"
-                label="Number of Answer"
-                rules={[{ required: true, message: "Select number of answer" }]}
-              >
-                <Select placeholder="Select level">
-                  <Option value="2">2</Option>
-                  <Option value="3">3</Option>
-                  <Option value="4">4</Option>
                 </Select>
               </Form.Item>
             </Form>
@@ -678,6 +679,7 @@ const UpdateQuestionScreen = () => {
                         content: q.questionText,
                         file: null,
                         timeLimitSec: q.timeLimitSec || 10,
+                        questionType: q.questionType || "single",
                         answers: q.answers.map((a, j) => ({
                           id: Date.now() + idx * 10 + j,
                           content: a.answerText,
@@ -716,31 +718,49 @@ const UpdateQuestionScreen = () => {
               className={styles.questionInput}
             />
             <Button
-              type="dashed"
-              size="small"
-              className={styles.aiButton}
-              onClick={handleGenerateAIAnswers}
-              disabled={!question.content?.trim()}
-            >
-              Answer with AI
-            </Button>
+  type="dashed"
+  size="small"
+  className={styles.aiButton}
+  onClick={handleGenerateAIAnswers}
+  disabled={!question.content?.trim() || questionType === "truefalse"}
+>
+  Answer with AI
+</Button>
+
           </div>
 
           {renderAnswers()}
         </div>
 
         <div className={styles.sidebarRight}>
-          <h4>Number of Answers</h4>
+          <h4>Question Type</h4>
           <Select
-            value={answers.length}
-            onChange={handleChangeAnswerCount}
+            value={questionType}
+            onChange={(val) => {
+              setQuestionType(val);
+              setQuestion((prev) => ({ ...prev, questionType: val }));
+
+              if (val === "truefalse") {
+                setAnswers([
+                  { id: Date.now(), content: "True", isAnswer: false },
+                  { id: Date.now() + 1, content: "False", isAnswer: false },
+                ]);
+              } else if (val === "single") {
+                setAnswers([
+                  { id: Date.now(), content: "", isAnswer: false },
+                  { id: Date.now() + 1, content: "", isAnswer: false },
+                  { id: Date.now() + 2, content: "", isAnswer: false },
+                  { id: Date.now() + 3, content: "", isAnswer: false },
+                ]);
+              }
+            }}
             style={{ width: "100%" }}
           >
-            {[2, 3, 4].map((n) => (
-              <Option key={n} value={n}>
-                {n}
-              </Option>
-            ))}
+            <Option value="truefalse">True / False</Option>
+            <Option value="single">Multiple Choice (Single Correct)</Option>
+            <Option value="multiple" disabled>
+              Multiple Choice (Multiple Correct) - Coming Soon
+            </Option>
           </Select>
 
           <h4 style={{ marginTop: 20 }}>Time Limit (seconds)</h4>
@@ -756,9 +776,8 @@ const UpdateQuestionScreen = () => {
             {Array.from(
               {
                 length:
-                  Math.floor(
-                    (timeLimitConfig.max - timeLimitConfig.min) / 10
-                  ) + 1,
+                  Math.floor((timeLimitConfig.max - timeLimitConfig.min) / 10) +
+                  1,
               },
               (_, i) => timeLimitConfig.min + i * 10
             ).map((sec) => (

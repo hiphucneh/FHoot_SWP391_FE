@@ -181,14 +181,45 @@ const QnAPlayerScreen = () => {
 
   if (showLeaderboard) {
     return (
-      <LeaderBoardScreen
-        sessionCode={sessionCode}
-        currentQuestionIndex={currentQuestionIndex}
-        totalQuestions={questions.length}
-        showControls={false}
-      />
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          background: "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'Inter', 'Poppins', sans-serif",
+          padding: "2rem",
+        }}
+      >
+        <Title
+          level={1}
+          style={{
+            color: "#1e3a8a",
+            fontWeight: 700,
+            fontSize: "clamp(2rem, 5vw, 3rem)",
+            textAlign: "center",
+          }}
+        >
+          🎯 Score: {score}
+        </Title>
+        <Title
+          level={3}
+          style={{
+            color: "#4b5563",
+            marginTop: "1rem",
+            fontWeight: 500,
+            fontSize: "clamp(1rem, 2vw, 1.5rem)",
+            textAlign: "center",
+          }}
+        >
+          Waiting for teacher to start the next question...
+        </Title>
+      </div>
     );
-  }
+  }  
 
   return (
     <div

@@ -29,19 +29,38 @@ const LeaderBoardScreen = ({
           }
         );
 
-        const teams = response.data.data.map((team) => ({
+        const teamsRaw = response.data.data.map((team) => ({
           teamId: team.teamId,
           teamName: team.teamName,
           score: team.totalScore,
-          rank: team.rank,
           players: team.players.map((player) => ({
             playerId: player.playerId,
             playerName: player.name,
             score: player.totalScore,
           })),
         }));
-
-        setData(teams);
+        
+        // Sort descending by score
+        teamsRaw.sort((a, b) => b.score - a.score);
+        
+        // Assign rank manually (shared rank if same score)
+        let lastScore = null;
+        let lastRank = 0;
+        let sameRankCount = 0;
+        
+        const rankedTeams = teamsRaw.map((team, index) => {
+          if (team.score === lastScore) {
+            sameRankCount++;
+          } else {
+            lastRank = index + 1;
+            sameRankCount = 1;
+            lastScore = team.score;
+          }
+          return { ...team, rank: lastRank };
+        });
+        
+        setData(rankedTeams);
+        
       } catch (error) {
         console.error("Lỗi khi fetch leaderboard:", error);
       } finally {

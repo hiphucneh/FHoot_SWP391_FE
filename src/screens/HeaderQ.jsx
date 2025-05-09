@@ -19,7 +19,7 @@ const HeaderQ = ({ onSave, setFlag }) => {
   const [topic, setTopic] = useState("");
   const [difficultyLevel, setDifficultyLevel] = useState("Easy");
   const [numberOfQuestions, setNumberOfQuestions] = useState(1);
-  const [numberOfAnswers, setNumberOfAnswers] = useState(2);
+  const [numberOfAnswers] = useState(4);
   const [generatedQuiz, setGeneratedQuiz] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
 
@@ -154,19 +154,6 @@ const HeaderQ = ({ onSave, setFlag }) => {
             />
           </div>
 
-          <div className={styles.formField}>
-            <label>Number of Answers</label>
-            <Select
-              value={numberOfAnswers}
-              onChange={(val) => setNumberOfAnswers(val)}
-              style={{ width: "100%" }}
-            >
-              <Option value={2}>2</Option>
-              <Option value={3}>3</Option>
-              <Option value={4}>4</Option>
-            </Select>
-          </div>
-
           <div className={styles.modalFooter}>
             <Button onClick={handleCancel}>Cancel</Button>
             <Button type="primary" onClick={handleSaveAIConfig}>
@@ -188,6 +175,7 @@ const HeaderQ = ({ onSave, setFlag }) => {
                       content: q.question,
                       file: null,
                       timeLimitSec: 30,
+                      questionType: "single",
                       answers: q.options.map((opt, j) => ({
                         id: Date.now() + i + j,
                         content: opt,
