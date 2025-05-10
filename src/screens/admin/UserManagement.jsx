@@ -14,6 +14,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import styles from "./UserManagement.module.css";
+import API_BASE_URL from "../../config";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -38,7 +39,7 @@ const UserManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user?pageIndex=1&pageSize=1000",
+  `${API_BASE_URL}/api/user?pageIndex=1&pageSize=1000`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -56,7 +57,7 @@ const UserManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/package/user-package",
+  `${API_BASE_URL}/api/user?pageIndex=1&pageSize=1000`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -101,8 +102,8 @@ const UserManagement = () => {
   const updateUserStatus = async (userId, newStatus) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/status/${userId}/${newStatus}`,
+      const response = await axios.get(
+  `${API_BASE_URL}/api/user?pageIndex=1&pageSize=1000`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -116,8 +117,8 @@ const UserManagement = () => {
   const updateUserRole = async (userId, newRole) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/role/${userId}/${newRole}`,
+      const response = await axios.get(
+  `${API_BASE_URL}/api/user?pageIndex=1&pageSize=1000`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -15,6 +15,7 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Sidebar from "../../components/SideBar";
+import API_BASE_URL from "../../config"; // ✅ dùng local API
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -37,7 +38,7 @@ const SessionManagement = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/list?pageNumber=1&pageSize=1000`,
+        `${API_BASE_URL}/api/session/list?pageNumber=1&pageSize=1000`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,20 +47,17 @@ const SessionManagement = () => {
       );
 
       const rawData = res.data.data || [];
-
-      // Lọc dữ liệu
       let filteredData = rawData;
+
       if (filterStatus === "ongoing") {
         filteredData = rawData.filter((s) => !s.endAt);
       } else if (filterStatus === "ended") {
         filteredData = rawData.filter((s) => s.endAt);
       }
 
-      // Lưu toàn bộ để phân trang
       setAllData(filteredData);
       setTotal(filteredData.length);
 
-      // Phân trang thủ công
       const start = (pageNumber - 1) * pageSize;
       const end = start + pageSize;
       setSessions(filteredData.slice(start, end));
@@ -78,7 +76,7 @@ const SessionManagement = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(
-        `https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/session/${sessionId}/leaderboard`,
+        `${API_BASE_URL}/api/session/${sessionId}/leaderboard`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -145,78 +143,32 @@ const SessionManagement = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            background:
-              "linear-gradient(135deg, #bae6fd, #f3d4e5, #fef3c7)",
-            borderRadius: "8px",
-            minHeight: "100vh",
-            overflow: "auto",
-            fontFamily: "'Roboto', sans-serif",
-          }}
-        >
-          <Card
-            style={{
-              width: "100%",
-              maxWidth: "1100px",
-              margin: "0 auto 24px",
-              background: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-              padding: "24px 32px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "16px",
-              }}
-            >
+        <Content style={{ padding: 24 }}>
+          <Card style={{ maxWidth: 1100, margin: "0 auto 24px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
-                <Title level={3} style={{ margin: 0, color: "#333" }}>
-                  Session Management
-                </Title>
-                <Text type="secondary" style={{ fontSize: 14 }}>
+                <Title level={3}>Session Management</Title>
+                <Text type="secondary">
                   Total: <b>{total}</b> sessions
                 </Text>
               </div>
 
-              <Space>
-                <Select
-                  value={filterStatus}
-                  style={{
-                    width: 150,
-                    borderRadius: "8px",
-                    background: "#f9fafb",
-                  }}
-                  onChange={(value) => {
-                    setFilterStatus(value);
-                    setPageNumber(1); // Reset về trang 1
-                  }}
-                >
-                  <Option value="all">All</Option>
-                  <Option value="ongoing">Ongoing</Option>
-                  <Option value="ended">Ended</Option>
-                </Select>
-              </Space>
+              <Select
+                value={filterStatus}
+                style={{ width: 150 }}
+                onChange={(value) => {
+                  setFilterStatus(value);
+                  setPageNumber(1);
+                }}
+              >
+                <Option value="all">All</Option>
+                <Option value="ongoing">Ongoing</Option>
+                <Option value="ended">Ended</Option>
+              </Select>
             </div>
           </Card>
 
-          <Card
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              background: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-              padding: "24px",
-            }}
-          >
+          <Card style={{ maxWidth: 1100, margin: "0 auto" }}>
             <Table
               dataSource={sessions}
               loading={loading}
@@ -231,9 +183,7 @@ const SessionManagement = () => {
                   setPageSize(size);
                 },
                 showSizeChanger: true,
-                pageSizeOptions: ["5", "10", "20"],
               }}
-              rowClassName={() => "table-row-hover"}
             />
           </Card>
 
@@ -245,7 +195,7 @@ const SessionManagement = () => {
             width={600}
           >
             {selectedLeaderboard.map((team) => (
-              <div key={team.teamId} style={{ marginBottom: 24 }}>
+              <div key={team.teamId}>
                 <Title level={5}>
                   #{team.rank} - {team.teamName} ({team.totalScore} điểm)
                 </Title>
@@ -264,23 +214,6 @@ const SessionManagement = () => {
           </Modal>
         </Content>
       </Layout>
-
-      <style>
-        {`
-          .table-row-hover:hover {
-            background-color: #f9fafb !important;
-            transition: background-color 0.2s ease;
-          }
-          .ant-table-thead > tr > th {
-            background: #f3d4e5 !important;
-            color: #333 !important;
-            font-weight: 600 !important;
-          }
-          .ant-table-tbody > tr > td {
-            color: #333 !important;
-          }
-        `}
-      </style>
     </Layout>
   );
 };
