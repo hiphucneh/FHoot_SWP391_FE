@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import API_BASE_URL from "../config"; // 🔁 Sửa nếu đường dẫn khác
 
 function GoogleLoginButton({ onLoginSuccess }) {
   const googleButtonRef = useRef(null);
@@ -24,7 +25,7 @@ function GoogleLoginButton({ onLoginSuccess }) {
     console.log("✅ idToken:", idToken);
 
     try {
-      const url = new URL("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login-with-google");
+      const url = new URL(`${API_BASE_URL}/api/user/login-with-google`);
       url.searchParams.set("idToken", idToken);
       url.searchParams.set("fcmToken", "web-client-placeholder");
 

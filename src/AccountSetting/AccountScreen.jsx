@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AdvHost from "../Host/AdvHost";
 import "./AccountScreen.css";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config"; // đường dẫn có thể cần chỉnh tùy folder
 
 function AccountScreen({ show, onClose, setUser: setParentUser }) {
   const navigate = useNavigate();
@@ -20,15 +21,12 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "*/*",
-          },
-        }
-      )
+      fetch(`${API_BASE_URL}/api/user/whoami`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "*/*",
+        },
+      })
         .then((res) => res.json())
         .then((resData) => {
           const data = resData.data || resData;
@@ -69,14 +67,11 @@ function AccountScreen({ show, onClose, setUser: setParentUser }) {
     try {
       setIsSaving(true); // 🔥 Start loading
 
-      const res = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user",
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/user`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
       const result = await res.json();
       if (res.ok && result.statusCode === 200) {

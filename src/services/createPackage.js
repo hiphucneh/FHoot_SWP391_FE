@@ -1,6 +1,7 @@
 import axios from "axios";
+import API_BASE_URL from "../config";
 
-const API_URL = "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api";
+const API_URL = `${API_BASE_URL}/api`;
 
 export const createPackage = async (packageData) => {
     try {
@@ -13,7 +14,7 @@ export const createPackage = async (packageData) => {
             },
         });
 
-        const packageId = response.data?.data?.packageIdId;
+        const packageId = response.data?.data?.packageId;
         if (packageId) {
             localStorage.setItem("packageId", packageId.toString());
 

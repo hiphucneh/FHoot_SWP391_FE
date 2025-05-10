@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./RegisterPage.css";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config"; // ✅ Đường dẫn tùy vị trí file
 
 function OTPpopup({ email, password, onClose, onBackToRegister }) {
   const [otp, setOtp] = useState("");
@@ -23,45 +24,35 @@ function OTPpopup({ email, password, onClose, onBackToRegister }) {
     setIsVerifying(true);
 
     try {
-      const verifyRes = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/verify-account",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp }),
-        }
-      );
+      const verifyRes = await fetch(`${API_BASE_URL}/api/user/verify-account`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
 
       const verifyData = await verifyRes.json();
       if (verifyRes.ok && verifyData.statusCode === 200) {
-        // ✅ Xác thực OTP thành công, tiến hành đăng nhập
-        const loginRes = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "*/*",
-            },
-            body: JSON.stringify({
-              email,
-              password,
-              fcmToken: "web-client-placeholder",
-            }),
-          }
-        );
+        const loginRes = await fetch(`${API_BASE_URL}/api/user/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            fcmToken: "web-client-placeholder",
+          }),
+        });
 
         const loginData = await loginRes.json();
         if (loginRes.ok && loginData.statusCode === 200) {
           const token = loginData.data.accessToken;
           localStorage.setItem("token", token);
           localStorage.setItem("refreshToken", loginData.data.refreshToken);
-
-          // ✅ Navigate sang UserSetupPage
           navigate("/UserSetupPage");
         } else {
           setMessage("Auto-login failed. Please login manually.");
-          console.error(loginData);
         }
       } else {
         setMessage(verifyData.message || "OTP verification failed");
@@ -80,14 +71,11 @@ function OTPpopup({ email, password, onClose, onBackToRegister }) {
     setMessage("");
 
     try {
-      const res = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/resend-otp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/user/resend-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       const result = await res.json();
       if (result.statusCode === 200) {

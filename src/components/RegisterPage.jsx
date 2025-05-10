@@ -3,6 +3,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import "./RegisterPage.css";
 import { useNavigate } from "react-router-dom";
 import OTPpopup from "./OTPpopup";
+import API_BASE_URL from "../config"; // ✅ Đường dẫn tùy thư mục bạn đặt
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -27,17 +28,14 @@ function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
 
@@ -53,7 +51,6 @@ function RegisterPage() {
     }
   };
 
-  // Check validation rules
   const isLengthValid = password.length >= 8 && password.length <= 16;
   const hasUppercase = /[A-Z]/.test(password);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
@@ -85,7 +82,6 @@ function RegisterPage() {
           ></i>
         </div>
 
-        {/* ✅ Validation hints */}
         <div className="password-checks">
           <p className={isLengthValid ? "valid" : "invalid"}>
             {isLengthValid ? "✔" : "✖"} 8–16 characters

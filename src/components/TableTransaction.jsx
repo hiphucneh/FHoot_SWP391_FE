@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Tag, Typography } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import API_BASE_URL from "../config"; // ✅ thêm dòng này
 
 const { Title } = Typography;
 
@@ -11,14 +12,11 @@ const TableTransaction = () => {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/dashboard/transaction",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_BASE_URL}/api/dashboard/transaction`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (response.status === 200) {
         setData(response.data.data);
       }

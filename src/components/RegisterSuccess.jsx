@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterSuccess.css";
-import successImage from "../assets/register-success.png"; // 👉 ảnh chúc mừng (bạn tự đặt 1 ảnh đẹp)
+import successImage from "../assets/register-success.png";
+import API_BASE_URL from "../config"; // ✅ thêm dòng này
 
 function RegisterSuccess() {
   const navigate = useNavigate();
@@ -12,15 +13,12 @@ function RegisterSuccess() {
       if (!token) return;
 
       try {
-        const response = await fetch(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "*/*",
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/api/user/whoami`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "*/*",
+          },
+        });
 
         const data = await response.json();
         if (response.ok && data.statusCode === 200) {
@@ -31,7 +29,7 @@ function RegisterSuccess() {
       }
     };
 
-    fetchUserInfo(); // 👉 gọi API cập nhật localStorage
+    fetchUserInfo();
   }, []);
 
   return (

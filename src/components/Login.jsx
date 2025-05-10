@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import "remixicon/fonts/remixicon.css";
 import GoogleLoginButton from "./GoogleLoginButton";
+import API_BASE_URL from "../config"; // đường dẫn này tùy thuộc vị trí file
 
 function Login({ show, onClose, onSwitchToForgot }) {
   const [email, setEmail] = useState("");
@@ -18,15 +19,12 @@ function Login({ show, onClose, onSwitchToForgot }) {
 
   const fetchUserInfoAndRedirect = async (token) => {
     try {
-      const res = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/whoami",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "*/*",
-          },
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/user/whoami`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "*/*",
+        },
+      });
 
       const userData = await res.json();
       localStorage.setItem("user", JSON.stringify(userData.data || userData));
@@ -49,21 +47,18 @@ function Login({ show, onClose, onSwitchToForgot }) {
     setErrorMessage("");
 
     try {
-      const res = await fetch(
-        "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            fcmToken: "web-client-placeholder",
-          }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          fcmToken: "web-client-placeholder",
+        }),
+      });
 
       const data = await res.json();
       if (res.ok && data.statusCode === 200) {
@@ -155,12 +150,12 @@ function Login({ show, onClose, onSwitchToForgot }) {
         </a>
 
         <div className="login__google" style={{ marginTop: "1rem" }}>
-        <GoogleLoginButton
-  onLoginSuccess={(token) => {
-    console.log("🎉 Google login success with token:", token);
-    window.location.href = "/Home";
-    }}
-/>
+          <GoogleLoginButton
+            onLoginSuccess={(token) => {
+              console.log("🎉 Google login success with token:", token);
+              window.location.href = "/Home";
+            }}
+          />
         </div>
       </form>
 

@@ -1,25 +1,26 @@
 import axios from "axios";
+import API_BASE_URL from "../config"; // ✅ dùng local
 
-const API_BASE_URL = "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api";
+const API_URL = `${API_BASE_URL}/api`;
 
 export const updatePackage = async (id, formData) => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axios.put(`${API_BASE_URL}/package/${id}`, formData, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
+  try {
+    const token = localStorage.getItem("token");
 
-        return response.data;
-    } catch (error) {
+    const response = await axios.put(`${API_URL}/package/${id}`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        if (error.response) {
-            console.error('API Error:', error.response.data);
-        } else {
-            console.error('Unexpected Error:', error.message);
-        }
-        throw error;
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("API Error:", error.response.data);
+    } else {
+      console.error("Unexpected Error:", error.message);
     }
+    throw error;
+  }
 };

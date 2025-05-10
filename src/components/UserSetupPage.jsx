@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
-import defaultAvatar from "../assets/default-avatar.png"; // 👉 ảnh avatar mặc định
+import defaultAvatar from "../assets/default-avatar.png";
+import API_BASE_URL from "../config";
 
 function UserSetupPage() {
   const [fullName, setFullName] = useState("");
@@ -34,7 +35,7 @@ function UserSetupPage() {
     if (avatar) formData.append("Avatar", avatar);
 
     try {
-      const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user", {
+      const res = await fetch(`${API_BASE_URL}/api/user`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

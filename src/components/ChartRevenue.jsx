@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { Card, Statistic, Tabs, Spin, Alert } from "antd";
 import { DollarOutlined, GiftOutlined } from "@ant-design/icons";
+import API_BASE_URL from "../config";
 
 // Register Chart.js components
 ChartJS.register(
@@ -39,9 +40,7 @@ const ChartRevenue = () => {
     const fetchRevenue = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          "https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/dashboard/revenue",
-          {
+        const res = await axios.get(`${API_BASE_URL}/api/dashboard/revenue`,          {
             headers: {
               Authorization: `Bearer ${token}`,
             },

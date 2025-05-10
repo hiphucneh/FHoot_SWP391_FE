@@ -1,6 +1,7 @@
 import { useState } from "react";
 import './styles.css';
 import SuccessForgotpopup from './SuccessForgotpopup';
+import API_BASE_URL from "../config"; // ✅ thêm dòng này
 
 function OTPforgotpass({ email, onClose, onBackToForgot }) {
   const [otp, setOtp] = useState("");
@@ -33,7 +34,7 @@ function OTPforgotpass({ email, onClose, onBackToForgot }) {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch("https://fptkahoot-eqebcwg8aya7aeea.southeastasia-01.azurewebsites.net/api/user/reset-password", {
+      const res = await fetch(`${API_BASE_URL}/api/user/reset-password`, {
         method: "PUT",
         headers: {
           "accept": "*/*",
